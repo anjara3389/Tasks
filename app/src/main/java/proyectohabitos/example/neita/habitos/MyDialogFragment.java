@@ -13,7 +13,7 @@ public class MyDialogFragment extends DialogFragment {
     private boolean answer;
 
     public interface MyDialogDialogListener {
-        void onFinishDialog(boolean inputText);
+        void onFinishDialog(boolean ans);
     }
 
     public MyDialogFragment() {
@@ -29,7 +29,7 @@ public class MyDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 answer=true;
-                sendBackResult(answer);
+                sendBackResult();
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -45,7 +45,7 @@ public class MyDialogFragment extends DialogFragment {
         this.mContext = cont;
     }
 
-    public void sendBackResult(boolean answer) {
+    public void sendBackResult() {
         MyDialogDialogListener listener = (MyDialogDialogListener) getTargetFragment();
         listener.onFinishDialog(answer);
         dismiss();
