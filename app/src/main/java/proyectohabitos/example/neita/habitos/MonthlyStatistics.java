@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 
 public class MonthlyStatistics extends Fragment {
 
-    public static final String ARG_OBJECT = "object";
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_monthly_statistics, container, false);

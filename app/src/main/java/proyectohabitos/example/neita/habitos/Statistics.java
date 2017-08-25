@@ -9,7 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Statistics extends ActionBarActivity {
+public class Statistics extends AppCompatActivity {
 
     DemoCollectionPagerAdapterSta mDemoCollectionPagerAdapter;
     ViewPager mViewPager;

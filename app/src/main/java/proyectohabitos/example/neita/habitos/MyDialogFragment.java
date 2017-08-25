@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-
-import java.util.List;
 
 public class MyDialogFragment extends DialogFragment {
     private Context mContext;

@@ -1,26 +1,17 @@
 package proyectohabitos.example.neita.habitos;
 
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
-public class FrmTasks extends ActionBarActivity {
-
+public class FrmTasks extends AppCompatActivity {
+/* Instances of this class are fragments representing a single
+ object in our collection.*/
 
     DemoCollectionPagerAdapter mDemoCollectionPagerAdapter;
     ViewPager mViewPager;
@@ -31,8 +22,7 @@ public class FrmTasks extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_tasks);
 
-        // ViewPager and its adapters use support library
-        // fragments, so use getSupportFragmentManager.
+        // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
         mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.frmTasksPager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
@@ -81,25 +71,22 @@ public class FrmTasks extends ActionBarActivity {
             }
         };
 
-        // Add 3 tabs, specifying the tab's text and TabListener
-
+        // Add 2 tabs, specifying the tab's text and TabListener
         actionBar.addTab(actionBar.newTab().setText("Hoy").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Todos").setTabListener(tabListener));
 
     }
 
-    //     Since this is an object collection, use a FragmentStatePagerAdapter,
-    // and NOT a FragmentPagerAdapter.
+    //     Since this is an object collection, use a FragmentStatePagerAdapter, and NOT a FragmentPagerAdapter
     public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
         public DemoCollectionPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
 
-
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = null; //do i need another method? yes, calling DemoObjectFragment twicehe same fragment twice, and we want different gragments ... whaaaaaaaat
+            Fragment fragment = null;
             if (i == 0) {
                 fragment = new TodayTasks();
 
@@ -110,7 +97,6 @@ public class FrmTasks extends ActionBarActivity {
         }
 
 
-
         @Override
         public int getCount() {
             return 2;
@@ -119,13 +105,6 @@ public class FrmTasks extends ActionBarActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return "OBJECT " + (position + 1);
-        } //whats this OBJECT? i wanna change the tittles
-        //change it if you want to, right now the titles are not visible, we'l need to add tabs to see them 6hhhhhh
+        }
     }
-
-    // Instances of this class are fragments representing a single
-// object in our collection.
-
-
-
 }

@@ -1,12 +1,10 @@
 package proyectohabitos.example.neita.habitos;
 
-import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
@@ -15,9 +13,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -27,13 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import static android.R.attr.minHeight;
-import static proyectohabitos.example.neita.habitos.R.attr.height;
 
 public class AddTask extends AppCompatActivity {
 
@@ -41,13 +32,11 @@ public class AddTask extends AppCompatActivity {
     CheckBox lun, mar, mier, juev, vier, sab, dom;
     ImageButton reminderButton;
     static TextView reminder;
-    Boolean isNew;
+    boolean isNew;
     int id;
     static long remind;
     CardView cardView;
     static Switch switchRemind;
-
-
     FloatingActionButton btn;
 
     @Override
@@ -56,7 +45,7 @@ public class AddTask extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
-        btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button); //why is it it doesnt recognize my button???? there okisss
+        btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
         lun = (CheckBox) findViewById(R.id.activity_add_task_chk_lun);
         mar = (CheckBox) findViewById(R.id.activity_add_task_chk_mar);
         mier = (CheckBox) findViewById(R.id.activity_add_task_chk_mierc);
@@ -65,16 +54,17 @@ public class AddTask extends AppCompatActivity {
         sab = (CheckBox) findViewById(R.id.activity_add_task_chk_sab);
         dom = (CheckBox) findViewById(R.id.activity_add_task_chk_dom);
         reminderButton = (ImageButton) findViewById(R.id.activity_add_task_reminder2);
-        reminder= (TextView) findViewById(R.id.activity_add_task_reminder);
-        cardView=(CardView)findViewById(R.id.card_view_2);
-        switchRemind=(Switch)findViewById(R.id.activity_add_task_switch);
+        reminder = (TextView) findViewById(R.id.activity_add_task_reminder);
+        cardView = (CardView) findViewById(R.id.card_view_2);
+        switchRemind = (Switch) findViewById(R.id.activity_add_task_switch);
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt("id");
         isNew = bundle.getBoolean("isNew");
 
         recoverData();
-        if(remind!=0&&!isNew){
+
+        if (remind != 0 && !isNew) {
             switchRemind.setChecked(true);
             reminder.setVisibility(View.VISIBLE);
         }
@@ -92,12 +82,11 @@ public class AddTask extends AppCompatActivity {
         switchRemind.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     TimePicker mTimePicker = new TimePicker();
                     mTimePicker.show(getFragmentManager(), "Select time");
-                }
-                else{
-                    remind=0;
+                } else {
+                    remind = 0;
                     reminder.setText("");
                     reminder.setVisibility(View.GONE);
                 }
@@ -145,10 +134,7 @@ public class AddTask extends AppCompatActivity {
         }
     }
 
-
     private void recoverData() {
-        ArrayList<String> datos = new ArrayList<String>();
-
         BaseHelper helper = new BaseHelper(this, "Demo", null, null);
         SQLiteDatabase db = helper.getReadableDatabase();
         String sql = "SELECT id," + //0
@@ -166,12 +152,10 @@ public class AddTask extends AppCompatActivity {
                 "WHERE id=" + id;
         Toast.makeText(this, sql, Toast.LENGTH_SHORT).show();
 
-
         Cursor c = db.rawQuery(sql, null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
-            SimpleDateFormat g = new SimpleDateFormat("yyyy/MM/dd");
 
             etName.setText(c.getString(1));
             lun.setChecked(c.getInt(2) == 1);
@@ -181,12 +165,10 @@ public class AddTask extends AppCompatActivity {
             vier.setChecked(c.getInt(6) == 1);
             sab.setChecked(c.getInt(7) == 1);
             dom.setChecked(c.getInt(8) == 1);
-            reminder.setText(c.getLong(9) == 0 ? "Recordatorio" : f.format(new Date(c.getLong(9))));
+            reminder.setText(f.format(new Date(c.getLong(9))));
             remind = c.getLong(9);
-
         }
         db.close();
-
     }
 
     public static class TimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -197,6 +179,7 @@ public class AddTask extends AppCompatActivity {
             int minute = c.get(Calendar.MINUTE);
             return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
         }
+
         @Override
         public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
 
@@ -207,9 +190,9 @@ public class AddTask extends AppCompatActivity {
             Date d = gc.getTime();
             SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
 
-            remind=d.getTime();
+            remind = d.getTime();
             reminder.setText(df.format(d));
-            if(remind!=0){
+            if (remind != 0) {
                 reminder.setVisibility(View.VISIBLE);
             }
         }
@@ -217,7 +200,7 @@ public class AddTask extends AppCompatActivity {
         @Override
         public void onCancel(DialogInterface dialog) {
             super.onCancel(dialog);
-            if(remind==0||remind==-1) {
+            if (remind == 0 || remind == -1) {
                 switchRemind.setChecked(false);
             }
         }

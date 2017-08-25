@@ -1,33 +1,20 @@
 package proyectohabitos.example.neita.habitos;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +24,6 @@ import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 
 public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDialogListener {
-    public static final String ARG_OBJECT = "object";
     private ListView lvTasks;
     ArrayList<String> list;
     FloatingActionButton btn;
@@ -46,7 +32,7 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
     @Override
     public void onResume() { //actualiza después de editar
         super.onResume();
-        cargarListado();
+        upload();
     }
 
     @Override
@@ -55,10 +41,10 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
 
         lvTasks = (ListView) rootView.findViewById(R.id.frg_today_taks_lst);
         btn = (FloatingActionButton) rootView.findViewById(R.id.frg_today_tasks_btn);
-        cargarListado();
+        upload();
         registerForContextMenu(lvTasks);
 
-        //cuando se seleccciona un item del list view personas
+        //cuando se seleccciona un item del list view
         lvTasks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -77,27 +63,22 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
             }
         });
         return rootView;
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        cargarListado(); //why here???? ... it uploads the list when adding??? if it works, ill explain it oki
+        upload();
     }
-    //para después de modificar un item y volver hacia atrás para que se actualice la lista list view
 
-
-    public void cargarListado() {
-        list = ListaPersonas();
+    public void upload() {
+        list = getActivities();
         CustomAdapter adapter = new CustomAdapter(list, getContext());
-
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, list);
         lvTasks.setAdapter(adapter);
     }
 
-    private ArrayList<String> ListaPersonas() {
-        ArrayList<String> data = new ArrayList<String>();
+    private ArrayList<String> getActivities() {
+        ArrayList<String> data = new ArrayList();
 
         BaseHelper helper = new BaseHelper(getContext(), "Demo", null, null);
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -111,22 +92,18 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
                 "v, " + //7
                 "s, " + //8
                 "d " +//9
-                "FROM Activity";
+                "FROM Activity ";
 
         Cursor c = db.rawQuery(sql, null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                //datos
-
                 SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
-                SimpleDateFormat g = new SimpleDateFormat("yyyy/MM/dd");
-                String fullText;
 
                 String text = c.getString(0) + " " + c.getString(1) + " A/"
                         + (c.getLong(2) == 0 ? "" : f.format(new Date(c.getLong(2)))) + "  ";
 
-                ArrayList<String> str = new ArrayList<String>(
+                ArrayList<String> str = new ArrayList(
                         Arrays.asList("Lun", "Mar", "Mier", "Juev", "Vier", "Sáb", "Dom"));
                 int k = 0;
                 for (int i = 3; i <= 9; i++) {
@@ -157,10 +134,7 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
         menu.add(0, v.getId(), 0, "Eliminar");
     }
 
-
-
     public boolean onContextItemSelected(MenuItem item) {
-
         if (item.getTitle() == "Iniciar") {
             Intent i = new Intent(getActivity(), Chronometer.class);
             startActivityForResult(i, 1);
@@ -171,9 +145,9 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
             startActivity(i);
         } else if (item.getTitle() == "Eliminar") {
             MyDialogFragment dial = new MyDialogFragment();
-            dial.setInfo(this,this.getContext(),"Eliminar","¿Desea eliminar la actividad?");
+            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?");
             dial.show(getFragmentManager(), "MyDialog");
-            cargarListado();
+            upload();
         } else {
             return false;
         }
@@ -192,10 +166,9 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
     @Override
     public void onFinishDialog(boolean ans) {
         if (ans == true) {
-            Toast.makeText(getContext(), "ELIM" + posit, Toast.LENGTH_LONG).show();
             delete(posit);
-            cargarListado();
-
+            Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
+            upload();
         }
     }
 }
