@@ -46,7 +46,7 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
     @Override
     public void onResume() { //actualiza después de editar
         super.onResume();
-        CargarListado();
+        cargarListado();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
 
         lvTasks = (ListView) rootView.findViewById(R.id.frg_today_taks_lst);
         btn = (FloatingActionButton) rootView.findViewById(R.id.frg_today_tasks_btn);
-        CargarListado();
+        cargarListado();
         registerForContextMenu(lvTasks);
 
         //cuando se seleccciona un item del list view personas
@@ -83,12 +83,12 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        CargarListado(); //why here???? ... it uploads the list when adding??? if it works, ill explain it oki
+        cargarListado(); //why here???? ... it uploads the list when adding??? if it works, ill explain it oki
     }
     //para después de modificar un item y volver hacia atrás para que se actualice la lista list view
 
 
-    public void CargarListado() {
+    public void cargarListado() {
         list = ListaPersonas();
         CustomAdapter adapter = new CustomAdapter(list, getContext());
 
@@ -171,9 +171,9 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
             startActivity(i);
         } else if (item.getTitle() == "Eliminar") {
             MyDialogFragment dial = new MyDialogFragment();
-            dial.setmContext(this.getContext());
+            dial.setInfo(this,this.getContext(),"Eliminar","¿Desea eliminar la actividad?");
             dial.show(getFragmentManager(), "MyDialog");
-            CargarListado();
+            cargarListado();
         } else {
             return false;
         }
@@ -194,6 +194,8 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
         if (ans == true) {
             Toast.makeText(getContext(), "ELIM" + posit, Toast.LENGTH_LONG).show();
             delete(posit);
+            cargarListado();
+
         }
     }
 }

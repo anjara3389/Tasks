@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+
+import java.util.List;
 
 public class MyDialogFragment extends DialogFragment {
     private Context mContext;
     private AlertDialog.Builder alertDialogBuilder;
     private boolean answer;
+    private String title;
+    private String message;
+    private MyDialogDialogListener listener;
 
     public interface MyDialogDialogListener {
         void onFinishDialog(boolean ans);
@@ -23,12 +29,12 @@ public class MyDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         alertDialogBuilder = new AlertDialog.Builder(mContext);
-        alertDialogBuilder.setTitle("Eliminar");
-        alertDialogBuilder.setMessage("¿Desea eliminar la actividad?");
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(message);
         alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                answer=true;
+                answer = true;
                 sendBackResult();
             }
         });
@@ -41,13 +47,16 @@ public class MyDialogFragment extends DialogFragment {
         return alertDialogBuilder.create();
     }
 
-    public void setmContext(Context cont) {
+
+    public void setInfo(final MyDialogDialogListener listener, Context cont, String title, String message) {
         this.mContext = cont;
+        this.title = title;
+        this.message = message;
+        this.listener = listener;
     }
 
     public void sendBackResult() {
-        MyDialogDialogListener listener = (MyDialogDialogListener) getTargetFragment();
-        listener.onFinishDialog(answer);
+        this.listener.onFinishDialog(answer);
         dismiss();
     }
 }
