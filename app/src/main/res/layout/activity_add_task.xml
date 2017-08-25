@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="proyectohabitos.example.neita.habitos.AddTask">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/activity_add_task_lbl_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/card_view"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/card_view"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginTop="23dp"
+            android:text="Nombre"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/activity_add_task_txt_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/activity_add_task_lbl_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="Nombre"
+            android:inputType="textPersonName"
+            android:textSize="30sp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_add_task_lbl_name"
+            tools:textSize="30sp" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_below="@+id/activity_add_task_txt_name"
+            android:layout_margin="@dimen/fab_margin">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Repetir"
+                    app:layout_constraintLeft_toRightOf="@+id/imageButton"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="0dp"
+                    android:layout_height="21dp"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_juev"
+                    android:layout_alignStart="@+id/activity_add_task_chk_juev"
+                    android:layout_below="@+id/activity_add_task_chk_juev"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="26dp"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:cropToPadding="true"
+                    android:elevation="0dp"
+                    android:scaleType="fitCenter"
+                    android:tint="?android:attr/colorControlNormal"
+                    android:visibility="visible"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/calendar" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_dom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_sab"
+                    android:layout_alignStart="@+id/activity_add_task_chk_sab"
+                    android:layout_below="@+id/activity_add_task_chk_sab"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="31dp"
+                    android:layout_marginTop="14dp"
+                    android:text="Dom"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_sab"
+                    android:layout_width="59dp"
+                    android:layout_height="0dp"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_vier"
+                    android:layout_alignStart="@+id/activity_add_task_chk_vier"
+                    android:layout_below="@+id/activity_add_task_chk_vier"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginRight="150dp"
+                    android:text="Sáb"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_vier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/activity_add_task_chk_mar"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="144dp"
+                    android:layout_marginTop="0dp"
+                    android:text="Viern"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/activity_add_task_chk_sab"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_add_task_chk_juev"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_juev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_mierc"
+                    android:layout_alignStart="@+id/activity_add_task_chk_mierc"
+                    android:layout_below="@+id/activity_add_task_chk_mierc"
+                    android:layout_marginRight="55dp"
+                    android:layout_marginTop="14dp"
+                    android:text="Juev"
+                    android:textSize="14sp"
+                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_dom"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_mierc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_mar"
+                    android:layout_alignStart="@+id/activity_add_task_chk_mar"
+                    android:layout_below="@+id/activity_add_task_chk_mar"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginRight="8dp"
+                    android:text="Mierc"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.046"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_sab" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_mar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/activity_add_task_chk_lun"
+                    android:layout_alignStart="@+id/activity_add_task_chk_lun"
+                    android:layout_below="@+id/activity_add_task_chk_lun"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="0dp"
+                    android:text="Mar"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/activity_add_task_chk_mierc"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_vier"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_add_task_chk_lun"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <CheckBox
+                    android:id="@+id/activity_add_task_chk_lun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="11dp"
+                    android:checked="false"
+                    android:text="Lun"
+                    android:textSize="14sp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_juev"
+                    app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/card_view"
+                android:layout_margin="@dimen/fab_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Switch
+                            android:id="@+id/activity_add_task_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="24dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="16dp"
+                            android:text="Alarma"
+                            android:visibility="visible"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/activity_add_task_reminder2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="21dp"
+                            android:layout_marginLeft="26dp"
+                            android:layout_marginStart="26dp"
+                            android:layout_marginTop="16dp"
+                            android:adjustViewBounds="true"
+                            android:background="@android:color/transparent"
+                            android:cropToPadding="true"
+                            android:elevation="0dp"
+                            android:scaleType="fitCenter"
+                            android:tint="?android:attr/colorControlNormal"
+                            android:visibility="visible"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/alarm"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginBottom="16dp" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/activity_add_task_reminder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="102dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:paddingTop="5dp"
+                        android:text="Recordatorio"
+                        android:textSize="24sp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView1"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+
+
+            android:id="@+id/activity_add_task_add_button"
+            android:layout_width="63dp"
+            android:layout_height="63dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:src="@drawable/check"
+            android:tint="@android:color/background_light"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:rippleColor="@android:color/background_light"
+            app:srcCompat="@android:drawable/ic_input_add"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.widget.FrameLayout>

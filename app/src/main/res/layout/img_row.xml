@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/task_row_img"
+        android:layout_width="wrap_content"
+        android:layout_height="61dp"
+        android:paddingLeft="@dimen/fab_margin"
+        android:paddingTop="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/task_row_txt1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/fab_margin"
+            android:paddingLeft="@dimen/fab_margin"
+            android:paddingTop="@dimen/fab_margin"
+            android:text="TextView"
+            android:textSize="24sp"
+            tools:textSize="18sp"
+            tools:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/task_row_txt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="@dimen/fab_margin"
+            android:text="TextView" />
+
+    </LinearLayout>
+
+</LinearLayout>
