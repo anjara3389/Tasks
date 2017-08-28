@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class BaseHelper extends SQLiteOpenHelper {
 
-    String table = "CREATE TABLE activity(id INTEGER PRIMARY KEY,name TEXT,l BOOLEAN,m BOOLEAN,x BOOLEAN,j BOOLEAN,v BOOLEAN,s BOOLEAN,d BOOLEAN,since_date INTEGER,reminder INTEGER)";
-    String tableSpan = "CREATE TABLE span(id INTEGER PRIMARY KEY,span_id INTEGER,beg_date INTEGER,end_date INTEGER)";
-    public static final int VERSION = 2;
+    String table = "CREATE TABLE activity(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,l BOOLEAN,m BOOLEAN,x BOOLEAN,j BOOLEAN,v BOOLEAN,s BOOLEAN,d BOOLEAN,since_date INTEGER,reminder INTEGER,chrono INTEGER)";
+    String tableSpan = "CREATE TABLE span(id INTEGER PRIMARY KEY AUTOINCREMENT,span_id INTEGER,beg_date INTEGER,end_date INTEGER,activity_id INTEGER, FOREIGN KEY(activity_id) REFERENCES activity(id))";
+    public static final int VERSION = 3;
 
     public BaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler errorHandler) {
         super(context, name, factory, VERSION, errorHandler);

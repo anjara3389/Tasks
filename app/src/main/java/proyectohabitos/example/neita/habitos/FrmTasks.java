@@ -1,12 +1,12 @@
 package proyectohabitos.example.neita.habitos;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 public class FrmTasks extends AppCompatActivity {
@@ -89,7 +89,6 @@ public class FrmTasks extends AppCompatActivity {
             Fragment fragment = null;
             if (i == 0) {
                 fragment = new TodayTasks();
-
             } else if (i == 1) {
                 fragment = new AllTheTasks();
             }

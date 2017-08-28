@@ -7,9 +7,9 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -28,16 +28,18 @@ import java.util.GregorianCalendar;
 
 public class AddTask extends AppCompatActivity {
 
-    EditText etName;
+    EditText etName, txtHours, txtMinutes;
     CheckBox lun, mar, mier, juev, vier, sab, dom;
     ImageButton reminderButton;
-    static TextView reminder;
+    static TextView reminder, lblHours, lblMinutes;
     boolean isNew;
     int id;
     static long remind;
+    Integer chron;
     CardView cardView;
-    static Switch switchRemind;
+    static Switch switchRemind, switchChrono;
     FloatingActionButton btn;
+    boolean clean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class AddTask extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
+        txtHours = (EditText) findViewById(R.id.activity_add_task_hours_txt);
+        txtMinutes = (EditText) findViewById(R.id.activity_add_task_minutes_txt);
         btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
         lun = (CheckBox) findViewById(R.id.activity_add_task_chk_lun);
         mar = (CheckBox) findViewById(R.id.activity_add_task_chk_mar);
@@ -55,8 +59,12 @@ public class AddTask extends AppCompatActivity {
         dom = (CheckBox) findViewById(R.id.activity_add_task_chk_dom);
         reminderButton = (ImageButton) findViewById(R.id.activity_add_task_reminder2);
         reminder = (TextView) findViewById(R.id.activity_add_task_reminder);
+        lblHours = (TextView) findViewById(R.id.activity_add_task_hours_lbl);
+        lblMinutes = (TextView) findViewById(R.id.activity_add_task_minutes_lbl);
         cardView = (CardView) findViewById(R.id.card_view_2);
         switchRemind = (Switch) findViewById(R.id.activity_add_task_switch);
+        switchChrono = (Switch) findViewById(R.id.activity_add_task_switch_2);
+
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt("id");
@@ -64,9 +72,22 @@ public class AddTask extends AppCompatActivity {
 
         recoverData();
 
-        if (remind != 0 && !isNew) {
-            switchRemind.setChecked(true);
-            reminder.setVisibility(View.VISIBLE);
+        if (!isNew) {
+            if (remind != 0) {
+                switchRemind.setChecked(true);
+                reminder.setVisibility(View.VISIBLE);
+                clean = false;
+            }
+            if (chron != null) {
+                switchChrono.setChecked(true);
+                txtHours.setVisibility(View.VISIBLE);
+                txtMinutes.setVisibility(View.VISIBLE);
+                lblHours.setVisibility(View.VISIBLE);
+                lblMinutes.setVisibility(View.VISIBLE);
+                txtHours.setText(chron / 60 + "");
+                txtMinutes.setText(chron % 60 + "");
+
+            }
         }
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -84,11 +105,37 @@ public class AddTask extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     TimePicker mTimePicker = new TimePicker();
-                    mTimePicker.show(getFragmentManager(), "Select time");
+                    mTimePicker.show(getFragmentManager(), "Recordatorio");
                 } else {
                     remind = 0;
                     reminder.setText("");
                     reminder.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        switchChrono.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    txtHours.setVisibility(View.VISIBLE);
+                    txtMinutes.setVisibility(View.VISIBLE);
+                    lblHours.setVisibility(View.VISIBLE);
+                    lblMinutes.setVisibility(View.VISIBLE);
+                } else {
+                    txtHours.setText("");
+                    txtHours.setVisibility(View.GONE);
+                    txtMinutes.setText("");
+                    txtMinutes.setVisibility(View.GONE);
+                    lblHours.setVisibility(View.GONE);
+                    lblMinutes.setVisibility(View.GONE);
+
+                    if (isNew || (!isNew && clean == false)) {
+                        chron = null;
+                        clean = true;
+                    }
+
                 }
             }
         });
@@ -103,11 +150,26 @@ public class AddTask extends AppCompatActivity {
     }
 
     private void save(String name) {
-        //contexto this,nombre de la base demo,no hay cursor factory y version 1
-        BaseHelper helper = new BaseHelper(this, "Demo", null, null);
-        SQLiteDatabase db = helper.getWritableDatabase();
-
         try {
+            if (txtHours.getText().toString().trim().isEmpty()) {
+                txtHours.setText(0 + "");
+            }
+            if (txtMinutes.getText().toString().trim().isEmpty()) {
+                txtMinutes.setText(0 + "");
+            }
+            if ((Integer.parseInt(txtHours.getText().toString()) > 24)) {
+                throw new Exception("Las horas no pueden ser mayores a 24");
+            }
+            if ((Integer.parseInt(txtMinutes.getText().toString()) > 59)) {
+                throw new Exception("Los minutos no pueden ser mayores a 59");
+            }
+            if (!lun.isChecked() && !mar.isChecked() && !mier.isChecked() && !juev.isChecked() && !vier.isChecked() && !sab.isChecked() && !dom.isChecked()) {
+                throw new Exception("Seleccionar por lo menos un día");
+            }
+
+            BaseHelper helper = new BaseHelper(this, "Demo", null, null);
+            SQLiteDatabase db = helper.getWritableDatabase();
+
             //content values es un contenedor de valores
             ContentValues c = new ContentValues();
             c.put("name", name);
@@ -120,17 +182,20 @@ public class AddTask extends AppCompatActivity {
             c.put("d", dom.isChecked());
             c.put("since_date", new Date().getTime());
             c.put("reminder", remind);
+            c.put("chrono", (!switchChrono.isChecked() || (Integer.parseInt(txtHours.getText().toString()) == 0 && Integer.parseInt(txtMinutes.getText().toString()) == 0))
+                    ? null : (Integer.parseInt(txtHours.getText().toString()) * 60) + (Integer.parseInt(txtMinutes.getText().toString())));
             if (isNew) {
                 db.insert("activity", null, c);
             } else {
                 db.update("activity", c, " id=" + id + " ", null);
             }
+
             db.close();
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
         } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -146,11 +211,10 @@ public class AddTask extends AppCompatActivity {
                 "v, " + //6
                 "s, " + //7
                 "d, " + //8
-                "reminder," +//2
-                "since_date " +//3
+                "reminder, " +//9
+                "chrono " +//10
                 "FROM activity " +
                 "WHERE id=" + id;
-        Toast.makeText(this, sql, Toast.LENGTH_SHORT).show();
 
         Cursor c = db.rawQuery(sql, null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
@@ -167,6 +231,11 @@ public class AddTask extends AppCompatActivity {
             dom.setChecked(c.getInt(8) == 1);
             reminder.setText(f.format(new Date(c.getLong(9))));
             remind = c.getLong(9);
+            chron = c.isNull(10) ? null : c.getInt(10);
+            if (chron != null) {
+                txtHours.setText(chron / 60 + "");
+                txtMinutes.setText(chron % 60 + "");
+            }
         }
         db.close();
     }

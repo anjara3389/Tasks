@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context="proyectohabitos.example.neita.habitos.AddTask">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,260 +47,408 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_add_task_lbl_name"
             tools:textSize="30sp" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_below="@+id/activity_add_task_txt_name"
-            android:layout_margin="@dimen/fab_margin">
+            android:layout_height="match_parent">
 
-            <android.support.constraint.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="0dp"
-                    android:layout_height="18dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Repetir"
-                    app:layout_constraintLeft_toRightOf="@+id/imageButton"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="0dp"
-                    android:layout_height="21dp"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_juev"
-                    android:layout_alignStart="@+id/activity_add_task_chk_juev"
-                    android:layout_below="@+id/activity_add_task_chk_juev"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="26dp"
-                    android:layout_marginTop="16dp"
-                    android:adjustViewBounds="true"
-                    android:background="@android:color/transparent"
-                    android:cropToPadding="true"
-                    android:elevation="0dp"
-                    android:scaleType="fitCenter"
-                    android:tint="?android:attr/colorControlNormal"
-                    android:visibility="visible"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/calendar" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_dom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_sab"
-                    android:layout_alignStart="@+id/activity_add_task_chk_sab"
-                    android:layout_below="@+id/activity_add_task_chk_sab"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="31dp"
-                    android:layout_marginTop="14dp"
-                    android:text="Dom"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_sab"
-                    android:layout_width="59dp"
-                    android:layout_height="0dp"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_vier"
-                    android:layout_alignStart="@+id/activity_add_task_chk_vier"
-                    android:layout_below="@+id/activity_add_task_chk_vier"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginRight="150dp"
-                    android:text="Sáb"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_vier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/activity_add_task_chk_mar"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="144dp"
-                    android:layout_marginTop="0dp"
-                    android:text="Viern"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/activity_add_task_chk_sab"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_add_task_chk_juev"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_juev"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_mierc"
-                    android:layout_alignStart="@+id/activity_add_task_chk_mierc"
-                    android:layout_below="@+id/activity_add_task_chk_mierc"
-                    android:layout_marginRight="55dp"
-                    android:layout_marginTop="14dp"
-                    android:text="Juev"
-                    android:textSize="14sp"
-                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_dom"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_mierc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_mar"
-                    android:layout_alignStart="@+id/activity_add_task_chk_mar"
-                    android:layout_below="@+id/activity_add_task_chk_mar"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="26dp"
-                    android:layout_marginRight="8dp"
-                    android:text="Mierc"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0.046"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_sab" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_mar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/activity_add_task_chk_lun"
-                    android:layout_alignStart="@+id/activity_add_task_chk_lun"
-                    android:layout_below="@+id/activity_add_task_chk_lun"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="28dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="0dp"
-                    android:text="Mar"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/activity_add_task_chk_mierc"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_vier"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_add_task_chk_lun"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <CheckBox
-                    android:id="@+id/activity_add_task_chk_lun"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="28dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="11dp"
-                    android:checked="false"
-                    android:text="Lun"
-                    android:textSize="14sp"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_chk_juev"
-                    app:layout_constraintTop_toBottomOf="@+id/imageButton" />
-
-            </android.support.constraint.ConstraintLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_view_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/card_view"
-                android:layout_margin="@dimen/fab_margin">
-
-                <LinearLayout
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_margin="@dimen/fab_margin"
+                    android:padding="@dimen/fab_margin"
+                    android:paddingBottom="@dimen/fab_margin"
+                    android:paddingTop="@dimen/fab_margin">
 
-                    <android.support.constraint.ConstraintLayout
+
+                    <TableLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
-                        <Switch
-                            android:id="@+id/activity_add_task_switch"
-                            android:layout_width="0dp"
-                            android:layout_height="24dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginTop="16dp"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/textView1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginBottom="16dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginTop="16dp"
-                            android:text="Alarma"
-                            android:visibility="visible"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                        <ImageButton
-                            android:id="@+id/activity_add_task_reminder2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="21dp"
-                            android:layout_marginLeft="26dp"
-                            android:layout_marginStart="26dp"
-                            android:layout_marginTop="16dp"
-                            android:adjustViewBounds="true"
-                            android:background="@android:color/transparent"
-                            android:cropToPadding="true"
-                            android:elevation="0dp"
-                            android:scaleType="fitCenter"
-                            android:tint="?android:attr/colorControlNormal"
-                            android:visibility="visible"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/alarm"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            android:layout_marginBottom="16dp" />
+                                <TextView
+                                    android:id="@+id/textView"
+                                    android:layout_width="54dp"
+                                    android:layout_height="19dp"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginRight="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginTop="16dp"
+                                    android:text="Repetir"
+                                    android:textSize="12sp"
+                                    app:layout_constraintLeft_toRightOf="@+id/imageButton"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                    </android.support.constraint.ConstraintLayout>
+                                <ImageButton
+                                    android:id="@+id/imageButton"
+                                    android:layout_width="17dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginLeft="26dp"
+                                    android:layout_marginStart="26dp"
+                                    android:layout_marginTop="16dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@android:color/transparent"
+                                    android:cropToPadding="true"
+                                    android:elevation="0dp"
+                                    android:scaleType="fitCenter"
+                                    android:tint="?android:attr/colorControlNormal"
+                                    android:visibility="visible"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/calendar" />
 
-                    <TextView
-                        android:id="@+id/activity_add_task_reminder"
+                            </android.support.constraint.ConstraintLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_lun"
+                                android:layout_width="wrap_content"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="45dp"
+                                android:layout_marginTop="8dp"
+                                android:checked="false"
+                                android:text="Lun"
+                                android:textSize="12sp" />
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_mierc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Mierc"
+                                android:textSize="12sp" />
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_vier"
+                                android:layout_width="wrap_content"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Viern"
+                                android:textSize="12sp" />
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_dom"
+                                android:layout_width="wrap_content"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Dom"
+                                android:textSize="12sp"
+                                app:layout_constraintVertical_bias="0.057" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_mar"
+                                android:layout_width="57dp"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="45dp"
+                                android:layout_marginStart="45dp"
+                                android:text="Mar"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent" />
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_juev"
+                                android:layout_width="57dp"
+                                android:layout_height="25dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:stretchColumns="2"
+                                android:text="Juev"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent" />
+
+                            <CheckBox
+                                android:id="@+id/activity_add_task_chk_sab"
+                                android:layout_width="59dp"
+                                android:layout_height="25dp"
+                                android:layout_alignLeft="@+id/activity_add_task_chk_vier"
+                                android:layout_alignStart="@+id/activity_add_task_chk_vier"
+                                android:layout_below="@+id/activity_add_task_chk_vier"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:text="Sáb"
+                                android:textSize="12sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_chk_juev" />
+                        </TableRow>
+
+                    </TableLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/card_view"
+                    android:layout_margin="@dimen/fab_margin">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginLeft="102dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="8dp"
-                        android:paddingTop="5dp"
-                        android:text="Recordatorio"
-                        android:textSize="24sp"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView1"
-                        app:layout_constraintVertical_bias="1.0" />
+                        android:baselineAligned="false"
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
+                            <Switch
+                                android:id="@+id/activity_add_task_switch_2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="12dp"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="16dp"
+                                android:text="Cronómetro"
+                                android:textSize="12sp"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageButton
+                                android:id="@+id/activity_add_task_reminder2"
+                                android:layout_width="17dp"
+                                android:layout_height="18dp"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginLeft="26dp"
+                                android:layout_marginStart="26dp"
+                                android:layout_marginTop="16dp"
+                                android:adjustViewBounds="true"
+                                android:background="@android:color/transparent"
+                                android:cropToPadding="true"
+                                android:elevation="0dp"
+                                android:scaleType="fitCenter"
+                                android:tint="?android:attr/colorControlNormal"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/timer" />
+
+                        </android.support.constraint.ConstraintLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:id="@+id/activity_add_task_hours_lbl"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginLeft="52dp"
+                                    android:layout_weight="1"
+                                    android:text="Horas:"
+                                    android:textSize="12sp"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.533" />
+
+                                <EditText
+                                    android:id="@+id/activity_add_task_hours_txt"
+                                    android:layout_width="52dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="16dp"
+                                    android:ems="10"
+                                    android:hint="0"
+                                    android:inputType="number"
+                                    android:maxLength="2"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toRightOf="@+id/activity_add_task_hours_lbl"
+                                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_minutes_lbl" />
+
+                                <TextView
+                                    android:id="@+id/activity_add_task_minutes_lbl"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginRight="16dp"
+                                    android:layout_weight="1"
+                                    android:text="Minutos:"
+                                    android:textSize="12sp"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_minutes_txt"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.533" />
+
+                                <EditText
+                                    android:id="@+id/activity_add_task_minutes_txt"
+                                    android:layout_width="52dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:layout_marginRight="76dp"
+                                    android:ems="10"
+                                    android:hint="0"
+                                    android:inputType="number"
+                                    android:maxLength="2"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+
+                            </android.support.constraint.ConstraintLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/card_view"
+                    android:layout_margin="@dimen/fab_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Switch
+                                android:id="@+id/activity_add_task_switch"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginTop="12dp"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="16dp"
+                                android:text="Alarma"
+                                android:textSize="12sp"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.666"
+                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder3"
+                                android:layout_marginLeft="8dp"
+                                app:layout_constraintRight_toLeftOf="@+id/activity_add_task_switch"
+                                android:layout_marginRight="8dp"
+                                app:layout_constraintHorizontal_bias="0.025" />
+
+                            <ImageButton
+                                android:id="@+id/activity_add_task_reminder3"
+                                android:layout_width="17dp"
+                                android:layout_height="18dp"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginLeft="26dp"
+                                android:layout_marginStart="26dp"
+                                android:layout_marginTop="16dp"
+                                android:adjustViewBounds="true"
+                                android:background="@android:color/transparent"
+                                android:cropToPadding="true"
+                                android:elevation="0dp"
+                                android:scaleType="fitCenter"
+                                android:tint="?android:attr/colorControlNormal"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/alarm" />
+
+                        </android.support.constraint.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/activity_add_task_reminder"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="16dp"
+                            android:text="Recordatorio"
+                            android:textAlignment="center"
+                            android:textSize="14sp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
@@ -314,24 +461,25 @@
 
 
             android:id="@+id/activity_add_task_add_button"
-            android:layout_width="63dp"
-            android:layout_height="63dp"
+            android:layout_width="46dp"
+            android:layout_height="77dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:src="@drawable/check"
             android:tint="@android:color/background_light"
-            app:fabSize="normal"
+            app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:rippleColor="@android:color/background_light"
             app:srcCompat="@android:drawable/ic_input_add"
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1" />
+            tools:layout_constraintRight_creator="1"
+            tools:layout_editor_absoluteX="322dp" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -91,7 +91,8 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
                 "j, " + //6
                 "v, " + //7
                 "s, " + //8
-                "d " +//9
+                "d, " +//9
+                "chrono " +//10
                 "FROM Activity ";
 
         Cursor c = db.rawQuery(sql, null);
@@ -117,6 +118,9 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
                     if (i != str.size() - 1) {
                         text += ", ";
                     }
+                }
+                if (!c.isNull(10)) {
+                    text += "  - " + c.getInt(10) / 60 + " h " + c.getInt(10) % 60 + " m ";
                 }
                 data.add(text);
             }
