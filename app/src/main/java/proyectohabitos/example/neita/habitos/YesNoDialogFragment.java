@@ -7,19 +7,20 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-public class MyDialogFragment extends DialogFragment {
+public class YesNoDialogFragment extends DialogFragment {
     private Context mContext;
     private AlertDialog.Builder alertDialogBuilder;
     private boolean answer;
     private String title;
     private String message;
+    private int code;
     private MyDialogDialogListener listener;
 
     public interface MyDialogDialogListener {
-        void onFinishDialog(boolean ans);
+        void onFinishDialog(boolean ans, int code);
     }
 
-    public MyDialogFragment() {
+    public YesNoDialogFragment() {
 
     }
 
@@ -45,15 +46,16 @@ public class MyDialogFragment extends DialogFragment {
     }
 
 
-    public void setInfo(final MyDialogDialogListener listener, Context cont, String title, String message) {
+    public void setInfo(final MyDialogDialogListener listener, Context cont, String title, String message, int code) {
         this.mContext = cont;
         this.title = title;
         this.message = message;
         this.listener = listener;
+        this.code = code;
     }
 
     public void sendBackResult() {
-        this.listener.onFinishDialog(answer);
+        this.listener.onFinishDialog(answer, code);
         dismiss();
     }
 }

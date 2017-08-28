@@ -23,11 +23,13 @@ import java.util.Date;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 
-public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDialogListener {
+public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
     ArrayList<String> list;
     FloatingActionButton btn;
     private int posit;
+    private static final int DELETE_TASK = 1;
+    private static final int START_TASK = 2;
 
     @Override
     public void onResume() { //actualiza después de editar
@@ -140,16 +142,22 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
 
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle() == "Iniciar") {
-            Intent i = new Intent(getActivity(), Chronometer.class);
-            startActivityForResult(i, 1);
+            // Intent i = new Intent(getActivity(), Chronometer.class);
+            //startActivityForResult(i, 1);
+
+            YesNoDialogFragment dial = new YesNoDialogFragment();
+            dial.setInfo(this, this.getContext(), "Iniciar", "¿Haz realizado esta actividad hoy?", START_TASK);
+            dial.show(getFragmentManager(), "MyDialog");
+            upload();
+
         } else if (item.getTitle() == "Editar") {
             Intent i = new Intent(getActivity(), AddTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
         } else if (item.getTitle() == "Eliminar") {
-            MyDialogFragment dial = new MyDialogFragment();
-            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?");
+            YesNoDialogFragment dial = new YesNoDialogFragment();
+            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
         } else {
@@ -168,11 +176,18 @@ public class TodayTasks extends Fragment implements MyDialogFragment.MyDialogDia
     }
 
     @Override
-    public void onFinishDialog(boolean ans) {
+    public void onFinishDialog(boolean ans, int code) {
         if (ans == true) {
-            delete(posit);
-            Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
-            upload();
+            if (code == DELETE_TASK) {
+                delete(posit);
+                Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
+                upload();
+            }
+            if (code == START_TASK) {
+
+                Toast.makeText(getContext(), "La actividad se ha marcado como realizada", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 }
