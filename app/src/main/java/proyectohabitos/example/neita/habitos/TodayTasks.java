@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,8 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
     FloatingActionButton btn;
     private int posit;
     private static final int DELETE_TASK = 1;
-    private static final int START_TASK = 2;
+    private static final int CHECK_TASK = 2;
+    private static final int UNCHECK_TASK = 3;
 
     @Override
     public void onResume() { //actualiza después de editar
@@ -81,23 +83,23 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
 
     private ArrayList<String> getActivities() {
         ArrayList<String> data = new ArrayList();
+        SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
-        BaseHelper helper = new BaseHelper(getContext(), "Demo", null, null);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String sql = "SELECT id, " + //0
-                "name," +//1
-                "reminder, " +//2
-                "l, " + //3
-                "m, " + //4
-                "x, " + //5
-                "j, " + //6
-                "v, " + //7
-                "s, " + //8
-                "d, " +//9
-                "chrono " +//10
-                "FROM Activity ";
-
-        Cursor c = db.rawQuery(sql, null);
+        Cursor c = db.rawQuery("SELECT a.id, " + //0
+                "a.name," +//1
+                "a.reminder, " +//2
+                "a.l, " + //3
+                "a.m, " + //4
+                "a.x, " + //5
+                "a.j, " + //6
+                "a.v, " + //7
+                "a.s, " + //8
+                "a.d, " +//9
+                "a.chrono, " +//10
+                "(SELECT COUNT(*)>0 " +
+                "FROM span s " +
+                "WHERE s.activity_id=a.id) " +//11
+                "FROM Activity a ", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
@@ -128,25 +130,43 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
-        db.close();
+        BaseHelper.tryClose(db);
         return data;
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+
+        SQLiteDatabase db = BaseHelper.getReadable(getContext());
+
+        Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
+                "FROM span " +
+                "WHERE activity_id=" + posit, null);
+
         menu.setHeaderTitle("Selecciona una Acción");
-        menu.add(0, v.getId(), 0, "Iniciar");
+
+        String msg = "";
+
+        if (c.moveToFirst()) {
+            msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+        }
+        menu.add(0, v.getId(), 0, msg);
         menu.add(0, v.getId(), 0, "Editar");
         menu.add(0, v.getId(), 0, "Eliminar");
     }
 
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle() == "Iniciar") {
+        if (item.getTitle() == "Marcar") {
             // Intent i = new Intent(getActivity(), Chronometer.class);
             //startActivityForResult(i, 1);
-
             YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Iniciar", "¿Haz realizado esta actividad hoy?", START_TASK);
+            dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
+            dial.show(getFragmentManager(), "MyDialog");
+            upload();
+
+        } else if (item.getTitle() == "Desmarcar") {
+            YesNoDialogFragment dial = new YesNoDialogFragment();
+            dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
 
@@ -167,12 +187,28 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
     }
 
     private void delete(int Id) {
-        BaseHelper helper = new BaseHelper(getContext(), "Demo", null, null);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
         String sql = "DELETE FROM activity WHERE id=" + Id;
         db.execSQL(sql);
-        db.close();
+        BaseHelper.tryClose(db);
+    }
+
+    private void checkTaskAsDone(int id) {
+        SQLiteDatabase db = BaseHelper.getWritable(getContext());
+        Format f = new SimpleDateFormat("YYYY-MM-dd");
+
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + f.format(new Date()) + "','" + f.format(new Date()) + "')";
+        db.execSQL(sql);
+        BaseHelper.tryClose(db);
+    }
+
+    private void uncheckTask(int Id) {
+        SQLiteDatabase db = BaseHelper.getWritable(getContext());
+
+        String sql = "DELETE FROM span WHERE activity_id=" + Id;
+        db.execSQL(sql);
+        BaseHelper.tryClose(db);
     }
 
     @Override
@@ -183,11 +219,14 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
                 Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
                 upload();
             }
-            if (code == START_TASK) {
-
-                Toast.makeText(getContext(), "La actividad se ha marcado como realizada", Toast.LENGTH_LONG).show();
+            if (code == CHECK_TASK) {
+                checkTaskAsDone(posit);
+                Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
             }
-
+            if (code == UNCHECK_TASK) {
+                uncheckTask(posit);
+                Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

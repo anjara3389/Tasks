@@ -32,7 +32,6 @@ public class CustomAdapter  extends ArrayAdapter<String> implements View.OnClick
         super(context, R.layout.img_row, data);
         this.dataSet = data;
         this.mContext=context;
-
     }
 
     @Override

@@ -167,8 +167,7 @@ public class AddTask extends AppCompatActivity {
                 throw new Exception("Seleccionar por lo menos un día");
             }
 
-            BaseHelper helper = new BaseHelper(this, "Demo", null, null);
-            SQLiteDatabase db = helper.getWritableDatabase();
+            SQLiteDatabase db = BaseHelper.getWritable(this);
 
             //content values es un contenedor de valores
             ContentValues c = new ContentValues();
@@ -190,7 +189,7 @@ public class AddTask extends AppCompatActivity {
                 db.update("activity", c, " id=" + id + " ", null);
             }
 
-            db.close();
+            BaseHelper.tryClose(db);
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
@@ -200,8 +199,7 @@ public class AddTask extends AppCompatActivity {
     }
 
     private void recoverData() {
-        BaseHelper helper = new BaseHelper(this, "Demo", null, null);
-        SQLiteDatabase db = helper.getReadableDatabase();
+        SQLiteDatabase db = BaseHelper.getReadable(this);
         String sql = "SELECT id," + //0
                 "name," +//1
                 "l, " + //2
@@ -237,7 +235,7 @@ public class AddTask extends AppCompatActivity {
                 txtMinutes.setText(chron % 60 + "");
             }
         }
-        db.close();
+        BaseHelper.tryClose(db);
     }
 
     public static class TimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {

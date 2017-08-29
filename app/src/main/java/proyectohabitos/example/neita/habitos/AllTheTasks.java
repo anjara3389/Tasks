@@ -11,13 +11,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapterAll;
 
 public class AllTheTasks extends Fragment {
@@ -76,13 +74,11 @@ public class AllTheTasks extends Fragment {
     private ArrayList<String> ListaPersonas() {
         ArrayList<String> datos = new ArrayList<String>();
 
-        BaseHelper helper = new BaseHelper(getContext(), "Demo", null, null);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String sql = "SELECT id," + //0
-                "name " +//1
-                "FROM Activity";
+        SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
-        Cursor c = db.rawQuery(sql, null);
+        Cursor c = db.rawQuery("SELECT id," + //0
+                "name " +//1
+                "FROM Activity", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
@@ -93,7 +89,7 @@ public class AllTheTasks extends Fragment {
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
-        db.close();
+        BaseHelper.tryClose(db);
         return datos;
 
     }
