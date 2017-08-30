@@ -18,7 +18,6 @@ import android.widget.Toast;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
@@ -26,7 +25,7 @@ import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
-    ArrayList<String> list;
+    ArrayList<LstTask> list;
     FloatingActionButton btn;
     private int posit;
     private static final int DELETE_TASK = 1;
@@ -53,7 +52,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                posit = Integer.parseInt(list.get(position).split(" ")[0]);
+                posit = list.get(position).getIdTask();
                 return false;
             }
         });
@@ -81,52 +80,41 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
         lvTasks.setAdapter(adapter);
     }
 
-    private ArrayList<String> getActivities() {
-        ArrayList<String> data = new ArrayList();
+    private ArrayList<LstTask> getActivities() {
+        ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
+              /*PARA EL DE TODAS LAS TAREAS
                 "a.l, " + //3
                 "a.m, " + //4
                 "a.x, " + //5
                 "a.j, " + //6
                 "a.v, " + //7
                 "a.s, " + //8
-                "a.d, " +//9
-                "a.chrono, " +//10
+                "a.d, " +//9*/
+                "a.chrono, " +//3
                 "(SELECT COUNT(*)>0 " +
                 "FROM span s " +
-                "WHERE s.activity_id=a.id) " +//11
+                "WHERE s.activity_id=a.id) " +//4
                 "FROM Activity a ", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
-
-                String text = c.getString(0) + " " + c.getString(1) + " A/"
-                        + (c.getLong(2) == 0 ? "" : f.format(new Date(c.getLong(2)))) + "  ";
-
-                ArrayList<String> str = new ArrayList(
+               /* PARA EL DE TODAS LAS TAREAS
+                ArrayList<String> days = new ArrayList(
                         Arrays.asList("Lun", "Mar", "Mier", "Juev", "Vier", "Sáb", "Dom"));
                 int k = 0;
                 for (int i = 3; i <= 9; i++) {
                     if (c.getInt(i) == 0) {
-                        str.remove(i - 3 - k);
+                        days.remove(i - 3 - k);
                         k++;
                     }
-                }
-                for (int i = 0; i < str.size(); i++) {
-                    text += str.get(i);
-                    if (i != str.size() - 1) {
-                        text += ", ";
-                    }
-                }
-                if (!c.isNull(10)) {
-                    text += "  - " + c.getInt(10) / 60 + " h " + c.getInt(10) % 60 + " m ";
-                }
-                data.add(text);
+                }*/
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), c.getInt(4) == 1);
+                data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
@@ -196,7 +184,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
 
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
-        Format f = new SimpleDateFormat("YYYY-MM-dd");
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
         String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + f.format(new Date()) + "','" + f.format(new Date()) + "')";
         db.execSQL(sql);
@@ -222,10 +210,12 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
             if (code == CHECK_TASK) {
                 checkTaskAsDone(posit);
                 Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
+                upload();
             }
             if (code == UNCHECK_TASK) {
                 uncheckTask(posit);
                 Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
+                upload();
             }
         }
     }

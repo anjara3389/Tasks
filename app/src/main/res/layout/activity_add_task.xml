@@ -467,7 +467,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:clickable="true"
-            android:src="@drawable/check"
+            android:src="@drawable/ok"
             android:tint="@android:color/background_light"
             app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"

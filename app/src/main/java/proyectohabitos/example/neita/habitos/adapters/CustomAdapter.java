@@ -10,15 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import proyectohabitos.example.neita.habitos.LstTask;
 import proyectohabitos.example.neita.habitos.R;
 
-/**
- * Created by Neita on 04/06/2017.
- */
+public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
-public class CustomAdapter  extends ArrayAdapter<String> implements View.OnClickListener {
-
-    private ArrayList<String> dataSet;
+    private ArrayList<LstTask> dataSet;
     Context mContext;
 
     // View lookup cache
@@ -28,10 +25,10 @@ public class CustomAdapter  extends ArrayAdapter<String> implements View.OnClick
         ImageView img;
     }
 
-    public CustomAdapter(ArrayList<String> data, Context context) {
+    public CustomAdapter(ArrayList<LstTask> data, Context context) {
         super(context, R.layout.img_row, data);
         this.dataSet = data;
-        this.mContext=context;
+        this.mContext = context;
     }
 
     @Override
@@ -56,8 +53,8 @@ public class CustomAdapter  extends ArrayAdapter<String> implements View.OnClick
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        String dataModel = getItem(position).substring(0,getItem(position).indexOf("A/"));
-        String dataModel2 = getItem(position).substring(getItem(position).indexOf("A/")+2);
+        String dataModel = getItem(position).getName();
+        String dataModel2 = getItem(position).getTextChrono() + (getItem(position).getChrono() != null && getItem(position).getReminder() != 0 ? " - " : "") + getItem(position).getTextReminder();
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
@@ -71,6 +68,8 @@ public class CustomAdapter  extends ArrayAdapter<String> implements View.OnClick
             viewHolder.txt1 = (TextView) convertView.findViewById(R.id.task_row_txt1);
             viewHolder.txt2 = (TextView) convertView.findViewById(R.id.task_row_txt2);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.task_row_img);
+
+            viewHolder.img.setImageResource(getItem(position).isDone() == false ? R.drawable.check : R.drawable.chech2);
 
             // result=convertView;
 
