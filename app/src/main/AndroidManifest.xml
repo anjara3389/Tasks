@@ -16,12 +16,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddTask" />
-        <activity android:name=".Reminder" />
         <activity android:name=".Chronometer" />
         <activity android:name=".Statistics" />
         <activity android:name=".WeeklyStatistics" />
         <activity android:name=".MonthlyStatistics" />
-        <activity android:name=".GlobalStatistics"></activity>
+        <activity android:name=".GlobalStatistics" />
+        <activity android:name=".NumPickersDialogFragment"></activity>
     </application>
 
 </manifest>

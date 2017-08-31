@@ -12,40 +12,71 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/activity_add_task_lbl_name"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/card_view"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/card_view"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginTop="23dp"
-            android:text="Nombre"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:backgroundTint="@color/colorPrimary"
+            android:elevation="40dp">
 
-        <EditText
-            android:id="@+id/activity_add_task_txt_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/activity_add_task_lbl_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="Nombre"
-            android:inputType="textPersonName"
-            android:textSize="30sp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_add_task_lbl_name"
-            tools:textSize="30sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/activity_add_task_lbl_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignLeft="@+id/card_view"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignStart="@+id/card_view"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="70dp"
+                    android:layout_weight="1"
+                    android:text="Actividad"
+                    android:textAllCaps="true"
+                    android:textColor="@color/cardview_light_background"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/activity_add_task_txt_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/activity_add_task_lbl_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="40dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/cardview_light_background"
+                        android:ems="10"
+                        android:hint="Tocar piano"
+                        android:inputType="textPersonName"
+                        android:textColor="@color/cardview_light_background"
+                        android:textColorHighlight="@color/cardview_shadow_start_color"
+                        android:textColorHint="?attr/colorButtonNormal"
+                        android:textSize="24sp"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/activity_add_task_lbl_name"
+                        tools:textSize="24sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -60,7 +91,9 @@
                     android:id="@+id/card_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/fab_margin"
+                    android:layout_margin="10dp"
+                    android:elevation="0dp"
+                    android:layout_gravity="top"
                     android:padding="@dimen/fab_margin"
                     android:paddingBottom="@dimen/fab_margin"
                     android:paddingTop="@dimen/fab_margin">
@@ -89,6 +122,7 @@
                                     android:layout_marginStart="8dp"
                                     android:layout_marginTop="16dp"
                                     android:text="Repetir"
+                                    android:textAllCaps="true"
                                     android:textSize="12sp"
                                     app:layout_constraintLeft_toRightOf="@+id/imageButton"
                                     app:layout_constraintRight_toRightOf="parent"
@@ -202,7 +236,7 @@
                                 android:layout_alignLeft="@+id/activity_add_task_chk_vier"
                                 android:layout_alignStart="@+id/activity_add_task_chk_vier"
                                 android:layout_below="@+id/activity_add_task_chk_vier"
-                                android:layout_marginBottom="8dp"
+                                android:layout_marginBottom="@dimen/fab_margin"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginStart="10dp"
                                 android:text="Sáb"
@@ -216,11 +250,14 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
+                    android:layout_gravity="top"
                     android:id="@+id/card_view_3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/card_view"
-                    android:layout_margin="@dimen/fab_margin">
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -254,6 +291,7 @@
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="16dp"
                                 android:text="Cronómetro"
+                                android:textAllCaps="true"
                                 android:textSize="12sp"
                                 android:visibility="visible"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -294,20 +332,36 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1">
 
+                                <ImageView
+                                    android:id="@+id/activity_Add_task_tim"
+                                    android:layout_width="13dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginBottom="16dp"
+                                    android:layout_marginLeft="53dp"
+                                    android:layout_marginRight="8dp"
+                                    android:adjustViewBounds="true"
+                                    android:scaleType="fitStart"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_hours_lbl"
+                                    app:srcCompat="@drawable/timer2" />
+
                                 <TextView
                                     android:id="@+id/activity_add_task_hours_lbl"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentTop="true"
-                                    android:layout_marginLeft="52dp"
+                                    android:layout_marginBottom="@dimen/fab_margin"
                                     android:layout_weight="1"
                                     android:text="Horas:"
+                                    android:textAllCaps="false"
                                     android:textSize="12sp"
                                     android:visibility="gone"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintVertical_bias="0.533" />
+                                    app:layout_constraintVertical_bias="1.0"
+                                    tools:layout_editor_absoluteX="77dp" />
 
                                 <EditText
                                     android:id="@+id/activity_add_task_hours_txt"
@@ -322,6 +376,7 @@
                                     android:maxLength="2"
                                     android:visibility="gone"
                                     app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintLeft_toRightOf="@+id/activity_add_task_hours_lbl"
                                     app:layout_constraintRight_toLeftOf="@+id/activity_add_task_minutes_lbl" />
 
@@ -330,6 +385,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentTop="true"
+                                    android:layout_marginBottom="@dimen/fab_margin"
                                     android:layout_marginRight="16dp"
                                     android:layout_weight="1"
                                     android:text="Minutos:"
@@ -338,14 +394,14 @@
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintRight_toLeftOf="@+id/activity_add_task_minutes_txt"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintVertical_bias="0.533" />
+                                    app:layout_constraintVertical_bias="1.0" />
 
                                 <EditText
                                     android:id="@+id/activity_add_task_minutes_txt"
                                     android:layout_width="52dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="8dp"
-                                    android:layout_marginRight="76dp"
+                                    android:layout_marginBottom="4dp"
+                                    android:layout_marginRight="52dp"
                                     android:ems="10"
                                     android:hint="0"
                                     android:inputType="number"
@@ -364,11 +420,14 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
+                    android:layout_gravity="top"
                     android:id="@+id/card_view_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/card_view"
-                    android:layout_margin="@dimen/fab_margin">
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -390,32 +449,34 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/textView1"
+                                android:id="@+id/activity_add_task_txt_alarm_tittle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
-                                android:layout_marginBottom="16dp"
+                                android:layout_marginBottom="0dp"
                                 android:layout_marginEnd="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="16dp"
+                                android:paddingBottom="16dp"
                                 android:text="Alarma"
+                                android:textAllCaps="true"
                                 android:textSize="12sp"
                                 android:visibility="visible"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.666"
+                                app:layout_constraintHorizontal_bias="0.025"
                                 app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder3"
-                                android:layout_marginLeft="8dp"
                                 app:layout_constraintRight_toLeftOf="@+id/activity_add_task_switch"
-                                android:layout_marginRight="8dp"
-                                app:layout_constraintHorizontal_bias="0.025" />
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.666" />
 
                             <ImageButton
                                 android:id="@+id/activity_add_task_reminder3"
                                 android:layout_width="17dp"
                                 android:layout_height="18dp"
-                                android:layout_marginBottom="16dp"
-                                android:layout_marginLeft="26dp"
+                                android:layout_marginBottom="0dp"
+                                android:layout_marginLeft="25dp"
                                 android:layout_marginStart="26dp"
                                 android:layout_marginTop="16dp"
                                 android:adjustViewBounds="true"
@@ -428,20 +489,57 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/alarm" />
+                                app:srcCompat="@drawable/alarm"
+                                app:layout_constraintVertical_bias="0.0" />
 
                         </android.support.constraint.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/activity_add_task_reminder"
+                        <android.support.constraint.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginBottom="16dp"
-                            android:text="Recordatorio"
-                            android:textAlignment="center"
-                            android:textSize="14sp"
-                            android:visibility="gone" />
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/activity_add_task_ring"
+                                android:layout_width="16dp"
+                                android:layout_height="14dp"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginLeft="54dp"
+                                android:layout_marginTop="8dp"
+                                android:adjustViewBounds="true"
+                                android:cropToPadding="true"
+                                android:paddingBottom="3dp"
+                                android:paddingTop="0dp"
+                                android:scaleType="fitCenter"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="1.0"
+                                app:srcCompat="@drawable/bell"
+                                tools:layout_editor_absoluteX="49dp"
+                                tools:layout_editor_absoluteY="6dp" />
+
+                            <TextView
+                                android:id="@+id/activity_add_task_reminder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginBottom="16dp"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginTop="0dp"
+                                android:foregroundGravity="fill"
+                                android:paddingBottom="0dp"
+                                android:singleLine="false"
+                                android:text="Recordatorio"
+                                android:textAlignment="viewStart"
+                                android:textColor="@android:color/background_dark"
+                                android:textSize="14sp"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_ring"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="1.0" />
+                        </android.support.constraint.ConstraintLayout>
 
                     </LinearLayout>
 
@@ -461,17 +559,16 @@
 
 
             android:id="@+id/activity_add_task_add_button"
-            android:layout_width="46dp"
-            android:layout_height="77dp"
+            android:layout_width="68dp"
+            android:layout_height="46dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="6dp"
             android:clickable="true"
             android:src="@drawable/ok"
             android:tint="@android:color/background_light"
             app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:rippleColor="@android:color/background_light"
@@ -479,7 +576,7 @@
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
-            tools:layout_editor_absoluteX="322dp" />
+            app:layout_constraintHorizontal_bias="0.952" />
 
     </android.support.constraint.ConstraintLayout>
 
