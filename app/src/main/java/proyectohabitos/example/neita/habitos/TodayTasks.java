@@ -27,6 +27,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
     private ListView lvTasks;
     ArrayList<LstTask> list;
     FloatingActionButton btn;
+    private LstTask task;
     private int posit;
     private static final int DELETE_TASK = 1;
     private static final int CHECK_TASK = 2;
@@ -53,6 +54,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 posit = list.get(position).getIdTask();
+                task = list.get(position);
                 return false;
             }
         });
@@ -136,7 +138,11 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
         String msg = "";
 
         if (c.moveToFirst()) {
-            msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+            if (task.getChrono() == null) {
+                msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+            } else {
+                msg = "Iniciar";
+            }
         }
         menu.add(0, v.getId(), 0, msg);
         menu.add(0, v.getId(), 0, "Editar");
@@ -145,19 +151,18 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
 
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle() == "Marcar") {
-            // Intent i = new Intent(getActivity(), Chronometer.class);
-            //startActivityForResult(i, 1);
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
+        } else if (item.getTitle() == "Iniciar") {
+            Intent i = new Intent(getActivity(), Chronometer.class);
+            startActivityForResult(i, 1);
             upload();
-
         } else if (item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
-
         } else if (item.getTitle() == "Editar") {
             Intent i = new Intent(getActivity(), AddTask.class);
             i.putExtra("id", posit);
@@ -174,10 +179,10 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
         return true;
     }
 
-    private void delete(int Id) {
+    private void delete(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "DELETE FROM activity WHERE id=" + Id;
+        String sql = "DELETE FROM activity WHERE id=" + id;
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

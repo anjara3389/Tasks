@@ -3,8 +3,8 @@ package proyectohabitos.example.neita.habitos;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.NumberPicker;
 
@@ -42,6 +42,9 @@ public class NumPickersDialogFragment extends DialogFragment {
                 .setNegativeButton("CANCELAR",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                ans = false;
+                                AddTask act = (AddTask) getActivity();
+                                act.onFinishNumbersDialog(ans, -1, -1);
                             }
                         }
                 )

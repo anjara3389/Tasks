@@ -123,8 +123,6 @@ public class AddTask extends AppCompatActivity {
                 if (isChecked) {
                     NumPickersDialogFragment numPicksDialog = new NumPickersDialogFragment();
                     numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
-                    chrono.setVisibility(View.VISIBLE);
-                    imgTemp.setVisibility(View.VISIBLE);
                 } else {
                     chrono.setText("");
                     chrono.setVisibility(View.GONE);
@@ -233,6 +231,8 @@ public class AddTask extends AppCompatActivity {
 
     public void onFinishNumbersDialog(boolean ans, int hrs, int min) {
         if (ans == true) {
+            chrono.setVisibility(View.VISIBLE);
+            imgTemp.setVisibility(View.VISIBLE);
             chron = (hrs * 60) + min;
             chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
         } else {
