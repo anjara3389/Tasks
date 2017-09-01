@@ -3,9 +3,7 @@ package proyectohabitos.example.neita.habitos.Task;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +31,7 @@ import proyectohabitos.example.neita.habitos.R;
 
 public class FrmTask extends AppCompatActivity {
 
+    Task obj;
     EditText etName;
     CheckBox lun, mar, mier, juev, vier, sab, dom;
     ImageButton reminderButton;
@@ -52,7 +51,6 @@ public class FrmTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_task);
 
-
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
         btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
         lun = (CheckBox) findViewById(R.id.activity_add_task_chk_lun);
@@ -71,15 +69,12 @@ public class FrmTask extends AppCompatActivity {
         imgRing = (ImageView) findViewById(R.id.activity_add_task_ring);
         imgTemp = (ImageView) findViewById(R.id.activity_add_task_image_chrono);
 
-
-
         Bundle bundle = getIntent().getExtras();
-        id = bundle.getInt("id");
         isNew = bundle.getBoolean("isNew");
 
-        recoverData();
-
         if (!isNew) {
+            id = bundle.getInt("id");
+            recoverData();
             if (remind != 0) {
                 switchRemind.setChecked(true);
                 imgRing.setVisibility(View.VISIBLE);
@@ -89,7 +84,6 @@ public class FrmTask extends AppCompatActivity {
             if (chron != null) {
                 switchChrono.setChecked(true);
                 chrono.setVisibility(View.VISIBLE);
-                ;
                 imgTemp.setVisibility(View.VISIBLE);
                 chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
             }
@@ -101,7 +95,7 @@ public class FrmTask extends AppCompatActivity {
                 if (etName.getText().toString().trim().equals("")) {
                     Toast.makeText(FrmTask.this, "Escriba nombre", Toast.LENGTH_LONG).show();
                 } else {
-                    save(etName.getText().toString());
+                    save();
                 }
             }
         });
@@ -136,7 +130,6 @@ public class FrmTask extends AppCompatActivity {
                         chron = null;
                         clean = true;
                     }
-
                 }
             }
         });
@@ -158,34 +151,32 @@ public class FrmTask extends AppCompatActivity {
         getSupportActionBar().hide();
     }
 
-    private void save(String name) {
+    private void save() {
         try {
             if (!lun.isChecked() && !mar.isChecked() && !mier.isChecked() && !juev.isChecked() && !vier.isChecked() && !sab.isChecked() && !dom.isChecked()) {
                 throw new Exception("Seleccionar por lo menos un día");
             }
-
             SQLiteDatabase db = BaseHelper.getWritable(this);
-
-            //content values es un contenedor de valores
-            ContentValues c = new ContentValues();
-            c.put("name", name);
-            c.put("l", lun.isChecked());
-            c.put("m", mar.isChecked());
-            c.put("x", mier.isChecked());
-            c.put("j", juev.isChecked());
-            c.put("v", vier.isChecked());
-            c.put("s", sab.isChecked());
-            c.put("d", dom.isChecked());
-            c.put("since_date", new Date().getTime());
-            c.put("reminder", remind);
-            c.put("chrono", (!switchChrono.isChecked() || chron == null ? null : chron));
             if (isNew) {
-                db.insert("activity", null, c);
-            } else {
-                db.update("activity", c, " id=" + id + " ", null);
+                obj = new Task();
             }
+            obj.name = etName.getText().toString();
+            obj.l = lun.isChecked();
+            obj.m = mar.isChecked();
+            obj.x = mier.isChecked();
+            obj.j = juev.isChecked();
+            obj.v = vier.isChecked();
+            obj.s = sab.isChecked();
+            obj.d = dom.isChecked();
+            obj.sinceDate = new Date().getTime();
+            obj.reminder = remind;
+            obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
-            BaseHelper.tryClose(db);
+            if (isNew) {
+                obj.insert(db);
+            } else {
+                obj.update(db, id);
+            }
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
@@ -196,41 +187,24 @@ public class FrmTask extends AppCompatActivity {
 
     private void recoverData() {
         SQLiteDatabase db = BaseHelper.getReadable(this);
-        String sql = "SELECT id," + //0
-                "name," +//1
-                "l, " + //2
-                "m, " + //3
-                "x, " + //4
-                "j, " + //5
-                "v, " + //6
-                "s, " + //7
-                "d, " + //8
-                "reminder, " +//9
-                "chrono " +//10
-                "FROM activity " +
-                "WHERE id=" + id;
+        obj = new Task().select(db, id);
 
-        Cursor c = db.rawQuery(sql, null);
-        if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
-        {
-            SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
 
-            etName.setText(c.getString(1));
-            lun.setChecked(c.getInt(2) == 1);
-            mar.setChecked(c.getInt(3) == 1);
-            mier.setChecked(c.getInt(4) == 1);
-            juev.setChecked(c.getInt(5) == 1);
-            vier.setChecked(c.getInt(6) == 1);
-            sab.setChecked(c.getInt(7) == 1);
-            dom.setChecked(c.getInt(8) == 1);
-            reminder.setText(f.format(new Date(c.getLong(9))));
-            remind = c.getLong(9);
-            chron = c.isNull(10) ? null : c.getInt(10);
-            if (chron != null) {
-                chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
-            }
+        etName.setText(obj.name);
+        lun.setChecked(obj.l);
+        mar.setChecked(obj.m);
+        mier.setChecked(obj.x);
+        juev.setChecked(obj.j);
+        vier.setChecked(obj.v);
+        sab.setChecked(obj.s);
+        dom.setChecked(obj.d);
+        reminder.setText(f.format(new Date(obj.reminder)));
+        remind = obj.reminder;
+        chron = obj.chrono;
+        if (chron != null) {
+            chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
         }
-        BaseHelper.tryClose(db);
     }
 
     public void onFinishNumbersDialog(boolean ans, int hrs, int min) {

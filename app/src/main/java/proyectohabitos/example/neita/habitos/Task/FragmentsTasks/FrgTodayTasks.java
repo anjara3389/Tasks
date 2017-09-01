@@ -26,6 +26,7 @@ import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
+import proyectohabitos.example.neita.habitos.Task.Task;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 
@@ -132,24 +133,19 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
-        SQLiteDatabase db = BaseHelper.getReadable(getContext());
-
-        Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
-                "FROM span " +
-                "WHERE activity_id=" + posit, null);
-
         menu.setHeaderTitle("Selecciona una Acción");
 
         String msg = "";
-
-        if (c.moveToFirst()) {
-            if (task.getChrono() == null) {
+        if (task.getChrono() == null) {
+            SQLiteDatabase db = BaseHelper.getReadable(getContext());
+            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit, null);
+            if (c.moveToFirst()) {
                 msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
-            } else {
-                msg = "Iniciar";
             }
+        } else {
+            msg = "Iniciar";
         }
+
         menu.add(0, v.getId(), 0, msg);
         menu.add(0, v.getId(), 0, "Editar");
         menu.add(0, v.getId(), 0, "Eliminar");
@@ -185,14 +181,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         return true;
     }
 
-    private void delete(int id) {
-        SQLiteDatabase db = BaseHelper.getWritable(getContext());
-
-        String sql = "DELETE FROM activity WHERE id=" + id;
-        db.execSQL(sql);
-        BaseHelper.tryClose(db);
-    }
-
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
         Format f = new SimpleDateFormat("yyyy-MM-dd");
@@ -214,7 +202,8 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     public void onFinishDialog(boolean ans, int code) {
         if (ans == true) {
             if (code == DELETE_TASK) {
-                delete(posit);
+                SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
+                Task.delete(posit, db);
                 Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
                 upload();
             }
