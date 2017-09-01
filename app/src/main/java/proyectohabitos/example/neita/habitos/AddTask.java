@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
@@ -23,8 +22,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,15 +29,15 @@ import java.util.GregorianCalendar;
 
 public class AddTask extends AppCompatActivity {
 
-    EditText etName, txtHours, txtMinutes;
+    EditText etName;
     CheckBox lun, mar, mier, juev, vier, sab, dom;
     ImageButton reminderButton;
-    static TextView reminder, lblHours, lblMinutes;
+    static TextView reminder, chrono;
     boolean isNew;
     int id;
     static long remind;
     Integer chron;
-    static ImageView ring, temp;
+    static ImageView imgRing, imgTemp;
     CardView cardView;
     static Switch switchRemind, switchChrono;
     FloatingActionButton btn;
@@ -53,8 +50,6 @@ public class AddTask extends AppCompatActivity {
 
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
-        txtHours = (EditText) findViewById(R.id.activity_add_task_hours_txt);
-        txtMinutes = (EditText) findViewById(R.id.activity_add_task_minutes_txt);
         btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
         lun = (CheckBox) findViewById(R.id.activity_add_task_chk_lun);
         mar = (CheckBox) findViewById(R.id.activity_add_task_chk_mar);
@@ -65,13 +60,12 @@ public class AddTask extends AppCompatActivity {
         dom = (CheckBox) findViewById(R.id.activity_add_task_chk_dom);
         reminderButton = (ImageButton) findViewById(R.id.activity_add_task_reminder2);
         reminder = (TextView) findViewById(R.id.activity_add_task_reminder);
-        lblHours = (TextView) findViewById(R.id.activity_add_task_hours_lbl);
-        lblMinutes = (TextView) findViewById(R.id.activity_add_task_minutes_lbl);
+        chrono = (TextView) findViewById(R.id.activity_add_task_chrono);
         cardView = (CardView) findViewById(R.id.card_view_2);
         switchRemind = (Switch) findViewById(R.id.activity_add_task_switch);
         switchChrono = (Switch) findViewById(R.id.activity_add_task_switch_2);
-        ring = (ImageView) findViewById(R.id.activity_add_task_ring);
-        temp = (ImageView) findViewById(R.id.activity_Add_task_tim);
+        imgRing = (ImageView) findViewById(R.id.activity_add_task_ring);
+        imgTemp = (ImageView) findViewById(R.id.activity_add_task_image_chrono);
 
 
 
@@ -84,20 +78,16 @@ public class AddTask extends AppCompatActivity {
         if (!isNew) {
             if (remind != 0) {
                 switchRemind.setChecked(true);
-                ring.setVisibility(View.VISIBLE);
+                imgRing.setVisibility(View.VISIBLE);
                 reminder.setVisibility(View.VISIBLE);
                 clean = false;
             }
             if (chron != null) {
                 switchChrono.setChecked(true);
-                txtHours.setVisibility(View.VISIBLE);
-                txtMinutes.setVisibility(View.VISIBLE);
-                lblHours.setVisibility(View.VISIBLE);
-                lblMinutes.setVisibility(View.VISIBLE);
-                temp.setVisibility(View.VISIBLE);
-                txtHours.setText(chron / 60 + "");
-                txtMinutes.setText(chron % 60 + "");
-
+                chrono.setVisibility(View.VISIBLE);
+                ;
+                imgTemp.setVisibility(View.VISIBLE);
+                chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
             }
         }
 
@@ -119,10 +109,9 @@ public class AddTask extends AppCompatActivity {
                     mTimePicker.show(getFragmentManager(), "Recordatorio");
                 } else {
                     remind = 0;
-                    ring.setVisibility(View.GONE);
+                    imgRing.setVisibility(View.GONE);
                     reminder.setText("");
                     reminder.setVisibility(View.GONE);
-
                 }
             }
         });
@@ -133,20 +122,13 @@ public class AddTask extends AppCompatActivity {
 
                 if (isChecked) {
                     NumPickersDialogFragment numPicksDialog = new NumPickersDialogFragment();
-                    numPicksDialog.show(getSupportFragmentManager(), "dial_frg_num_pickers");
-                    txtHours.setVisibility(View.VISIBLE);
-                    txtMinutes.setVisibility(View.VISIBLE);
-                    lblHours.setVisibility(View.VISIBLE);
-                    lblMinutes.setVisibility(View.VISIBLE);
-                    temp.setVisibility(View.VISIBLE);
+                    numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
+                    chrono.setVisibility(View.VISIBLE);
+                    imgTemp.setVisibility(View.VISIBLE);
                 } else {
-                    txtHours.setText("");
-                    txtHours.setVisibility(View.GONE);
-                    txtMinutes.setText("");
-                    txtMinutes.setVisibility(View.GONE);
-                    lblHours.setVisibility(View.GONE);
-                    lblMinutes.setVisibility(View.GONE);
-                    temp.setVisibility(View.GONE);
+                    chrono.setText("");
+                    chrono.setVisibility(View.GONE);
+                    imgTemp.setVisibility(View.GONE);
 
                     if (isNew || (!isNew && clean == false)) {
                         chron = null;
@@ -164,23 +146,18 @@ public class AddTask extends AppCompatActivity {
                 mTimePicker.show(getFragmentManager(), "Select time");
             }
         });
+        chrono.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NumPickersDialogFragment numPicksDialog = new NumPickersDialogFragment();
+                numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
+            }
+        });
         getSupportActionBar().hide();
     }
 
     private void save(String name) {
         try {
-            if (txtHours.getText().toString().trim().isEmpty()) {
-                txtHours.setText(0 + "");
-            }
-            if (txtMinutes.getText().toString().trim().isEmpty()) {
-                txtMinutes.setText(0 + "");
-            }
-            if ((Integer.parseInt(txtHours.getText().toString()) > 24)) {
-                throw new Exception("Las horas no pueden ser mayores a 24");
-            }
-            if ((Integer.parseInt(txtMinutes.getText().toString()) > 59)) {
-                throw new Exception("Los minutos no pueden ser mayores a 59");
-            }
             if (!lun.isChecked() && !mar.isChecked() && !mier.isChecked() && !juev.isChecked() && !vier.isChecked() && !sab.isChecked() && !dom.isChecked()) {
                 throw new Exception("Seleccionar por lo menos un día");
             }
@@ -199,8 +176,7 @@ public class AddTask extends AppCompatActivity {
             c.put("d", dom.isChecked());
             c.put("since_date", new Date().getTime());
             c.put("reminder", remind);
-            c.put("chrono", (!switchChrono.isChecked() || (Integer.parseInt(txtHours.getText().toString()) == 0 && Integer.parseInt(txtMinutes.getText().toString()) == 0))
-                    ? null : (Integer.parseInt(txtHours.getText().toString()) * 60) + (Integer.parseInt(txtMinutes.getText().toString())));
+            c.put("chrono", (!switchChrono.isChecked() || chron == null ? null : chron));
             if (isNew) {
                 db.insert("activity", null, c);
             } else {
@@ -249,17 +225,18 @@ public class AddTask extends AppCompatActivity {
             remind = c.getLong(9);
             chron = c.isNull(10) ? null : c.getInt(10);
             if (chron != null) {
-                txtHours.setText(chron / 60 + "");
-                txtMinutes.setText(chron % 60 + "");
+                chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
             }
         }
         BaseHelper.tryClose(db);
     }
 
-
-    public void onFinishDialog(boolean ans, int hrs, int min) {
+    public void onFinishNumbersDialog(boolean ans, int hrs, int min) {
         if (ans == true) {
-
+            chron = (hrs * 60) + min;
+            chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
+        } else {
+            switchChrono.setChecked(false);
         }
     }
 
@@ -286,7 +263,7 @@ public class AddTask extends AppCompatActivity {
             remind = d.getTime();
             reminder.setText(df.format(d));
             if (remind != 0) {
-                ring.setVisibility(View.VISIBLE);
+                imgRing.setVisibility(View.VISIBLE);
                 reminder.setVisibility(View.VISIBLE);
             }
         }

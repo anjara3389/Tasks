@@ -2,19 +2,11 @@ package proyectohabitos.example.neita.habitos;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.NumberPicker;
-
-import proyectohabitos.example.neita.habitos.AddTask;
 
 public class NumPickersDialogFragment extends DialogFragment {
 
@@ -22,7 +14,6 @@ public class NumPickersDialogFragment extends DialogFragment {
     private NumberPicker hrs;
     private NumberPicker min;
     private int hours, minutes;
-    private Context ctx;
     private boolean ans;
 
 
@@ -67,23 +58,14 @@ public class NumPickersDialogFragment extends DialogFragment {
                         hours = hrs.getValue();
                         minutes = min.getValue();
                         ans = true;
-                        sendBackResult();
+                        AddTask act = (AddTask) getActivity();
+                        act.onFinishNumbersDialog(ans, hours, minutes);
                         dlg.dismiss();
                     }
                 });
             }
         });
         return dlg;
-    }
-
-    public void setContext(Context ctx) {
-        this.ctx = ctx;
-    }
-
-
-    public void sendBackResult() {
-        //ctx.onfinishdialog(ans,hours,minutes);
-        dismiss();
     }
 
 }
