@@ -1,10 +1,13 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Task;
 
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/*
+Clase que representa a las filas de la lista de tareas
+ */
 public class LstTask {
     private Integer idTask;
     private String name;

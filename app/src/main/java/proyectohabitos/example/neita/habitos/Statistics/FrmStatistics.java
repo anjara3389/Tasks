@@ -1,15 +1,19 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Statistics;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-public class Statistics extends AppCompatActivity {
+import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Statistics.Fragments.GlobalStatistics;
+import proyectohabitos.example.neita.habitos.Statistics.Fragments.MonthlyStatistics;
+import proyectohabitos.example.neita.habitos.Statistics.Fragments.WeeklyStatistics;
+
+public class FrmStatistics extends AppCompatActivity {
 
     DemoCollectionPagerAdapterSta mDemoCollectionPagerAdapter;
     ViewPager mViewPager;
@@ -17,7 +21,7 @@ public class Statistics extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         final ActionBar actionBar = getSupportActionBar();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_statistics);
+        setContentView(R.layout.frm_statistics);
 
 
         mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapterSta(getSupportFragmentManager());

@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Task.FragmentsTasks;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,10 +20,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
+import proyectohabitos.example.neita.habitos.FrmChronometer;
+import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Task.FrmTask;
+import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 
-public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
+public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
     ArrayList<LstTask> list;
     FloatingActionButton btn;
@@ -62,7 +68,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), AddTask.class);
+                Intent i = new Intent(getActivity(), FrmTask.class);
                 i.putExtra("isNew", true);
                 startActivityForResult(i, 1);
             }
@@ -155,7 +161,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
             dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
         } else if (item.getTitle() == "Iniciar") {
-            Intent i = new Intent(getActivity(), Chronometer.class);
+            Intent i = new Intent(getActivity(), FrmChronometer.class);
             startActivityForResult(i, 1);
             upload();
         } else if (item.getTitle() == "Desmarcar") {
@@ -164,7 +170,7 @@ public class TodayTasks extends Fragment implements YesNoDialogFragment.MyDialog
             dial.show(getFragmentManager(), "MyDialog");
             upload();
         } else if (item.getTitle() == "Editar") {
-            Intent i = new Intent(getActivity(), AddTask.class);
+            Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);

@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Task;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -27,7 +27,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class AddTask extends AppCompatActivity {
+import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
+import proyectohabitos.example.neita.habitos.R;
+
+public class FrmTask extends AppCompatActivity {
 
     EditText etName;
     CheckBox lun, mar, mier, juev, vier, sab, dom;
@@ -46,7 +50,7 @@ public class AddTask extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_task);
+        setContentView(R.layout.frm_task);
 
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
@@ -95,7 +99,7 @@ public class AddTask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (etName.getText().toString().trim().equals("")) {
-                    Toast.makeText(AddTask.this, "Escriba nombre", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FrmTask.this, "Escriba nombre", Toast.LENGTH_LONG).show();
                 } else {
                     save(etName.getText().toString());
                 }

@@ -1,17 +1,18 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Statistics.Fragments;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import proyectohabitos.example.neita.habitos.R;
 
 public class MonthlyStatistics extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_monthly_statistics, container, false);
+        View rootView = inflater.inflate(R.layout.frg_monthly_statistics, container, false);
         return rootView;
     }
 }

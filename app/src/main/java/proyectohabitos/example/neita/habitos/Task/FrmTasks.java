@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Task;
 
 
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+
+import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTheTasks;
+import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
 public class FrmTasks extends AppCompatActivity {
 /* Instances of this class are fragments representing a single
@@ -88,9 +92,9 @@ public class FrmTasks extends AppCompatActivity {
         public Fragment getItem(int i) {
             Fragment fragment = null;
             if (i == 0) {
-                fragment = new TodayTasks();
+                fragment = new FrgTodayTasks();
             } else if (i == 1) {
-                fragment = new AllTheTasks();
+                fragment = new FrgAllTheTasks();
             }
             return fragment;
         }

@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Task.FragmentsTasks;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,9 +16,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.FrmChronometer;
+import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Statistics.FrmStatistics;
+import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapterAll;
 
-public class AllTheTasks extends Fragment {
+public class FrgAllTheTasks extends Fragment {
     private ListView lvTasks;
     private ArrayList<String> list;
     private FloatingActionButton btn;
@@ -47,7 +52,7 @@ public class AllTheTasks extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), AddTask.class);
+                Intent i = new Intent(getActivity(), FrmTask.class);
                 startActivityForResult(i, 1);
             }
         });
@@ -55,7 +60,7 @@ public class AllTheTasks extends Fragment {
         prueba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), Statistics.class);
+                Intent i = new Intent(getActivity(), FrmStatistics.class);
                 startActivityForResult(i, 1);
             }
         });
@@ -104,7 +109,7 @@ public class AllTheTasks extends Fragment {
     }
     public boolean onContextItemSelected(MenuItem item){
         if(item.getTitle()=="Iniciar"){
-            Intent i=new Intent(getActivity(), Chronometer.class);
+            Intent i = new Intent(getActivity(), FrmChronometer.class);
             startActivityForResult(i,1);
         }
         else if(item.getTitle()=="Editar"){

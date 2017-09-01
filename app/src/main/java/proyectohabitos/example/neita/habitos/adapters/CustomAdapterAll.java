@@ -29,7 +29,7 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
     }
 
     public CustomAdapterAll(ArrayList<String> data, Context context) {
-        super(context, R.layout.img_row, data);
+        super(context, R.layout.row_today_tasks, data);
         this.dataSet = data;
         this.mContext=context;
 
@@ -67,7 +67,7 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.img_all_row, parent, false);
+            convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
             viewHolder.txt1 = (TextView) convertView.findViewById(R.id.task_all_row_txt1);
             viewHolder.txt2 = (TextView) convertView.findViewById(R.id.task_all_row_txt2);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.task_all_row_img);

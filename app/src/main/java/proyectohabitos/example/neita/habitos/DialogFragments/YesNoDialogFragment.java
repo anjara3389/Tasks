@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.DialogFragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

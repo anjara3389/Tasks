@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.DialogFragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.NumberPicker;
+
+import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Task.FrmTask;
 
 public class NumPickersDialogFragment extends DialogFragment {
 
@@ -43,7 +46,7 @@ public class NumPickersDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 ans = false;
-                                AddTask act = (AddTask) getActivity();
+                                FrmTask act = (FrmTask) getActivity();
                                 act.onFinishNumbersDialog(ans, -1, -1);
                             }
                         }
@@ -61,7 +64,7 @@ public class NumPickersDialogFragment extends DialogFragment {
                         hours = hrs.getValue();
                         minutes = min.getValue();
                         ans = true;
-                        AddTask act = (AddTask) getActivity();
+                        FrmTask act = (FrmTask) getActivity();
                         act.onFinishNumbersDialog(ans, hours, minutes);
                         dlg.dismiss();
                     }

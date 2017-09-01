@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import proyectohabitos.example.neita.habitos.LstTask;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Task.LstTask;
 
 public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
@@ -26,7 +26,7 @@ public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClick
     }
 
     public CustomAdapter(ArrayList<LstTask> data, Context context) {
-        super(context, R.layout.img_row, data);
+        super(context, R.layout.row_today_tasks, data);
         this.dataSet = data;
         this.mContext = context;
     }
@@ -64,7 +64,7 @@ public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClick
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.img_row, parent, false);
+            convertView = inflater.inflate(R.layout.row_today_tasks, parent, false);
             viewHolder.txt1 = (TextView) convertView.findViewById(R.id.task_row_txt1);
             viewHolder.txt2 = (TextView) convertView.findViewById(R.id.task_row_txt2);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.task_row_img);
