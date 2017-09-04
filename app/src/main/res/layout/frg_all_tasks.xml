@@ -9,27 +9,25 @@
     android:baselineAligned="false">
 
     <ListView
-        android:id="@+id/frg_today_taks_lst"
-        android:layout_width="369dp"
-        android:layout_height="541dp"
+        android:id="@+id/frg_all_taks_lst"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/frg_today_tasks_btn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintVertical_bias="0.0"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:layout_constraintTop_creator="1" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/frg_today_tasks_btn"
-        android:layout_width="73dp"
+        android:id="@+id/frg_all_tasks_btn"
+        android:layout_width="63dp"
         android:layout_height="63dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"

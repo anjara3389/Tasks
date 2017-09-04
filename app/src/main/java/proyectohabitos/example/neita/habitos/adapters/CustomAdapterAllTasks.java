@@ -11,14 +11,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Task.LstTask;
 
-/**
- * Created by Neita on 04/06/2017.
- */
+public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
-public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnClickListener {
-
-    private ArrayList<String> dataSet;
+    private ArrayList<LstTask> dataSet;
     Context mContext;
 
     // View lookup cache
@@ -28,11 +25,10 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
         ImageView img;
     }
 
-    public CustomAdapterAll(ArrayList<String> data, Context context) {
-        super(context, R.layout.row_today_tasks, data);
+    public CustomAdapterAllTasks(ArrayList<LstTask> data, Context context) {
+        super(context, R.layout.row_all_tasks, data);
         this.dataSet = data;
-        this.mContext=context;
-
+        this.mContext = context;
     }
 
     @Override
@@ -57,7 +53,8 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        String dataModel = getItem(position);
+        String dataModel = getItem(position).getName();
+        String dataModel2 = getItem(position).getTextDays() + (getItem(position).getChrono() != null ? " - " : "") + getItem(position).getTextChrono();
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
@@ -68,9 +65,11 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
-            viewHolder.txt1 = (TextView) convertView.findViewById(R.id.task_all_row_txt1);
-            viewHolder.txt2 = (TextView) convertView.findViewById(R.id.task_all_row_txt2);
-            viewHolder.img = (ImageView) convertView.findViewById(R.id.task_all_row_img);
+            viewHolder.txt1 = (TextView) convertView.findViewById(R.id.all_task_row_txt1);
+            viewHolder.txt2 = (TextView) convertView.findViewById(R.id.all_task_row_txt2);
+            viewHolder.img = (ImageView) convertView.findViewById(R.id.all_task_row_img);
+
+            viewHolder.img.setImageResource(getItem(position).isDone() == false ? R.drawable.check : R.drawable.chech2);
 
             // result=convertView;
 
@@ -84,7 +83,7 @@ public class CustomAdapterAll extends ArrayAdapter<String> implements View.OnCli
         //lastPosition = position;
 
         viewHolder.txt1.setText(dataModel);
-        viewHolder.txt2.setText(dataModel);
+        viewHolder.txt2.setText(dataModel2);
         viewHolder.img.setOnClickListener(this);
         viewHolder.img.setTag(position);
         // Return the completed view to render on screen

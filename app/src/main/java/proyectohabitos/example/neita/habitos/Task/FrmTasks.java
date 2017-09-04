@@ -10,7 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTheTasks;
+import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
 public class FrmTasks extends AppCompatActivity {
@@ -66,18 +66,16 @@ public class FrmTasks extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
             }
 
             @Override
             public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
             }
         };
 
         // Add 2 tabs, specifying the tab's text and TabListener
         actionBar.addTab(actionBar.newTab().setText("Hoy").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("Todos").setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText("Todas").setTabListener(tabListener));
 
     }
 
@@ -94,7 +92,7 @@ public class FrmTasks extends AppCompatActivity {
             if (i == 0) {
                 fragment = new FrgTodayTasks();
             } else if (i == 1) {
-                fragment = new FrgAllTheTasks();
+                fragment = new FrgAllTasks();
             }
             return fragment;
         }

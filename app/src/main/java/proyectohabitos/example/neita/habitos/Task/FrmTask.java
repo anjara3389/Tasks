@@ -199,8 +199,10 @@ public class FrmTask extends AppCompatActivity {
         vier.setChecked(obj.v);
         sab.setChecked(obj.s);
         dom.setChecked(obj.d);
-        reminder.setText(f.format(new Date(obj.reminder)));
-        remind = obj.reminder;
+        if (obj.reminder != null) {
+            reminder.setText(f.format(new Date(obj.reminder)));
+            remind = obj.reminder;
+        }
         chron = obj.chrono;
         if (chron != null) {
             chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");

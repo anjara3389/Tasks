@@ -5,8 +5,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.SimpleDateFormat;
-
 import proyectohabitos.example.neita.habitos.BaseHelper;
 
 public class Task {
@@ -77,7 +75,6 @@ public class Task {
         Task task = new Task();
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
-            SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
             task = new Task(id, c.getString(1), c.getInt(2) == 1, c.getInt(3) == 1, c.getInt(4) == 1, c.getInt(5) == 1, c.getInt(6) == 1, c.getInt(7) == 1, c.getInt(8) == 1, c.getLong(9), c.getLong(10), c.isNull(11) ? null : c.getInt(11));
         }
         BaseHelper.tryClose(db);
