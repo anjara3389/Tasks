@@ -94,10 +94,10 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private ArrayList<LstTask> getActivities() {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
-        cal.get(Calendar.DAY_OF_WEEK);
         String day = cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? "l" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "m" :
                 (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "j" :
                         (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
@@ -105,33 +105,15 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
-              /*PARA EL DE TODAS LAS TAREAS
-                "a.l, " + //3
-                "a.m, " + //4
-                "a.x, " + //5
-                "a.j, " + //6
-                "a.v, " + //7
-                "a.s, " + //8
-                "a.d, " +//9*/
                 "a.chrono, " +//3
                 "(SELECT COUNT(*)>0 " +
                 "FROM span s " +
-                "WHERE s.activity_id=a.id) " +//4
+                "WHERE s.activity_id=a.id AND s.beg_date='" + f.format(cal.getTime()) + "') " +//4
                 "FROM Activity a " +
                 "WHERE a." + day, null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-               /* PARA EL DE TODAS LAS TAREAS
-                ArrayList<String> days = new ArrayList(
-                        Arrays.asList("Lun", "Mar", "Mier", "Juev", "Vier", "Sáb", "Dom"));
-                int k = 0;
-                for (int i = 3; i <= 9; i++) {
-                    if (c.getInt(i) == 0) {
-                        days.remove(i - 3 - k);
-                        k++;
-                    }
-                }*/
                 LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), c.getInt(4) == 1);
                 data.add(task);
             }
@@ -145,10 +127,15 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
 
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+
         String msg = "";
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit, null);
+            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND beg_date='" + f.format(cal.getTime()) + "' ", null);
             if (c.moveToFirst()) {
                 msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
             }
@@ -156,39 +143,44 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             msg = "Iniciar";
         }
 
-        menu.add(0, v.getId(), 0, msg);
-        menu.add(0, v.getId(), 0, "Editar");
-        menu.add(0, v.getId(), 0, "Eliminar");
+        menu.add(0, 3, 0, msg);
+        menu.add(0, 4, 0, "Editar");
+        menu.add(0, 5, 0, "Eliminar");
     }
 
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle() == "Marcar") {
+        if (item.getItemId() == 3 && item.getTitle() == "Marcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-        } else if (item.getTitle() == "Iniciar") {
+            return true;
+        } else if (item.getItemId() == 3 && item.getTitle() == "Iniciar") {
             Intent i = new Intent(getActivity(), FrmChronometer.class);
             startActivityForResult(i, 1);
             upload();
-        } else if (item.getTitle() == "Desmarcar") {
+            return true;
+        } else if (item.getItemId() == 3 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
-        } else if (item.getTitle() == "Editar") {
+            return true;
+        } else if (item.getItemId() == 4 && item.getTitle() == "Editar") {
             Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
-        } else if (item.getTitle() == "Eliminar") {
+            return true;
+        } else if (item.getItemId() == 5 && item.getTitle() == "Eliminar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
+            return true;
         } else {
             return false;
         }
-        return true;
+
     }
 
     private void checkTaskAsDone(int id) {

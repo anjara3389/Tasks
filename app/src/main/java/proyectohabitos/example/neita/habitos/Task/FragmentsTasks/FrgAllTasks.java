@@ -87,15 +87,28 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     }
 
     public void upload() {
-        list = getActivities();
+        list = getTasks();
         CustomAdapterAllTasks adapter = new CustomAdapterAllTasks(list, getContext());
         lvTasks.setAdapter(adapter);
     }
 
-    private ArrayList<LstTask> getActivities() {
+    private ArrayList<LstTask> getTasks() {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
+      /*  Calendar cal = new GregorianCalendar();
+        Date date = new Date();
+        cal.setTime(date);
+        ArrayList<String> dates = new ArrayList<>();
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
+
+        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        for (int i = 0; i < 7; i++) {
+            dates.add(f.format(cal.getTime()));
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }*/
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
@@ -106,29 +119,48 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 "a.v, " + //7
                 "a.s, " + //8
                 "a.d, " +//9*/
-                "a.chrono, " +//3
-                "(SELECT COUNT(*)>0 " +
-                "FROM span s " +
-                "WHERE s.activity_id=a.id) " +//4
+                "a.chrono " +//10
                 "FROM Activity a ", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                ArrayList<String> days = new ArrayList(
-                        Arrays.asList("Lun", "Mar", "Mier", "Juev", "Vier", "Sáb", "Dom"));
-                int k = 0;
+                ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
+
+              /*for (int i = 0; i < dates.size(); i++) {
+                   String s="SELECT COUNT(*)>0 " +//0
+                           "FROM span s " +
+                           "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + dates.get(i) + "'";
+                    Cursor d = db.rawQuery(s, null);
+
+                   if(d.moveToFirst())
+                    {
+                        do {
+                          for (int j = 0; j <7; j++) {
+                                if (d.getInt(0) == 1) {
+                                    doneDays.set(j,true);
+                                }
+                            }
+                        }
+                        while(d.moveToNext());
+                    }
+             }*/
                 for (int i = 3; i <= 9; i++) {
-                    if (c.getInt(i) == 0) {
-                        days.remove(i - 3 - k);
-                        k++;
+                    if (c.getInt(i) == 1) {
+                        doneDays.set(i - 3, false);
+
                     }
                 }
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), days, c.isNull(10) ? null : c.getInt(10), c.getInt(11) == 1);
+                for (int i = 0; i < doneDays.size(); i++) {
+                    // Toast.makeText(getContext(),"Actividad:"+c.getString(1)+ " Día:"+  doneDays.get(i), Toast.LENGTH_SHORT).show();
+                }
+
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
         BaseHelper.tryClose(db);
+
         return data;
     }
 
@@ -147,39 +179,44 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             msg = "Iniciar";
         }
 
-        menu.add(0, v.getId(), 0, msg);
-        menu.add(0, v.getId(), 0, "Editar");
-        menu.add(0, v.getId(), 0, "Eliminar");
+        menu.add(0, 0, 0, msg);
+        menu.add(0, 1, 0, "Editar");
+        menu.add(0, 2, 0, "Eliminar");
     }
 
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle() == "Marcar") {
+        if (item.getItemId() == 0 && item.getTitle() == "Marcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-        } else if (item.getTitle() == "Iniciar") {
+            return true;
+        } else if (item.getItemId() == 0 && item.getTitle() == "Iniciar") {
             Intent i = new Intent(getActivity(), FrmChronometer.class);
             startActivityForResult(i, 1);
             upload();
-        } else if (item.getTitle() == "Desmarcar") {
+            return true;
+        } else if (item.getItemId() == 0 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
-        } else if (item.getTitle() == "Editar") {
+            return true;
+        } else if (item.getItemId() == 1 && item.getTitle() == "Editar") {
             Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
-        } else if (item.getTitle() == "Eliminar") {
+            return true;
+        } else if (item.getItemId() == 2 && item.getTitle() == "Eliminar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
+            return true;
         } else {
             return false;
         }
-        return true;
+
     }
 
     private void checkTaskAsDone(int id) {

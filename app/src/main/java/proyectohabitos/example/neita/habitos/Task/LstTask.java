@@ -10,11 +10,11 @@ public class LstTask {
     private Integer idTask;
     private String name;
     private Long reminder;
-    private ArrayList<String> days;
+    private ArrayList<Boolean> days;
     private Integer chrono;
     private boolean isDone;
 
-    public LstTask(Integer idTask, String name, Long reminder, ArrayList<String> days, Integer chrono, boolean isDone) {
+    public LstTask(Integer idTask, String name, Long reminder, ArrayList<Boolean> days, Integer chrono, boolean isDone) {
         this.idTask = idTask;
         this.name = name;
         this.reminder = reminder;
@@ -35,7 +35,7 @@ public class LstTask {
         return reminder;
     }
 
-    public ArrayList<String> getDays() {
+    public ArrayList<Boolean> getDays() {
         return days;
     }
 
@@ -47,7 +47,7 @@ public class LstTask {
         return isDone;
     }
 
-    public String getTextDays() {
+   /* public String getTextDays() {
         String text = "";
         for (int i = 0; i < days.size(); i++) {
             text += days.get(i);
@@ -56,7 +56,7 @@ public class LstTask {
             }
         }
         return text;
-    }
+    }*/
 
     public String getTextReminder() {
         SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
