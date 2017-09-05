@@ -27,6 +27,7 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Statistics.FrmStatistics;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -99,8 +100,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
         Calendar cal = new GregorianCalendar();
-        Date date = new Date();
-        cal.setTime(date);
+        cal.setTime(new Date());
         ArrayList<Date> datesCurrWeek = new ArrayList<>();
 
         while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) { //cambia la fecha del calendario hasta que encuentra el primer día de la semana que es lunes
@@ -121,7 +121,8 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 "a.s, " + //8
                 "a.d, " +//9*/
                 "a.chrono " +//10
-                "FROM Activity a ", null);
+                "FROM Activity a " +
+                "ORDER BY a." + Task.getDay(new Date()) + " DESC", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
@@ -167,18 +168,24 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         menu.setHeaderTitle("Selecciona una Acción");
 
         String msg = "";
-        if (task.getChrono() == null) {
-            SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit, null);
-            if (c.moveToFirst()) {
-                msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+        SQLiteDatabase db = BaseHelper.getReadable(getContext());
+        Cursor c = db.rawQuery("SELECT COUNT(*)>0,(SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()) + ") " +
+                "FROM span s " +
+                "WHERE s.activity_id=" + posit, null);
+        if (c.moveToFirst()) {
+            if (c.getInt(1) == 1) {
+                if (task.getChrono() == null) {
+                    msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+                } else {
+                    msg = "Iniciar";
+                }
+                menu.add(0, 0, 0, msg);
             }
-        } else {
-            msg = "Iniciar";
         }
-        menu.add(0, 0, 0, msg);
+
         menu.add(0, 1, 0, "Editar");
         menu.add(0, 2, 0, "Eliminar");
+        menu.add(0, 6, 0, "Estadísticas");
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -198,17 +205,21 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             dial.show(getFragmentManager(), "MyDialog");
             upload();
             return true;
-        } else if (item.getItemId() == 1 && item.getTitle() == "Editar") {
+        } else if (item.getItemId() == 1) {
             Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
             return true;
-        } else if (item.getItemId() == 2 && item.getTitle() == "Eliminar") {
+        } else if (item.getItemId() == 2) {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             upload();
+            return true;
+        } else if (item.getItemId() == 6) {
+            Intent i = new Intent(getActivity(), FrmStatistics.class);
+            startActivity(i);
             return true;
         } else {
             return false;

@@ -5,6 +5,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import proyectohabitos.example.neita.habitos.BaseHelper;
 
 public class Task {
@@ -85,5 +89,13 @@ public class Task {
         String sql = "DELETE FROM activity WHERE id=" + id;
         db.execSQL(sql);
         BaseHelper.tryClose(db);
+    }
+
+    public static String getDay(Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        return cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? "l" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "m" :
+                (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "j" :
+                        (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
     }
 }

@@ -98,9 +98,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
-        String day = cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? "l" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "m" :
-                (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "j" :
-                        (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
 
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
@@ -110,7 +107,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 "FROM span s " +
                 "WHERE s.activity_id=a.id AND s.beg_date='" + f.format(cal.getTime()) + "') " +//4
                 "FROM Activity a " +
-                "WHERE a." + day, null);
+                "WHERE a." + Task.getDay(new Date()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
@@ -165,13 +162,13 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             dial.show(getFragmentManager(), "MyDialog");
             upload();
             return true;
-        } else if (item.getItemId() == 4 && item.getTitle() == "Editar") {
+        } else if (item.getItemId() == 4) {
             Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
             return true;
-        } else if (item.getItemId() == 5 && item.getTitle() == "Eliminar") {
+        } else if (item.getItemId() == 5) {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
