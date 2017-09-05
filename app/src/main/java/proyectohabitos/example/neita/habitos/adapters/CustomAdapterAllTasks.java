@@ -70,7 +70,7 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
         }*/
 
 
-        if (convertView == null) {
+   //     if (convertView == null) {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
@@ -91,14 +91,14 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
             viewHolder.viern.setImageResource(getItem(position).getDays().get(4) == null ? R.drawable.no_filled : getItem(position).getDays().get(4) == false ? R.drawable.no_filled_green : R.drawable.filled);
             viewHolder.sab.setImageResource(getItem(position).getDays().get(5) == null ? R.drawable.no_filled : getItem(position).getDays().get(5) == false ? R.drawable.no_filled_green : R.drawable.filled);
             viewHolder.dom.setImageResource(getItem(position).getDays().get(6) == null ? R.drawable.no_filled : getItem(position).getDays().get(6) == false ? R.drawable.no_filled_green : R.drawable.filled);
-
+/*
             // result=convertView;
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             // result=convertView;
-        }
+        }*/
 
 
         //lastPosition = position;
