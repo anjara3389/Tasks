@@ -19,7 +19,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
@@ -96,19 +98,18 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
-      /*  Calendar cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         Date date = new Date();
         cal.setTime(date);
-        ArrayList<String> dates = new ArrayList<>();
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
+        ArrayList<Date> datesCurrWeek = new ArrayList<>();
 
-        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) { //cambia la fecha del calendario hasta que encuentra el primer día de la semana que es lunes
             cal.add(Calendar.DAY_OF_YEAR, -1);
         }
-        for (int i = 0; i < 7; i++) {
-            dates.add(f.format(cal.getTime()));
+        for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
+            datesCurrWeek.add(cal.getTime());
             cal.add(Calendar.DAY_OF_YEAR, 1);
-        }*/
+        }
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
@@ -125,33 +126,33 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         {
             do {
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
+                Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-              /*for (int i = 0; i < dates.size(); i++) {
-                   String s="SELECT COUNT(*)>0 " +//0
-                           "FROM span s " +
-                           "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + dates.get(i) + "'";
+                for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
+                    String s = "SELECT COUNT(*)>0 " +
+                            "FROM span s " +
+                            "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + f.format(datesCurrWeek.get(i)) + "'";
+
                     Cursor d = db.rawQuery(s, null);
 
-                   if(d.moveToFirst())
-                    {
-                        do {
-                          for (int j = 0; j <7; j++) {
-                                if (d.getInt(0) == 1) {
-                                    doneDays.set(j,true);
-                                }
-                            }
-                        }
-                        while(d.moveToNext());
-                    }
-             }*/
-                for (int i = 3; i <= 9; i++) {
-                    if (c.getInt(i) == 1) {
-                        doneDays.set(i - 3, false);
+                    if (d.moveToFirst()) {
+                        Calendar cal2 = new GregorianCalendar();
+                        cal2.setTime(datesCurrWeek.get(i));
+                        int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
+                                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 3 :
+                                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
 
+                        if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
+                            doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
+                        }
                     }
                 }
-                for (int i = 0; i < doneDays.size(); i++) {
-                    // Toast.makeText(getContext(),"Actividad:"+c.getString(1)+ " Día:"+  doneDays.get(i), Toast.LENGTH_SHORT).show();
+                for (int i = 3; i <= 9; i++) {
+                    if (c.getInt(i) == 1) {
+                        if (doneDays.get(i - 3) == null) {
+                            doneDays.set(i - 3, false);
+                        }
+                    }
                 }
 
                 LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);

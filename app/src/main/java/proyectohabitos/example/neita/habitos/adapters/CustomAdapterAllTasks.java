@@ -63,9 +63,9 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
         ViewHolder viewHolder; // view lookup cache stored in tag
 
         // final View result;
-      /*  if(getItem(position).getName().equals("Prueba")) {
+      /* if(getItem(position).getName().equals("Tocar piano")) {
             for (int i = 0; i < 7; i++) {
-                Toast.makeText(getContext(), "Actividad:" + getItem(position).getName() + " Día:" + getItem(position).getDays().get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), i+"Actividad:" + getItem(position).getName() + " Día:" + getItem(position).getDays().get(i), Toast.LENGTH_SHORT).show();
             }
         }*/
 
