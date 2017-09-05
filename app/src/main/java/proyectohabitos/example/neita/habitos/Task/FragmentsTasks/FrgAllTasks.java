@@ -129,11 +129,9 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 Format f = new SimpleDateFormat("yyyy-MM-dd");
 
                 for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
-                    String s = "SELECT COUNT(*)>0 " +
+                    Cursor d = db.rawQuery("SELECT COUNT(*)>0 " +
                             "FROM span s " +
-                            "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + f.format(datesCurrWeek.get(i)) + "'";
-
-                    Cursor d = db.rawQuery(s, null);
+                            "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + f.format(datesCurrWeek.get(i)) + "'", null);
 
                     if (d.moveToFirst()) {
                         Calendar cal2 = new GregorianCalendar();
@@ -141,7 +139,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                         int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
                                 (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 3 :
                                         (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
-
                         if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
                             doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
                         }
@@ -179,7 +176,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         } else {
             msg = "Iniciar";
         }
-
         menu.add(0, 0, 0, msg);
         menu.add(0, 1, 0, "Editar");
         menu.add(0, 2, 0, "Eliminar");

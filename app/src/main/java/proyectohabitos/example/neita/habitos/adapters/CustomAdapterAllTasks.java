@@ -75,7 +75,8 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
             viewHolder.txt1 = (TextView) convertView.findViewById(R.id.all_task_row_txt1);
-            viewHolder.lun = (ImageView) convertView.findViewById(R.id.row_lun);
+
+        viewHolder.lun = (ImageView) convertView.findViewById(R.id.row_lun);
             viewHolder.mar = (ImageView) convertView.findViewById(R.id.row_mar);
             viewHolder.mier = (ImageView) convertView.findViewById(R.id.row_mierc);
             viewHolder.juev = (ImageView) convertView.findViewById(R.id.row_juev);
@@ -92,6 +93,7 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
             viewHolder.sab.setImageResource(getItem(position).getDays().get(5) == null ? R.drawable.no_filled : getItem(position).getDays().get(5) == false ? R.drawable.no_filled_green : R.drawable.filled);
             viewHolder.dom.setImageResource(getItem(position).getDays().get(6) == null ? R.drawable.no_filled : getItem(position).getDays().get(6) == false ? R.drawable.no_filled_green : R.drawable.filled);
 /*
+
             // result=convertView;
 
             convertView.setTag(viewHolder);
