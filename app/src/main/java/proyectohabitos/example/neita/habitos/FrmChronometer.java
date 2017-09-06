@@ -11,6 +11,7 @@ public class FrmChronometer extends AppCompatActivity {
 
     FloatingActionButton play, pause, stop;
     Chronometer chrono;
+    private long lastPause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +26,14 @@ public class FrmChronometer extends AppCompatActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chrono.setBase(lastPause != 0 ? chrono.getBase() + SystemClock.elapsedRealtime() - lastPause : SystemClock.elapsedRealtime());
                 chrono.start();
             }
         });
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lastPause = SystemClock.elapsedRealtime();
                 chrono.stop();
             }
         });
@@ -38,7 +41,8 @@ public class FrmChronometer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chrono.setBase(SystemClock.elapsedRealtime());
-                chrono.stop();
+
+                chrono.start();
             }
         });
     }
