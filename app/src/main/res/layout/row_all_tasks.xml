@@ -15,9 +15,9 @@
             android:id="@+id/all_task_row_txt1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="7dp"
             android:layout_marginLeft="5dp"
-            android:paddingBottom="35dp"
+            android:paddingBottom="25dp"
             android:paddingTop="@dimen/fab_margin"
             android:text="TextView"
             android:textSize="24sp"
@@ -27,10 +27,11 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="5dp"
             android:layout_weight="0.87"
             android:orientation="horizontal"
-            android:paddingBottom="5dp">
+            android:paddingBottom="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
