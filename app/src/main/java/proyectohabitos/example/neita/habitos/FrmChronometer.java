@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.Toast;
 
 public class FrmChronometer extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class FrmChronometer extends AppCompatActivity {
             public void onClick(View v) {
                 chrono.setBase(lastPause != 0 ? chrono.getBase() + SystemClock.elapsedRealtime() - lastPause : SystemClock.elapsedRealtime());
                 chrono.start();
+
             }
         });
         pause.setOnClickListener(new View.OnClickListener() {
@@ -45,5 +47,17 @@ public class FrmChronometer extends AppCompatActivity {
                 chrono.start();
             }
         });
+        chrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                Toast.makeText(FrmChronometer.this, SystemClock.elapsedRealtime() + "", Toast.LENGTH_SHORT).show();
+                if (SystemClock.elapsedRealtime() == 3000) {
+                    chrono.stop();
+                    Toast.makeText(FrmChronometer.this, "STOP", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
+
 }
