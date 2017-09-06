@@ -43,14 +43,14 @@ public class FrmChronometer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chrono.setBase(SystemClock.elapsedRealtime());
-
-                chrono.start();
+                chrono.stop();
             }
         });
         chrono.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                Toast.makeText(FrmChronometer.this, SystemClock.elapsedRealtime() + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FrmChronometer.this, Integer.parseInt(SystemClock.elapsedRealtime() + "") + "", Toast.LENGTH_SHORT).show();
+
                 if (SystemClock.elapsedRealtime() == 3000) {
                     chrono.stop();
                     Toast.makeText(FrmChronometer.this, "STOP", Toast.LENGTH_SHORT).show();
