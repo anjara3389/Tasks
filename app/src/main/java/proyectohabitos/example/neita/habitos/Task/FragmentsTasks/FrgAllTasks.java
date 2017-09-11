@@ -196,6 +196,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             return true;
         } else if (item.getItemId() == 0 && item.getTitle() == "Iniciar") {
             Intent i = new Intent(getActivity(), FrmChronometer.class);
+            i.putExtra("id", posit);
             startActivityForResult(i, 1);
             upload();
             return true;

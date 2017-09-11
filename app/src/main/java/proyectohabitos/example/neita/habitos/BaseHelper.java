@@ -9,9 +9,9 @@ public class BaseHelper extends SQLiteOpenHelper {
     private static BaseHelper sInstance;
 
     private static final String DATABASE_NAME = "Demo";
-    public static final int VERSION = 3;
+    public static final int VERSION = 4;
     String table = "CREATE TABLE activity(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,l BOOLEAN,m BOOLEAN,x BOOLEAN,j BOOLEAN,v BOOLEAN,s BOOLEAN,d BOOLEAN,since_date INTEGER,reminder INTEGER,chrono INTEGER)";
-    String tableSpan = "CREATE TABLE span(id INTEGER PRIMARY KEY AUTOINCREMENT,span_id INTEGER,beg_date INTEGER,end_date INTEGER,activity_id INTEGER, FOREIGN KEY(activity_id) REFERENCES activity(id))";
+    String tableSpan = "CREATE TABLE span(id INTEGER PRIMARY KEY AUTOINCREMENT,beg_date INTEGER,end_date INTEGER,activity_id INTEGER, FOREIGN KEY(activity_id) REFERENCES activity(id))";
 
 
     private BaseHelper(Context context) {

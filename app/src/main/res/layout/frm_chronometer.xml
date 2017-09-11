@@ -12,19 +12,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <Chronometer
-            android:id="@+id/frm_chrono_chrono"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.398"
-            tools:textSize="36sp" />
-
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
@@ -33,13 +20,23 @@
             tools:layout_editor_absoluteX="1dp"
             tools:layout_editor_absoluteY="-9dp" />
 
+        <TextView
+            android:id="@+id/chrono_txt_chrono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="187dp"
+            android:text="TextView" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:id="@+id/linearLayout">
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/frm_chrono_play"

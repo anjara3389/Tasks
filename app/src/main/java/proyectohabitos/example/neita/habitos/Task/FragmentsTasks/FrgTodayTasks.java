@@ -153,6 +153,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             return true;
         } else if (item.getItemId() == 3 && item.getTitle() == "Iniciar") {
             Intent i = new Intent(getActivity(), FrmChronometer.class);
+            i.putExtra("id", posit);
             startActivityForResult(i, 1);
             upload();
             return true;
