@@ -23,13 +23,13 @@ public class Task {
     public boolean d;
     public Long sinceDate;
     public Long reminder;
-    public Integer chrono;
+    public Long chrono;
 
     public Task() {
 
     }
 
-    public Task(Integer id, String name, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, boolean d, Long sinceDate, Long reminder, Integer chrono) {
+    public Task(Integer id, String name, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, boolean d, Long sinceDate, Long reminder, Long chrono) {
         this.id = id;
         this.name = name;
         this.l = l;
@@ -79,7 +79,7 @@ public class Task {
         Task task = new Task();
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
-            task = new Task(id, c.getString(1), c.getInt(2) == 1, c.getInt(3) == 1, c.getInt(4) == 1, c.getInt(5) == 1, c.getInt(6) == 1, c.getInt(7) == 1, c.getInt(8) == 1, c.getLong(9), c.getLong(10), c.isNull(11) ? null : c.getInt(11));
+            task = new Task(id, c.getString(1), c.getInt(2) == 1, c.getInt(3) == 1, c.getInt(4) == 1, c.getInt(5) == 1, c.getInt(6) == 1, c.getInt(7) == 1, c.getInt(8) == 1, c.getLong(9), c.getLong(10), c.isNull(11) ? null : c.getLong(11));
         }
         BaseHelper.tryClose(db);
         return task;

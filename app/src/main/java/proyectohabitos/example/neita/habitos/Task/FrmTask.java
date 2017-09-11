@@ -39,7 +39,7 @@ public class FrmTask extends AppCompatActivity {
     boolean isNew;
     int id;
     static long remind;
-    Integer chron;
+    Long chron;
     static ImageView imgRing, imgTemp;
     CardView cardView;
     static Switch switchRemind, switchChrono;
@@ -213,7 +213,7 @@ public class FrmTask extends AppCompatActivity {
         if (ans == true) {
             chrono.setVisibility(View.VISIBLE);
             imgTemp.setVisibility(View.VISIBLE);
-            chron = (hrs * 60) + min;
+            chron = (long) ((hrs * 60) + min);
             chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
         } else {
             switchChrono.setChecked(false);

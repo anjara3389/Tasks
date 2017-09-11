@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import proyectohabitos.example.neita.habitos.Span.Span;
+import proyectohabitos.example.neita.habitos.Task.Task;
 
 public class FrmChronometer extends AppCompatActivity {
 
@@ -23,9 +25,11 @@ public class FrmChronometer extends AppCompatActivity {
     FloatingActionButton play, pause, stop;
     TextView txtTimer;
     Span obj;
+    ProgressBar pgBar;
     private Integer activityId;
     private Long currentBegTime;
     private Long id;
+    private long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +39,17 @@ public class FrmChronometer extends AppCompatActivity {
         pause = (FloatingActionButton) findViewById(R.id.frm_chrono_pause);
         stop = (FloatingActionButton) findViewById(R.id.frm_chrono_stop);
         txtTimer = (TextView) findViewById(R.id.chrono_txt_chrono);
+        pgBar = (ProgressBar) findViewById(R.id.chrono_progress_bar);
+
 
         Bundle bundle = getIntent().getExtras();
         activityId = bundle.getInt("id");
+        SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
+        time = new Task().select(db, activityId).chrono;
+        pgBar.setMax((int) time);
+        pgBar.setProgress(50);
+
+        BaseHelper.tryClose(db);
 
 
         play.setOnClickListener(new View.OnClickListener() {
@@ -85,11 +97,13 @@ public class FrmChronometer extends AppCompatActivity {
                                 int min = (int) (totalSec % 3600) / 60;
                                 int sec = (int) ((totalSec % 3600) % 60);
                                 txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
+
+                                pgBar.setProgress((int) (totalSec * 100 / time));
                             }
                         });
                     }
                 };
-                timer.scheduleAtFixedRate(timerTask, (long) 1000, (long) 1000);
+                timer.scheduleAtFixedRate(timerTask, 0, (long) 1000);
             }
         });
         pause.setOnClickListener(new View.OnClickListener() {
