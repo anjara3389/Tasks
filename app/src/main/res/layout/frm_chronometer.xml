@@ -29,21 +29,21 @@
             android:id="@+id/chrono_txt_chrono"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="30sp"
-            android:layout_marginBottom="132dp"
             android:layout_alignBottom="@+id/chrono_progress_bar"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="132dp"
+            android:text="00:00:00"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/chrono_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="18sp"
             android:layout_above="@+id/chrono_txt_chrono"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="12dp"
+            android:text="0%"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -81,7 +81,7 @@ public class Task {
         {
             task = new Task(id, c.getString(1), c.getInt(2) == 1, c.getInt(3) == 1, c.getInt(4) == 1, c.getInt(5) == 1, c.getInt(6) == 1, c.getInt(7) == 1, c.getInt(8) == 1, c.getLong(9), c.getLong(10), c.isNull(11) ? null : c.getLong(11));
         }
-        BaseHelper.tryClose(db);
+
         return task;
     }
 

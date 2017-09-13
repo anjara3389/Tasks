@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -47,10 +46,17 @@ public class FrmChronometer extends AppCompatActivity {
         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
         time = new Task().select(db, activityId).chrono;
 
-        //pgBar.setMax(100);
-        pgBar.setProgress(70);
+        pgBar.setProgress(0);
 
+
+        final Long lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
         BaseHelper.tryClose(db);
+
+
+        if (lastTime != 0) {
+            pgBar.setProgress((float) ((lastTime / 1000 / 60) * 100) / time);
+            percent.setText(((float) ((lastTime / 1000 / 60) * 100 / time)) + "%");
+        }
 
 
         play.setOnClickListener(new View.OnClickListener() {
@@ -60,16 +66,14 @@ public class FrmChronometer extends AppCompatActivity {
 
                 SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
 
-                final Long lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
                 currentBegTime = new Date().getTime();
-
-                Toast.makeText(FrmChronometer.this, lastTime + "LAST", Toast.LENGTH_SHORT).show();
-
                 obj = new Span();
                 obj.begDate = currentBegTime;
                 obj.activityId = activityId;
                 id = obj.insert(db);
                 BaseHelper.tryClose(db);
+
+
 
                 /*Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 System.out.println("PLAY");
@@ -99,8 +103,10 @@ public class FrmChronometer extends AppCompatActivity {
                                 int sec = (int) ((totalSec % 3600) % 60);
                                 txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
 
-                                pgBar.setProgress((float) ((totalSec / 60) * 100) / time);
-                                percent.setText(((float) ((totalSec / 60) * 100 / time)) + "%");
+                                if ((float) ((totalSec / 60) * 100) / time <= 100) {
+                                    pgBar.setProgress((float) ((totalSec / 60) * 100) / time);
+                                    percent.setText(((float) ((totalSec / 60) * 100 / time)) + "%");
+                                }
                             }
                         });
                     }
@@ -140,8 +146,6 @@ public class FrmChronometer extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(FrmChronometer.this, "TIME:" + time, Toast.LENGTH_SHORT).show();
 
                 Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 System.out.println("LALA");
