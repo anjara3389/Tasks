@@ -48,8 +48,7 @@ public class FrmChronometer extends AppCompatActivity {
 
         pgBar.setProgress(0);
 
-
-        final Long lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
+        Long lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
         BaseHelper.tryClose(db);
 
 
@@ -65,6 +64,7 @@ public class FrmChronometer extends AppCompatActivity {
                 timer = new Timer();
 
                 SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
+                final Long lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
 
                 currentBegTime = new Date().getTime();
                 obj = new Span();
