@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +22,9 @@ public class FrmChronometer extends AppCompatActivity {
 
     Timer timer;
     FloatingActionButton play, pause, stop;
-    TextView txtTimer;
+    TextView txtTimer, percent;
     Span obj;
-    ProgressBar pgBar;
+    com.mikhaellopez.circularprogressbar.CircularProgressBar pgBar;
     private Integer activityId;
     private Long currentBegTime;
     private Long id;
@@ -39,15 +38,17 @@ public class FrmChronometer extends AppCompatActivity {
         pause = (FloatingActionButton) findViewById(R.id.frm_chrono_pause);
         stop = (FloatingActionButton) findViewById(R.id.frm_chrono_stop);
         txtTimer = (TextView) findViewById(R.id.chrono_txt_chrono);
-        pgBar = (ProgressBar) findViewById(R.id.chrono_progress_bar);
+        pgBar = (com.mikhaellopez.circularprogressbar.CircularProgressBar) findViewById(R.id.chrono_progress_bar);
+        percent = (TextView) findViewById(R.id.chrono_percent);
 
 
         Bundle bundle = getIntent().getExtras();
         activityId = bundle.getInt("id");
         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
         time = new Task().select(db, activityId).chrono;
-        pgBar.setMax((int) time);
-        pgBar.setProgress(50);
+
+        //pgBar.setMax(100);
+        pgBar.setProgress(70);
 
         BaseHelper.tryClose(db);
 
@@ -98,7 +99,8 @@ public class FrmChronometer extends AppCompatActivity {
                                 int sec = (int) ((totalSec % 3600) % 60);
                                 txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
 
-                                pgBar.setProgress((int) (totalSec * 100 / time));
+                                pgBar.setProgress((float) ((totalSec / 60) * 100) / time);
+                                percent.setText(((float) ((totalSec / 60) * 100 / time)) + "%");
                             }
                         });
                     }
@@ -113,7 +115,6 @@ public class FrmChronometer extends AppCompatActivity {
                     obj.endDate = new Date().getTime();
                     SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                     obj.update(db, id);
-                    Toast.makeText(FrmChronometer.this, obj.endDate + "DATE", Toast.LENGTH_SHORT).show();
                     timer.cancel();
 
                   /*  Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -140,6 +141,8 @@ public class FrmChronometer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Toast.makeText(FrmChronometer.this, "TIME:" + time, Toast.LENGTH_SHORT).show();
+
                 Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 System.out.println("LALA");
                 SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
@@ -165,3 +168,4 @@ public class FrmChronometer extends AppCompatActivity {
 
 
 }
+

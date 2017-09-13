@@ -12,32 +12,47 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <ProgressBar
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/chrono_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:indeterminate="true"
-            android:layout_width="match_parent"
-            android:layout_height="446dp"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="-9dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="60dp"
+            app:cpb_background_progressbar_color="#009688"
+            app:cpb_background_progressbar_width="10dp"
+            app:cpb_progressbar_color="#4db6ac"
+            app:cpb_progressbar_width="30dp" />
 
         <TextView
             android:id="@+id/chrono_txt_chrono"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/linearLayout"
+            android:text="TextView"
+            android:textSize="30sp"
+            android:layout_marginBottom="132dp"
+            android:layout_alignBottom="@+id/chrono_progress_bar"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/chrono_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:layout_above="@+id/chrono_txt_chrono"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="187dp"
-            android:text="TextView" />
+            android:layout_marginBottom="12dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/linearLayout">
+            android:id="@+id/linearLayout"
+            android:layout_below="@+id/chrono_progress_bar"
+            android:layout_centerHorizontal="true">
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/frm_chrono_play"
