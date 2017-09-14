@@ -15,8 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +24,7 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -34,8 +33,8 @@ import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
 
 public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
-    ArrayList<LstTask> list;
-    FloatingActionButton btn;
+    private ArrayList<LstTask> list;
+    private FloatingActionButton btn;
     private LstTask task;
     private int posit;
     private static final int DELETE_TASK = 1;
@@ -94,7 +93,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private ArrayList<LstTask> getActivities() {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
@@ -105,13 +103,20 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 "a.chrono, " +//3
                 "(SELECT COUNT(*)>0 " +
                 "FROM span s " +
-                "WHERE s.activity_id=a.id AND s.beg_date='" + f.format(cal.getTime()) + "') " +//4
+                "WHERE s.activity_id=a.id AND CAST((s.beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000) + ") " +//4
                 "FROM Activity a " +
                 "WHERE a." + Task.getDay(cal.getTime()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
+            Boolean done;
             do {
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), c.getInt(4) == 1);
+                if (c.isNull(3)) {
+                    done = c.getInt(4) == 1;
+                } else {
+                    done = new Span().selectLastTime(db, c.getInt(0), new Date()) >= c.getLong(3) * 60 * 1000;
+                }
+
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), done);
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
@@ -124,15 +129,13 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
 
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
-
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
 
         String msg = "";
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND beg_date='" + f.format(cal.getTime()) + "' ", null);
+            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000), null);
             if (c.moveToFirst()) {
                 msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
             }
@@ -183,9 +186,8 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + f.format(new Date()) + "','" + f.format(new Date()) + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + new Date().getTime() + "','" + new Date().getTime() + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -193,9 +195,8 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private void uncheckTask(int Id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND beg_date='" + f.format(new Date()) + "'";
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

@@ -46,17 +46,19 @@ public class FrmChronometer extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         activityId = bundle.getInt("id");
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("playing")) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("playing")) { //
             playButton = savedInstanceState.getBoolean("playing");
         } else {
             playButton = true;
         }
+        play.setImageResource(playButton == true ? R.drawable.pause : R.drawable.play);
+
         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
         time = new Task().select(db, activityId).chrono;
         pgBar.setProgress(0);
         getSupportActionBar().hide();
 
-        lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
+        lastTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
         BaseHelper.tryClose(db);
 
         if (lastTime != 0) {
@@ -73,7 +75,7 @@ public class FrmChronometer extends AppCompatActivity {
                     timer = new Timer();
 
                     SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
-                    lastTime = new Span().selectLastTime(db, activityId) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId);
+                    lastTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
 
                     currentBegTime = new Date().getTime();
                     obj = new Span();

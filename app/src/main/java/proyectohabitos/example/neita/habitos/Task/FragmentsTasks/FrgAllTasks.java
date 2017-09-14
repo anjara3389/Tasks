@@ -27,6 +27,7 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Statistics.FrmStatistics;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
@@ -127,29 +128,35 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         {
             do {
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
-                Format f = new SimpleDateFormat("yyyy-MM-dd");
+                if (c.isNull(10)) {//si no tiene crono
+                    for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
 
-                for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
-                    Cursor d = db.rawQuery("SELECT COUNT(*)>0 " +
-                            "FROM span s " +
-                            "WHERE s.activity_id=" + c.getInt(0) + " AND s.beg_date='" + f.format(datesCurrWeek.get(i)) + "'", null);
+                        Cursor d = db.rawQuery("SELECT COUNT(*)>0 " +
+                                "FROM span s " +
+                                "WHERE s.activity_id=" + c.getInt(0) + " AND CAST((s.beg_date/86400000) as int)=" + (int) (datesCurrWeek.get(i).getTime() / 86400000), null);
 
-                    if (d.moveToFirst()) {
-                        Calendar cal2 = new GregorianCalendar();
-                        cal2.setTime(datesCurrWeek.get(i));
-                        int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
-                                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 3 :
-                                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
-                        if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
-                            doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
+                        if (d.moveToFirst()) {
+                            Calendar cal2 = new GregorianCalendar();
+                            cal2.setTime(datesCurrWeek.get(i));
+                            int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
+                                    (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
+                                            (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
+                            if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
+                                doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
+                            }
+                        }
+
+                    }
+                    for (int i = 3; i <= 9; i++) {
+                        if (c.getInt(i) == 1) {
+                            if (doneDays.get(i - 3) == null) {
+                                doneDays.set(i - 3, false);
+                            }
                         }
                     }
-                }
-                for (int i = 3; i <= 9; i++) {
-                    if (c.getInt(i) == 1) {
-                        if (doneDays.get(i - 3) == null) {
-                            doneDays.set(i - 3, false);
-                        }
+                } else {//si tiene chrono
+                    for (int i = 0; i < datesCurrWeek.size(); i++) {
+                        doneDays.set(i, new Span().selectLastTime(db, c.getInt(0), datesCurrWeek.get(i)) >= c.getInt(10) * 60 * 1000);
                     }
                 }
 
@@ -230,9 +237,8 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + f.format(new Date()) + "','" + f.format(new Date()) + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + new Date().getTime() + "','" + new Date().getTime() + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -242,7 +248,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
         Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND beg_date='" + f.format(new Date()) + "'";
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
