@@ -7,86 +7,72 @@
     tools:context="proyectohabitos.example.neita.habitos.FrmChronometer"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/cardview_light_background">
 
-        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-            android:id="@+id/chrono_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="60dp"
-            app:cpb_background_progressbar_color="#009688"
-            app:cpb_background_progressbar_width="10dp"
-            app:cpb_progressbar_color="#4db6ac"
-            app:cpb_progressbar_width="30dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/chrono_txt_chrono"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/chrono_progress_bar"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="132dp"
-            android:text="00:00:00"
-            android:textSize="30sp" />
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/chrono_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="60dp"
+                app:cpb_background_progressbar_color="#B2DFDB"
+                app:cpb_background_progressbar_width="30dp"
+                app:cpb_progressbar_color="@color/colorPrimary"
+                app:cpb_progressbar_width="30dp" />
 
-        <TextView
-            android:id="@+id/chrono_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/chrono_txt_chrono"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="12dp"
-            android:text="0%"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/chrono_txt_chrono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/chrono_progress_bar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="122dp"
+                android:text="00:00:00"
+                android:textSize="50sp"
+                android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:id="@+id/linearLayout"
-            android:layout_below="@+id/chrono_progress_bar"
-            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/chrono_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/chrono_txt_chrono"
+                android:layout_centerHorizontal="true"
+                android:text="0%"
+                android:textSize="30sp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/frm_chrono_play"
-                android:layout_width="124dp"
-                android:layout_height="82dp"
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/chrono_progress_bar"
+                android:layout_centerHorizontal="true"
                 android:layout_weight="1"
-                android:clickable="true"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/play"
-                tools:layout_editor_absoluteX="33dp"
-                tools:layout_editor_absoluteY="394dp" />
+                android:orientation="horizontal">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/frm_chrono_pause"
-                android:layout_width="124dp"
-                android:layout_height="82dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/pause"
-                tools:layout_editor_absoluteX="161dp"
-                tools:layout_editor_absoluteY="394dp" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/frm_chrono_play"
+                    android:layout_width="71dp"
+                    android:layout_height="68dp"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/play"
+                    tools:layout_editor_absoluteX="33dp"
+                    tools:layout_editor_absoluteY="394dp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/frm_chrono_stop"
-                android:layout_width="124dp"
-                android:layout_height="82dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/stop"
-                tools:layout_editor_absoluteX="286dp"
-                tools:layout_editor_absoluteY="394dp" />
-        </LinearLayout>
-    </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
 </android.widget.LinearLayout>

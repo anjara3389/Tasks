@@ -96,16 +96,13 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
         Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date());
-
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
                 "a.chrono, " +//3
                 "(SELECT COUNT(*)>0 " +
                 "FROM span s " +
-                "WHERE s.activity_id=a.id AND s.beg_date='" + f.format(cal.getTime()) + "') " +//4
+                "WHERE s.activity_id=a.id AND s.beg_date='" + f.format(new Date()) + "') " +//4
                 "FROM Activity a " +
                 "WHERE a." + Task.getDay(new Date()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
@@ -193,7 +190,9 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private void uncheckTask(int Id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id;
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
+
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND beg_date='" + f.format(new Date()) + "'";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

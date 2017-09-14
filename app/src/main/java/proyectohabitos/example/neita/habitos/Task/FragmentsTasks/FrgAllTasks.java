@@ -240,7 +240,9 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     private void uncheckTask(int Id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id;
+        Format f = new SimpleDateFormat("yyyy-MM-dd");
+
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND beg_date='" + f.format(new Date()) + "'";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
