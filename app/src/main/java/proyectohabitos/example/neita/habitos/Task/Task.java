@@ -71,7 +71,7 @@ public class Task {
     }
 
     public Task select(SQLiteDatabase db, Integer id) {
-        String sql = "SELECT id,name,l,m, x,j,v,s,d,since_date,reminder, chrono " +
+        String sql = "SELECT id,name,l,m,x,j,v,s,d,since_date,reminder, chrono " +
                 "FROM activity " +
                 "WHERE id=" + id;
 
@@ -95,7 +95,7 @@ public class Task {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
         return cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? "l" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "m" :
-                (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "j" :
+                (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? "j" :
                         (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
     }
 }
