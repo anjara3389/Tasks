@@ -133,21 +133,23 @@ public class FrmChronometer extends AppCompatActivity {
             play.performClick();
         } else {
             playButton = true;
+
+            if (openedSpan != null) {
+                obj = openedSpan;
+                currentBegTime = obj.begDate;
+                setTimer();
+                play.performClick();
+
+            } else {
+                if (wholeTime != 0) {
+                    currentBegTime = new Date().getTime();
+                    setTimer();
+                }
+            }
         }
         ///////////////////////////////////////////////////////////////////////////////////
 
-        if (openedSpan != null) {
-            obj = openedSpan;
-            currentBegTime = obj.begDate;
-            setTimer();
-            play.performClick();
 
-        } else {
-            if (wholeTime != 0) {
-                currentBegTime = new Date().getTime();
-                setTimer();
-            }
-        }
 
     }
 
