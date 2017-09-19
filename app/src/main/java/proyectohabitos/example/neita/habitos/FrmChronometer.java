@@ -59,17 +59,6 @@ public class FrmChronometer extends AppCompatActivity {
         wholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
         BaseHelper.tryClose(db);
 
-        if (openedSpan != null) {
-            obj = openedSpan;
-            currentBegTime = obj.begDate;
-            setTimer();
-        } else {
-            if (wholeTime != 0) {
-                currentBegTime = new Date().getTime();
-                setTimer();
-            }
-        }
-
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +69,7 @@ public class FrmChronometer extends AppCompatActivity {
 
                 if (playButton == true) {//PLAY
                     play.setImageResource(R.drawable.pause);
+                    Toast.makeText(FrmChronometer.this, playButton + "performing PLAY", Toast.LENGTH_LONG).show();
                     playButton = false;
 
                     db = BaseHelper.getWritable(FrmChronometer.this);
@@ -117,6 +107,7 @@ public class FrmChronometer extends AppCompatActivity {
                     };
                     timer.scheduleAtFixedRate(timerTask, 0, (long) 1000);
                 } else {//PAUSE
+                    Toast.makeText(FrmChronometer.this, playButton + "performing PAUSE", Toast.LENGTH_LONG).show();
                     db = BaseHelper.getWritable(FrmChronometer.this);
                     openedSpan = new Span().selectCurrentSpan(db, activityId);
                     BaseHelper.tryClose(db);
@@ -144,6 +135,20 @@ public class FrmChronometer extends AppCompatActivity {
             playButton = true;
         }
         ///////////////////////////////////////////////////////////////////////////////////
+
+        if (openedSpan != null) {
+            obj = openedSpan;
+            currentBegTime = obj.begDate;
+            setTimer();
+            play.performClick();
+
+        } else {
+            if (wholeTime != 0) {
+                currentBegTime = new Date().getTime();
+                setTimer();
+            }
+        }
+
     }
 
     private void setTimer() {
