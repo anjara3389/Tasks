@@ -6,7 +6,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,13 +29,14 @@ public class FrmChronometer extends AppCompatActivity {
     private Long id;
     private long time;
 
-    private Long lastTime = null;
+    private Long wholeTime = null; //el tiempo de todos los spans anteriores del día
 
     private long totalSec;
     private int hours;
     private int min;
     private int sec;
     private boolean playButton;
+    private Span openedSpan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,42 +50,60 @@ public class FrmChronometer extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         activityId = bundle.getInt("id");
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("playing")) { //
-            playButton = savedInstanceState.getBoolean("playing");
-        } else {
-            playButton = true;
-        }
-        play.setImageResource(playButton == true ? R.drawable.pause : R.drawable.play);
-
         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
         time = new Task().select(db, activityId).chrono;
         pgBar.setProgress(0);
         getSupportActionBar().hide();
 
-        lastTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
+        openedSpan = new Span().selectCurrentSpan(db, activityId);
+        wholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
         BaseHelper.tryClose(db);
 
-        if (lastTime != 0) {
-            currentBegTime = new Date().getTime();
+        if (openedSpan != null) {
+            obj = openedSpan;
+            currentBegTime = obj.begDate;
             setTimer();
+        } else {
+            if (wholeTime != 0) {
+                currentBegTime = new Date().getTime();
+                setTimer();
+            }
         }
+
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
+
+                BaseHelper.tryClose(db);
+
                 if (playButton == true) {//PLAY
                     play.setImageResource(R.drawable.pause);
                     playButton = false;
 
+                    db = BaseHelper.getWritable(FrmChronometer.this);
                     timer = new Timer();
+                    Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                    SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
-                    lastTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
+                    wholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
+                    openedSpan = new Span().selectCurrentSpan(db, activityId);
 
-                    currentBegTime = new Date().getTime();
-                    obj = new Span();
-                    obj.begDate = currentBegTime;
-                    obj.activityId = activityId;
-                    id = obj.insert(db);
+                    if (openedSpan != null) {
+                        Toast.makeText(FrmChronometer.this, "PERTENECE A SPAN" + f.format(openedSpan.begDate) + " " + f.format(openedSpan.endDate), Toast.LENGTH_LONG).show();
+                        obj = openedSpan;
+                        currentBegTime = obj.begDate;
+                    } else {
+                        Toast.makeText(FrmChronometer.this, "NUEVO SPAN", Toast.LENGTH_LONG).show();
+                        obj = new Span();
+                        currentBegTime = new Date().getTime();
+                        obj.begDate = currentBegTime;
+                        obj.activityId = activityId;
+                        obj.endDate = null;
+                        id = obj.insert(db);
+                    }
+
+
                     BaseHelper.tryClose(db);
 
                     TimerTask timerTask = new TimerTask() {
@@ -95,12 +117,17 @@ public class FrmChronometer extends AppCompatActivity {
                     };
                     timer.scheduleAtFixedRate(timerTask, 0, (long) 1000);
                 } else {//PAUSE
+                    db = BaseHelper.getWritable(FrmChronometer.this);
+                    openedSpan = new Span().selectCurrentSpan(db, activityId);
+                    BaseHelper.tryClose(db);
+                    if (openedSpan != null) {
+                        obj = openedSpan;
+                    }
                     if (obj != null) {
                         play.setImageResource(R.drawable.play);
                         playButton = true;
-
                         obj.endDate = new Date().getTime();
-                        SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
+                        db = BaseHelper.getWritable(FrmChronometer.this);
                         obj.update(db, id);
                         timer.cancel();
                     }
@@ -108,11 +135,20 @@ public class FrmChronometer extends AppCompatActivity {
                 }
             }
         });
+
+        //recupera datos de cuando se ha destruido la actividad////////////CICLO DE VIDA/////////////////
+        if (savedInstanceState != null) { //
+            playButton = savedInstanceState.containsKey("icon") ? !savedInstanceState.getBoolean("icon") : null;
+            play.performClick();
+        } else {
+            playButton = true;
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
     }
 
     private void setTimer() {
 
-        totalSec = ((new Date().getTime() - currentBegTime) + lastTime) / 1000l;
+        totalSec = ((new Date().getTime() - currentBegTime) + wholeTime) / 1000l;
         hours = (int) totalSec / 3600;
         min = (int) (totalSec % 3600) / 60;
         sec = (int) ((totalSec % 3600) % 60);
@@ -127,9 +163,9 @@ public class FrmChronometer extends AppCompatActivity {
         }
     }
 
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) { //guarda datos para cuando se destruye la actividad CICLO DE VIDA
         super.onSaveInstanceState(outState);
-        outState.putBoolean("playing", playButton);
+        outState.putBoolean("icon", playButton);
     }
 }
 

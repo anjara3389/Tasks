@@ -86,8 +86,8 @@ public class Task {
     }
 
     public static void delete(int id, SQLiteDatabase db) {
-        String sql = "DELETE FROM activity WHERE id=" + id;
-        db.execSQL(sql);
+        db.execSQL("DELETE FROM span WHERE activity_id=" + id);
+        db.execSQL("DELETE FROM activity WHERE id=" + id);
         BaseHelper.tryClose(db);
     }
 

@@ -195,7 +195,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private void uncheckTask(int Id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-
         String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);

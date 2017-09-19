@@ -43,6 +43,45 @@ public class Span {
         BaseHelper.tryClose(db);
     }
 
+    public Span select(SQLiteDatabase db, Integer id) {
+        Cursor c = db.rawQuery("SELECT id,beg_date,end_date,activity_id " +
+                "FROM span s " +
+                "WHERE s.id=" + id + " ", null);
+        if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
+        {
+            return new Span(c.getInt(0), c.getLong(1), c.getLong(2), c.getInt(3));
+        }
+        return null;
+    }
+
+    public Span selectCurrentSpan(SQLiteDatabase db, Integer activityId) {
+       /* Format f=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Cursor d= db.rawQuery("SELECT s.id,s.beg_date,s.end_date " +
+                "FROM span s " +
+                "WHERE s.activity_id=" + activityId , null);
+        if(d.moveToFirst()){
+            do{
+                System.out.println(d.getInt(0)+f.format(d.getLong(1))+"-"+f.format(d.getLong(2)));
+            }while(d.moveToNext());
+        }
+        else{
+            System.out.println("NOPE");
+        }*/
+
+        Cursor c = db.rawQuery("SELECT s.id,s.beg_date,s.end_date,s.activity_id " +
+                "FROM span s " +
+                "WHERE s.end_date IS NULL " +
+                "AND s.activity_id=" + activityId, null);
+
+        if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
+        {
+            System.out.println("PASO////////////////////////////////////////////////" + c.isNull(2));
+
+            return new Span(c.getInt(0), c.getLong(1), c.getLong(2), c.getInt(3));
+        }
+        return null;
+    }
+
     public Long selectLastTime(SQLiteDatabase db, Integer activityId, Date date) {
         Long value = 0L;
         String q = "SELECT SUM(s.end_date-s.beg_date) " +
@@ -54,8 +93,6 @@ public class Span {
 
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
-            //System.out.println("RECUPERAS");
-            //System.out.println(c.getLong(0));
             value = c.getLong(0);
         }
         return value;
