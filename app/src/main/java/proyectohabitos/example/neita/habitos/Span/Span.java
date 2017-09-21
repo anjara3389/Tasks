@@ -38,7 +38,7 @@ public class Span {
         return db.insert("span", null, getValues());
     }
 
-    public void update(SQLiteDatabase db, Long id) {
+    public void update(SQLiteDatabase db, Integer id) {
         db.update("span", getValues(), " id=" + id + " ", null);
         BaseHelper.tryClose(db);
     }
