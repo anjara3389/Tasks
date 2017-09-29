@@ -26,12 +26,16 @@
         <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro-->
         <uses-permission android:name="android.permission.INTERNET" />  <!-- acceso a internet-->
         <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="android.permission.VIBRATE" />
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro-->
         <service
             android:name=".AlarmTaskService"
             android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>

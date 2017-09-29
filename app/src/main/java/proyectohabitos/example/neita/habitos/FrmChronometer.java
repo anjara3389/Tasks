@@ -7,14 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.gcm.TaskParams;
-
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
+
 
 public class FrmChronometer extends AppCompatActivity {
 
@@ -32,7 +31,7 @@ public class FrmChronometer extends AppCompatActivity {
     private int min;
     private int sec;
     private boolean playButton;
-    // private GcmNetworkManager mGcmNetworkManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +107,7 @@ public class FrmChronometer extends AppCompatActivity {
 
         if (totalSecBackwards == 0) {
             play.performClick();
-            // mGcmNetworkManager = GcmNetworkManager.getInstance(this);
-            AlarmTaskService alarmTask = new AlarmTaskService();
-            alarmTask.onRunTask(new TaskParams("START_ALARM"));
+            new AlarmTaskService().startAlarmTask(FrmChronometer.this);
         }
 
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
