@@ -83,6 +83,7 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.insert(db);
                         BaseHelper.tryClose(db);
                         timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
+                        new NotificationTaskService().startNotificationTask(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)));
                     }
                 } else {//PAUSE
                     if (obj != null) {
@@ -92,6 +93,7 @@ public class FrmChronometer extends AppCompatActivity {
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         obj.update(db, new Span().selectCurrentSpan(db, activityId).id);
                         timer.cancel();
+                        new NotificationTaskService().onDestroy();
                     }
                 }
             }
@@ -107,7 +109,6 @@ public class FrmChronometer extends AppCompatActivity {
 
         if (totalSecBackwards == 0) {
             play.performClick();
-            new AlarmTaskService().startAlarmTask(FrmChronometer.this);
         }
 
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);

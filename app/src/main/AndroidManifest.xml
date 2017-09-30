@@ -32,6 +32,16 @@
 
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro-->
         <service
+            android:name=".NotificationTaskService"
+            android:exported="true"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+            </intent-filter>
+        </service>
+
+        <service
             android:name=".AlarmTaskService"
             android:exported="true"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
