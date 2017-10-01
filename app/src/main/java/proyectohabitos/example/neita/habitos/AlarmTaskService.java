@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 //se necesita agregar el servicio en el manifest
 public class AlarmTaskService extends Service {
     private static MediaPlayer mediaPlayer = null;
+    public static final String PLAYSOUND = "playSound";
+    public static final String PAUSESOUND = "pauseSound";
 
     public AlarmTaskService() {
 
@@ -19,11 +21,7 @@ public class AlarmTaskService extends Service {
 
     @Override
     public void onCreate() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.bells);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
         super.onCreate();
-
         //      Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 //        v.vibrate(500);
     }
@@ -31,6 +29,9 @@ public class AlarmTaskService extends Service {
 
     @Override
     public void onDestroy() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
         mediaPlayer = null;
         super.onDestroy();
     }
@@ -43,10 +44,15 @@ public class AlarmTaskService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int i, int i1) {
-        mediaPlayer = MediaPlayer.create(this, R.raw.bells);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-        return super.onStartCommand(intent, i, i1);
+        if (intent.getAction().equals(PLAYSOUND)) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.bells);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
 
+        }
+        if (intent.getAction().equals(PAUSESOUND)) {
+            onDestroy();
+        }
+        return super.onStartCommand(intent, i, i1);
     }
 }
