@@ -83,7 +83,7 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.insert(db);
                         BaseHelper.tryClose(db);
                         timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-                        new NotificationTaskService().startNotificationTask(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)));
+                        NotificationTaskService.programNotificationTask(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this);
                     }
                 } else {//PAUSE
                     if (obj != null) {

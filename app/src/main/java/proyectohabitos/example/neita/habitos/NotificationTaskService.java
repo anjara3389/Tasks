@@ -17,12 +17,14 @@ import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 
 //PARA LANZAR UNA NOTIFICACIÓN CUANDO EL TIEMPO DE LA TAREA SE ACABE.
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
-// se necesita incluir librería en el gradle
+// se necesita incluir librería en el gradle (gcm)
 //se necesita agregar el servicio en el manifest
+//EN ESTA CLASE DE SERVICIO SE PUEDE PROGRAMAR EN CUANTO TIEMPO SE LANZA LA NOTIFICACIÓN
 
 public class NotificationTaskService extends GcmTaskService {
     public static final String ACTION1 = "ACTION1";
     private static final String NOTIFIC = "notific";
+    private AlarmTaskService alarmService;
 
     private Context ctx;
     private long seconds;
@@ -38,16 +40,20 @@ public class NotificationTaskService extends GcmTaskService {
     @Override
     public int onRunTask(TaskParams taskParams) {
         releaseNotification();
-        new AlarmTaskService().startAlarmTask();
+        Intent in = new Intent(this, AlarmTaskService.class);
+        alarmService = new AlarmTaskService();
+        alarmService.startService(in);
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new AlarmTaskService().onDestroy();
+        //Intent in = new Intent(this, AlarmTaskService.class);
+        //alarmService.stopService(in);
     }
 
+    //Lanza la notificación
     public void releaseNotification() {
         // Intent i=new Intent(this,FrmChronometer.class);
         Intent in = new Intent(this, NotificationTaskService.class);
@@ -68,9 +74,10 @@ public class NotificationTaskService extends GcmTaskService {
         nManager.notify(NOTIFICATION_ID, builder.build());
     }
 
-    public void startNotificationTask(long seconds) {
-        this.seconds = seconds;
-        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this.getApplicationContext());
+    //
+    public static void programNotificationTask(long seconds, Context cnxt) {
+
+        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(cnxt);
         Bundle b = new Bundle();
         OneoffTask task = new OneoffTask.Builder()
                 .setService(NotificationTaskService.class)
@@ -84,4 +91,6 @@ public class NotificationTaskService extends GcmTaskService {
                 .build();
         mGcmNetworkManager.schedule(task);
     }
+
+
 }
