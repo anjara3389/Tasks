@@ -1,6 +1,7 @@
 package proyectohabitos.example.neita.habitos;
 
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -31,8 +32,8 @@ public class AlarmTaskService extends Service {
     public void onDestroy() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
+            mediaPlayer = null;
         }
-        mediaPlayer = null;
         super.onDestroy();
     }
 
@@ -48,9 +49,10 @@ public class AlarmTaskService extends Service {
             mediaPlayer = MediaPlayer.create(this, R.raw.bells);
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
-
         }
         if (intent.getAction().equals(PAUSESOUND)) {
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(12345);
             onDestroy();
         }
         return super.onStartCommand(intent, i, i1);

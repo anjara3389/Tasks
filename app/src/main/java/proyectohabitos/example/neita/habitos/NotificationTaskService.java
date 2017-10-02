@@ -51,7 +51,7 @@ public class NotificationTaskService extends GcmTaskService {
 
         Intent in = new Intent(this, AlarmTaskService.class);
         in.setAction(AlarmTaskService.PAUSESOUND);
-        PendingIntent pin = PendingIntent.getService(this, 0, in, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pin = PendingIntent.getService(this, 0, in, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
@@ -60,8 +60,8 @@ public class NotificationTaskService extends GcmTaskService {
                         .setContentText("Haz realizado tu actividad el día de hoy")
                         .addAction(R.drawable.ok, "Aceptar", pin)
                         //.setContentIntent(pi)
-                        .setPriority(Notification.PRIORITY_MAX).
-                        setDefaults(Notification.DEFAULT_ALL);
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setDefaults(Notification.DEFAULT_ALL);
         int NOTIFICATION_ID = 12345;
         NotificationManager nManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         nManager.notify(NOTIFICATION_ID, builder.build());
@@ -71,6 +71,7 @@ public class NotificationTaskService extends GcmTaskService {
     public static void scheduleNotificationFire(long seconds, Context cnxt) {
         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(cnxt);
         Bundle b = new Bundle();
+
         OneoffTask task = new OneoffTask.Builder()
                 .setService(NotificationTaskService.class)
                 .setTag(NOTIFIC)
