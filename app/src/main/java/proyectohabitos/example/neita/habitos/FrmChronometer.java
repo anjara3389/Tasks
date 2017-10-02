@@ -1,5 +1,9 @@
 package proyectohabitos.example.neita.habitos;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +15,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import proyectohabitos.example.neita.habitos.Services.NotificationTaskService;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
 
@@ -31,6 +36,8 @@ public class FrmChronometer extends AppCompatActivity {
     private int min;
     private int sec;
     private boolean playButton;
+    MyBroadcastReceiver myReceiver;
+    IntentFilter intentFilter;
 
 
     @Override
@@ -80,10 +87,10 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
                         obj.activityId = activityId;
                         obj.endDate = null;
-                        obj.insert(db);
+                        Long spanId = obj.insert(db);
                         BaseHelper.tryClose(db);
                         timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-                        NotificationTaskService.scheduleNotificationFire(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this);
+                        NotificationTaskService.scheduleNotificationFire(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
                     }
                 } else {//PAUSE
                     if (obj != null) {
@@ -91,13 +98,18 @@ public class FrmChronometer extends AppCompatActivity {
                         playButton = true;
                         obj.endDate = new Date().getTime();
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
-                        obj.update(db, new Span().selectCurrentSpan(db, activityId).id);
+                        if (activityId != null) {
+                            obj.update(db, new Span().selectCurrentSpan(db, activityId).id);
+                        }
                         timer.cancel();
                         new NotificationTaskService().onDestroy();
                     }
                 }
             }
         });
+        //PARA EL BROADCAST
+        myReceiver = new MyBroadcastReceiver();
+        intentFilter = new IntentFilter("com.hmkcode.android.USER_ACTION");
     }
 
     private void setTimer() {
@@ -107,12 +119,8 @@ public class FrmChronometer extends AppCompatActivity {
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
-        if (totalSecBackwards == 0) {
-            play.performClick();
-        }
-
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
-
+        //and i have a question that i dont know what to do .... well, the span has to close from the service ok ... but if i have opened the activity of the chronometer
         if (((totalSec / 60f) * 100f / targetTime) <= 100f) {
             pgBar.setProgress((int) ((totalSec / 60f) * 100f) / targetTime);
             percent.setText(((int) ((totalSec / 60f) * 100f / targetTime)) + "%");
@@ -133,5 +141,38 @@ public class FrmChronometer extends AppCompatActivity {
             }
         };
     }
+
+    @Override
+    protected void onStop() {
+        timer.cancel();
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(myReceiver);
+    }
+
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FrmChronometer.this.finish();
+
+        }
+
+    }
 }
+
+
+
+
 

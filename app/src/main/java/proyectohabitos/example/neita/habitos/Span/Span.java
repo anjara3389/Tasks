@@ -54,7 +54,7 @@ public class Span {
         return null;
     }
 
-    public Span selectCurrentSpan(SQLiteDatabase db, Integer activityId) {
+    public Span selectCurrentSpan(SQLiteDatabase db, int activityId) {
        /* Format f=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Cursor d= db.rawQuery("SELECT s.id,s.beg_date,s.end_date " +
                 "FROM span s " +
