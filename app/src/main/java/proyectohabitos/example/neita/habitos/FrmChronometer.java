@@ -1,8 +1,5 @@
 package proyectohabitos.example.neita.habitos;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -55,23 +52,6 @@ public class FrmChronometer extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         activityId = bundle.getInt("id");
 
-        //valores iniciales
-        SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
-        targetTime = new Task().select(db, activityId).chrono; //tiempo en minutos
-        obj = new Span().selectCurrentSpan(db, activityId) != null ? new Span().selectCurrentSpan(db, activityId) : new Span();
-        lastWholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
-        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
-        setTimer();
-
-        play.setImageResource(new Span().selectCurrentSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
-        playButton = new Span().selectCurrentSpan(db, activityId) == null;
-
-        if (new Span().selectCurrentSpan(db, activityId) != null) {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-        }
-        BaseHelper.tryClose(db);
-
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,9 +87,11 @@ public class FrmChronometer extends AppCompatActivity {
                 }
             }
         });
+
         //PARA EL BROADCAST
         myReceiver = new MyBroadcastReceiver();
         intentFilter = new IntentFilter("com.hmkcode.android.USER_ACTION");
+
     }
 
     private void setTimer() {
@@ -144,35 +126,46 @@ public class FrmChronometer extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        timer.cancel();
         super.onStop();
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() { //cuando volvemos a la aplicación o iniciamos la actividad
         super.onResume();
+
+        //valores iniciales
+        SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
+        targetTime = new Task().select(db, activityId).chrono; //tiempo en minutos
+        obj = new Span().selectCurrentSpan(db, activityId) != null ? new Span().selectCurrentSpan(db, activityId) : new Span();
+        lastWholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
+        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
+        setTimer();
+
+        play.setImageResource(new Span().selectCurrentSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
+        playButton = new Span().selectCurrentSpan(db, activityId) == null;
+
+        if (new Span().selectCurrentSpan(db, activityId) != null) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
+        }
+        BaseHelper.tryClose(db);
+
         registerReceiver(myReceiver, intentFilter);
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause() { //cuando dejamos la aplicación
         super.onPause();
+        if (timer != null) {
+            timer.cancel();
+        }
         unregisterReceiver(myReceiver);
     }
-
-    public class MyBroadcastReceiver extends BroadcastReceiver {
-
-        public MyBroadcastReceiver() {
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            FrmChronometer.this.finish();
-
-        }
-
-    }
 }
+
 
 
 

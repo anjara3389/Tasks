@@ -14,7 +14,6 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.TaskParams;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
@@ -42,13 +41,15 @@ public class NotificationTaskService extends GcmTaskService {
 
     @Override
     public int onRunTask(TaskParams taskParams) {
+        fireNotification();
+        Intent in = new Intent(this, AlarmTaskService.class);
+        in.setAction(AlarmTaskService.PLAYSOUND);
+        startService(in);
 
         Bundle bundle = taskParams.getExtras();
-
-
         //se cierra el span correspondiente
         SQLiteDatabase db = BaseHelper.getReadable(this);
-        System.out.println((int) bundle.getLong("activityId") + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
+        System.out.println(bundle.getInt("activityId") + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
 
         Span span = new Span().selectCurrentSpan(db, bundle.getInt("activityId"));
 
@@ -57,17 +58,13 @@ public class NotificationTaskService extends GcmTaskService {
         } else {
             span.endDate = new Date().getTime();
             span.update(db, span.id);
-            SimpleDateFormat f = new SimpleDateFormat("dd/MM/YYYY hh:mm a");
-            System.out.println(f.format(span.endDate) + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
+            System.out.println(span.endDate + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
         }
 
         BaseHelper.tryClose(db);
 
         //
-        fireNotification();
-        Intent in = new Intent(this, AlarmTaskService.class);
-        in.setAction(AlarmTaskService.PLAYSOUND);
-        startService(in);
+
         Intent intnet = new Intent("com.hmkcode.android.USER_ACTION");
         sendBroadcast(intnet);
         return GcmNetworkManager.RESULT_SUCCESS;
@@ -75,6 +72,9 @@ public class NotificationTaskService extends GcmTaskService {
 
     @Override
     public void onDestroy() {
+        Intent in = new Intent(this, AlarmTaskService.class);
+        stopService(in);
+
         super.onDestroy();
     }
 
