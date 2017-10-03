@@ -113,7 +113,7 @@ public class FrmChronometer extends AppCompatActivity {
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
-        if (totalSecBackwards == 0) {
+        if (totalSecBackwards == 0 && timer != null) {
             timer.cancel();
         }
 
