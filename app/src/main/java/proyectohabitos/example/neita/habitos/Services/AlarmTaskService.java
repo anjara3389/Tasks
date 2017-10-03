@@ -21,15 +21,10 @@ public class AlarmTaskService extends Service {
     public AlarmTaskService() {
 
     }
-
     @Override
     public void onCreate() {
         super.onCreate();
-        //      Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//        v.vibrate(500);
     }
-
-
     @Override
     public void onDestroy() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -38,7 +33,6 @@ public class AlarmTaskService extends Service {
         }
         super.onDestroy();
     }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
