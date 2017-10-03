@@ -72,9 +72,6 @@ public class NotificationTaskService extends GcmTaskService {
 
     @Override
     public void onDestroy() {
-        Intent in = new Intent(this, AlarmTaskService.class);
-        stopService(in);
-
         super.onDestroy();
     }
 
