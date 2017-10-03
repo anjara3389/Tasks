@@ -49,16 +49,12 @@ public class NotificationTaskService extends GcmTaskService {
         Bundle bundle = taskParams.getExtras();
         //se cierra el span correspondiente
         SQLiteDatabase db = BaseHelper.getReadable(this);
-        System.out.println(bundle.getInt("activityId") + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
 
         Span span = new Span().selectCurrentSpan(db, bundle.getInt("activityId"));
 
-        if (span == null) {
-            System.out.println("ES NULLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-        } else {
+        if (span != null) {
             span.endDate = new Date().getTime();
             span.update(db, span.id);
-            System.out.println(span.endDate + "SPAAAAAAAAAAAAAAAAAAAAAAAAAAN");
         }
 
         BaseHelper.tryClose(db);

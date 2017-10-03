@@ -75,8 +75,6 @@ public class Span {
 
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
-            System.out.println("PASO////////////////////////////////////////////////" + c.isNull(2));
-
             return new Span(c.getInt(0), c.getLong(1), c.getLong(2), c.getInt(3));
         }
         return null;
