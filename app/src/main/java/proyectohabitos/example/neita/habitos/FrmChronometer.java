@@ -1,5 +1,7 @@
 package proyectohabitos.example.neita.habitos;
 
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import proyectohabitos.example.neita.habitos.Services.AlarmTaskService;
 import proyectohabitos.example.neita.habitos.Services.NotificationTaskService;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -67,7 +70,7 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
                         obj.activityId = activityId;
                         obj.endDate = null;
-                        Long spanId = obj.insert(db);
+                        obj.insert(db);
                         BaseHelper.tryClose(db);
                         timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
                         NotificationTaskService.scheduleNotificationFire(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
@@ -79,10 +82,19 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.endDate = new Date().getTime();
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         if (activityId != null) {
-                            obj.update(db, new Span().selectCurrentSpan(db, activityId).id);
+                            Span currentSpan = new Span().selectCurrentSpan(db, activityId);
+                            if (currentSpan != null) {
+                                obj.update(db, currentSpan.id);
+                            }
                         }
                         timer.cancel();
-                        new NotificationTaskService().onDestroy();
+                        stopService(new Intent(FrmChronometer.this, AlarmTaskService.class));
+                        stopService(new Intent(FrmChronometer.this, NotificationTaskService.class));
+                        if (totalSecBackwards == 0) {
+                            sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
+                            NotificationManager mNotificationManager = (NotificationManager) getSystemService(FrmChronometer.this.NOTIFICATION_SERVICE);
+                            mNotificationManager.cancel(12345);
+                        }
                     }
                 }
             }
@@ -90,7 +102,7 @@ public class FrmChronometer extends AppCompatActivity {
 
         //PARA EL BROADCAST
         myReceiver = new MyBroadcastReceiver();
-        intentFilter = new IntentFilter("com.hmkcode.android.USER_ACTION");
+        intentFilter = new IntentFilter("com.hmkcode.android.CLOSE_CRONO_ACTIVITY");
 
     }
 
@@ -100,6 +112,10 @@ public class FrmChronometer extends AppCompatActivity {
         hours = (int) totalSecBackwards / 3600;
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
+
+        if (totalSecBackwards == 0) {
+            timer.cancel();
+        }
 
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
         //and i have a question that i dont know what to do .... well, the span has to close from the service ok ... but if i have opened the activity of the chronometer

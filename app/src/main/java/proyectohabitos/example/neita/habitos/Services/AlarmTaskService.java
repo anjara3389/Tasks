@@ -53,6 +53,7 @@ public class AlarmTaskService extends Service {
             mediaPlayer.start();
         }
         if (intent.getAction().equals(PAUSESOUND)) {
+            sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(12345);
             onDestroy();

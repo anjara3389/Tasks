@@ -62,11 +62,6 @@ public class NotificationTaskService extends GcmTaskService {
         }
 
         BaseHelper.tryClose(db);
-
-        //
-
-        Intent intnet = new Intent("com.hmkcode.android.USER_ACTION");
-        sendBroadcast(intnet);
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
