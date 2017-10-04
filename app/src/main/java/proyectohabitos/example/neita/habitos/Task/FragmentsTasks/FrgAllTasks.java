@@ -166,10 +166,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
                 LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
                 data.add(task);
-                for (int i = 0; i < doneDays.size(); i++) {
-                    System.out.print("BLEH");
-                    System.out.print(doneDays.get(i));
-                }
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }

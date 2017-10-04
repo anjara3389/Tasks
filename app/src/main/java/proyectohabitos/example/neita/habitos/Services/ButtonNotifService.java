@@ -3,6 +3,7 @@ package proyectohabitos.example.neita.habitos.Services;
 
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -39,6 +40,10 @@ public class ButtonNotifService extends Service {
         AlarmTaskService.stopSound(this);
         return START_STICKY;
 
+    }
+
+    public static void stopService(Context ctx) {
+        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), AlarmTaskService.class));
     }
 
 }

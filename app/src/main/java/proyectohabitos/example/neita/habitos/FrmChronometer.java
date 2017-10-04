@@ -10,11 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
+
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import proyectohabitos.example.neita.habitos.Services.AlarmTaskService;
+import proyectohabitos.example.neita.habitos.Services.ButtonNotifService;
 import proyectohabitos.example.neita.habitos.Services.NotificationTaskService;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -88,9 +91,16 @@ public class FrmChronometer extends AppCompatActivity {
                             }
                         }
                         timer.cancel();
-                        stopService(new Intent(FrmChronometer.this, AlarmTaskService.class));
-                        stopService(new Intent(FrmChronometer.this, NotificationTaskService.class));
+
+                        //Se cancelan los servicios
+                        AlarmTaskService.stopSound(FrmChronometer.this);
+                        ButtonNotifService.stopService(FrmChronometer.this);
+                        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmChronometer.this);
+                        mGcmNetworkManager.cancelTask(NotificationTaskService.ACCESSIBILITY_SERVICE, NotificationTaskService.class);
+
+
                         if (totalSecBackwards == 0) {
+                            //se envía broadcast para cerrar la activity y se cierra la notificación.
                             sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(FrmChronometer.this.NOTIFICATION_SERVICE);
                             mNotificationManager.cancel(12345);
