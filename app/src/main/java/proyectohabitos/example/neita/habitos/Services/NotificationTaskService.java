@@ -61,6 +61,8 @@ public class NotificationTaskService extends GcmTaskService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
+        mGcmNetworkManager.cancelTask(NOTIFIC, NotificationTaskService.class);
     }
 
     //Lanza la notificación
