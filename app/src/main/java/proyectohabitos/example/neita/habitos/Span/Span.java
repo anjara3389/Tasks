@@ -80,6 +80,7 @@ public class Span {
         return null;
     }
 
+    //La suma de los tiempos de la actividad en el día
     public Long selectLastTime(SQLiteDatabase db, Integer activityId, Date date) {
         Long value = 0L;
         String q = "SELECT SUM(s.end_date-s.beg_date) " +
