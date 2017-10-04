@@ -1,12 +1,11 @@
 package proyectohabitos.example.neita.habitos.Services;
 
 
-import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import proyectohabitos.example.neita.habitos.R;
 
@@ -14,44 +13,36 @@ import proyectohabitos.example.neita.habitos.R;
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
 //se necesita agregar el servicio en el manifest
 public class AlarmTaskService extends Service {
-    private static MediaPlayer mediaPlayer = null;
-    public static final String PLAYSOUND = "playSound";
-    public static final String PAUSESOUND = "pauseSound";
+    private MediaPlayer player;
 
-    public AlarmTaskService() {
-
-    }
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-    @Override
-    public void onDestroy() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer = null;
-        }
-        super.onDestroy();
-    }
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent arg0) {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int i, int i1) {
-        if (intent.getAction().equals(PLAYSOUND)) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.bells);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
-        }
-        if (intent.getAction().equals(PAUSESOUND)) {
-            sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(12345);
-            onDestroy();
-        }
-        return super.onStartCommand(intent, i, i1);
+    public void onCreate() {
+        super.onCreate();
+        player = MediaPlayer.create(this, R.raw.bells);
+        player.setLooping(true); // Set looping
+        player.setVolume(100, 100);
     }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        player.start();
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (player.isLooping() || player.isLooping()) {
+            player.stop();
+        }
+        player.release();
+    }
+
+    public static void stopSound(Context ctx) {
+        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), AlarmTaskService.class));
+    }
+
 }

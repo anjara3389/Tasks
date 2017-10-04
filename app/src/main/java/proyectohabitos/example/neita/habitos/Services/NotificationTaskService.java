@@ -43,7 +43,6 @@ public class NotificationTaskService extends GcmTaskService {
     public int onRunTask(TaskParams taskParams) {
         fireNotification();
         Intent in = new Intent(this, AlarmTaskService.class);
-        in.setAction(AlarmTaskService.PLAYSOUND);
         startService(in);
 
         Bundle bundle = taskParams.getExtras();
@@ -66,10 +65,8 @@ public class NotificationTaskService extends GcmTaskService {
 
     //Lanza la notificación
     public void fireNotification() {
-        Intent in = new Intent(this, AlarmTaskService.class);
-        in.setAction(AlarmTaskService.PAUSESOUND);
+        Intent in = new Intent(this, ButtonNotifService.class);
         PendingIntent pin = PendingIntent.getService(this, 0, in, PendingIntent.FLAG_CANCEL_CURRENT);
-
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.alarm)
