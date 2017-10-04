@@ -46,6 +46,10 @@
             android:exported="true"
             android:launchMode="singleTask">
         </service>
+        <service
+            android:name=".Services.ButtonNotifService"
+            android:exported="true"
+            android:launchMode="singleTask"></service>
 
         <receiver android:name="proyectohabitos.example.neita.habitos.MyBroadcastReceiver">
             <intent-filter>
