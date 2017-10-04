@@ -44,5 +44,4 @@ public class AlarmTaskService extends Service {
     public static void stopSound(Context ctx) {
         ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), AlarmTaskService.class));
     }
-
 }
