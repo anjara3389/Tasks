@@ -49,7 +49,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     @Override
     public void onResume() { //actualiza después de editar
         super.onResume();
-        upload();
+        update();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
         lvTasks = (ListView) rootView.findViewById(R.id.frg_all_taks_lst);
         btn = (FloatingActionButton) rootView.findViewById(R.id.frg_all_tasks_btn);
-        upload();
+        update();
 
         registerForContextMenu(lvTasks);
 
@@ -88,10 +88,10 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        upload();
+        update();
     }
 
-    public void upload() {
+    public void update() {
         list = getTasks();
         CustomAdapterAllTasks adapter = new CustomAdapterAllTasks(list, getContext());
         lvTasks.setAdapter(adapter);
@@ -128,7 +128,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                Toast.makeText(getContext(), "ACTIVIDAD___" + c.getString(1), Toast.LENGTH_LONG).show();
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
 
                     for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
@@ -181,8 +180,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
-
-        String msg = "";
+        String msg;
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
         Cursor c = db.rawQuery("SELECT COUNT(*)>0,(SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()) + ") " +
                 "FROM span s " +
@@ -213,13 +211,13 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             Intent i = new Intent(getActivity(), FrmChronometer.class);
             i.putExtra("id", posit);
             startActivityForResult(i, 1);
-            upload();
+            update();
             return true;
         } else if (item.getItemId() == 0 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-            upload();
+            update();
             return true;
         } else if (item.getItemId() == 1) {
             Intent i = new Intent(getActivity(), FrmTask.class);
@@ -231,7 +229,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-            upload();
+            update();
             return true;
         } else if (item.getItemId() == 6) {
             Intent i = new Intent(getActivity(), FrmStatistics.class);
@@ -268,17 +266,17 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
                 Task.delete(posit, db);
                 Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
-                upload();
+                update();
             }
             if (code == CHECK_TASK) {
                 checkTaskAsDone(posit);
                 Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
-                upload();
+                update();
             }
             if (code == UNCHECK_TASK) {
                 uncheckTask(posit);
                 Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
-                upload();
+                update();
             }
         }
     }

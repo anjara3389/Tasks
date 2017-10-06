@@ -46,7 +46,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     @Override
     public void onResume() { //actualiza después de editar
         super.onResume();
-        upload();
+        update();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
         lvTasks = (ListView) rootView.findViewById(R.id.frg_today_taks_lst);
         btn = (FloatingActionButton) rootView.findViewById(R.id.frg_today_tasks_btn);
-        upload();
+        update();
         registerForContextMenu(lvTasks);
 
         //cuando se seleccciona un item del list view
@@ -83,10 +83,10 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        upload();
+        update();
     }
 
-    public void upload() {
+    public void update() {
         list = getActivities();
         CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(list, getContext());
         lvTasks.setAdapter(adapter);
@@ -179,13 +179,13 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             Intent i = new Intent(getActivity(), FrmChronometer.class);
             i.putExtra("id", posit);
             startActivityForResult(i, 1);
-            upload();
+            update();
             return true;
         } else if (item.getItemId() == 3 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-            upload();
+            update();
             return true;
         } else if (item.getItemId() == 4) {
             Intent i = new Intent(getActivity(), FrmTask.class);
@@ -197,7 +197,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             YesNoDialogFragment dial = new YesNoDialogFragment();
             dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
-            upload();
+            update();
             return true;
         } else {
             return false;
@@ -228,17 +228,17 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
                 Task.delete(posit, db);
                 Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
-                upload();
+                update();
             }
             if (code == CHECK_TASK) {
                 checkTaskAsDone(posit);
                 Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
-                upload();
+                update();
             }
             if (code == UNCHECK_TASK) {
                 uncheckTask(posit);
                 Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
-                upload();
+                update();
             }
         }
     }
