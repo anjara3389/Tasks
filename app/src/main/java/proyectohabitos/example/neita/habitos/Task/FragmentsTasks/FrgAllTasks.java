@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateOnTZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
@@ -127,6 +128,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
+                Toast.makeText(getContext(), "ACTIVIDAD___" + c.getString(1), Toast.LENGTH_LONG).show();
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
 
                     for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
@@ -143,9 +145,9 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                                             (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
                             if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
                                 doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
+
                             }
                         }
-
                     }
                     for (int i = 3; i <= 9; i++) {
                         if (c.getInt(i) == 1) {
@@ -154,7 +156,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                             }
                         }
                     }
-
 
                 if (!c.isNull(10)) {//si tiene chrono
                     for (int i = 0; i < datesCurrWeek.size(); i++) {
@@ -167,8 +168,11 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
                 data.add(task);
             }
+
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
+
+
         BaseHelper.tryClose(db);
 
         return data;
@@ -242,7 +246,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + new Date().getTime() + "','" + new Date().getTime() + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -252,7 +256,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
         Format f = new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

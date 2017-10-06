@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateOnTZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
@@ -28,7 +30,7 @@ import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
-import proyectohabitos.example.neita.habitos.adapters.CustomAdapter;
+import proyectohabitos.example.neita.habitos.adapters.CustomAdapterTodayTasks;
 
 
 public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
@@ -86,7 +88,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     public void upload() {
         list = getActivities();
-        CustomAdapter adapter = new CustomAdapter(list, getContext());
+        CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(list, getContext());
         lvTasks.setAdapter(adapter);
     }
 
@@ -95,7 +97,9 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
         Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getDefault());
         cal.setTime(new Date());
+
 
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
@@ -103,11 +107,14 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 "a.chrono, " +//3
                 "(SELECT COUNT(*)>0 " +
                 "FROM span s " +
-                "WHERE s.activity_id=a.id AND CAST((s.beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000) + ") " +//4
+                "WHERE s.activity_id=a.id AND CAST((s.beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000) + ") " +//4
                 "FROM Activity a " +
                 "WHERE a." + Task.getDay(cal.getTime()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
+
+            System.out.println("=====ACTIVIDADES=====");
+            System.out.println("////// " + c.getString(1) + c.getString(0));
             Boolean done;
             do {
                 if (c.isNull(3)) {
@@ -120,6 +127,20 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
+        }
+
+
+        Cursor d = db.rawQuery("SELECT s.activity_id,s.beg_date/86400000 " +
+                "FROM span s ", null);
+        if (d.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
+        {
+            do {
+                System.out.println("=====SPAN=====");
+                System.out.println("//////actividad " + d.getString(0));
+                System.out.println("//////span " + d.getInt(1));
+                System.out.println(DateOnTZone.getTimeOnCurrTimeZone() + "//////fechanueva " + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000));
+            }
+            while (d.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
         BaseHelper.tryClose(db);
         return data;
@@ -135,7 +156,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         String msg = "";
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000), null);
+            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000), null);
             if (c.moveToFirst()) {
                 msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
             }
@@ -187,7 +208,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private void checkTaskAsDone(int id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + new Date().getTime() + "','" + new Date().getTime() + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -195,7 +216,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     private void uncheckTask(int Id) {
         SQLiteDatabase db = BaseHelper.getWritable(getContext());
 
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (new Date().getTime() / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

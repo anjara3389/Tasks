@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateOnTZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
 
@@ -168,7 +169,7 @@ public class FrmTask extends AppCompatActivity {
             obj.v = vier.isChecked();
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
-            obj.sinceDate = new Date().getTime();
+            obj.sinceDate = DateOnTZone.getTimeOnCurrTimeZone();
             obj.reminder = remind;
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 

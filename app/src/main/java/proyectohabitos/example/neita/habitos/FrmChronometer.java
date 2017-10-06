@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -69,20 +68,20 @@ public class FrmChronometer extends AppCompatActivity {
 
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         timer = new Timer();
-                        lastWholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
-                        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
+                        lastWholeTime = new Span().selectLastTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, null);
+                        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
                         obj.activityId = activityId;
                         obj.endDate = null;
                         obj.insert(db);
                         BaseHelper.tryClose(db);
                         timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-                        NotificationTaskService.scheduleNotificationFire(((targetTime * 60) - (((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
+                        NotificationTaskService.scheduleNotificationFire(((targetTime * 60) - (((DateOnTZone.getTimeOnCurrTimeZone() - obj.begDate) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
                     }
                 } else {//PAUSE
                     if (obj != null) {
                         play.setImageResource(R.drawable.play);
                         playButton = true;
-                        obj.endDate = new Date().getTime();
+                        obj.endDate = DateOnTZone.getTimeOnCurrTimeZone();
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         if (activityId != null) {
                             Span currentSpan = new Span().selectCurrentSpan(db, activityId);
@@ -117,7 +116,7 @@ public class FrmChronometer extends AppCompatActivity {
     }
 
     private void setTimer() {
-        totalSec = ((new Date().getTime() - obj.begDate) + lastWholeTime) / 1000l;
+        totalSec = ((DateOnTZone.getTimeOnCurrTimeZone() - obj.begDate) + lastWholeTime) / 1000l;
         totalSecBackwards = (targetTime * 60) - totalSec;
         hours = (int) totalSecBackwards / 3600;
         min = (int) (totalSecBackwards % 3600) / 60;
@@ -166,8 +165,8 @@ public class FrmChronometer extends AppCompatActivity {
         SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
         targetTime = new Task().select(db, activityId).chrono; //tiempo en minutos
         obj = new Span().selectCurrentSpan(db, activityId) != null ? new Span().selectCurrentSpan(db, activityId) : new Span();
-        lastWholeTime = new Span().selectLastTime(db, activityId, new Date()) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, new Date());
-        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : new Date().getTime();
+        lastWholeTime = new Span().selectLastTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, null);
+        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
         setTimer();
 
         play.setImageResource(new Span().selectCurrentSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón

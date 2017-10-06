@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 
-public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClickListener {
+public class CustomAdapterTodayTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
     private ArrayList<LstTask> dataSet;
     Context mContext;
@@ -25,7 +25,7 @@ public class CustomAdapter extends ArrayAdapter<LstTask> implements View.OnClick
         ImageView img;
     }
 
-    public CustomAdapter(ArrayList<LstTask> data, Context context) {
+    public CustomAdapterTodayTasks(ArrayList<LstTask> data, Context context) {
         super(context, R.layout.row_today_tasks, data);
         this.dataSet = data;
         this.mContext = context;
