@@ -45,6 +45,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     private static final int DELETE_TASK = 1;
     private static final int CHECK_TASK = 2;
     private static final int UNCHECK_TASK = 3;
+    private CustomAdapterAllTasks adapter;
 
     @Override
     public void onResume() { //actualiza después de editar
@@ -93,7 +94,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
     public void update() {
         list = getTasks();
-        CustomAdapterAllTasks adapter = new CustomAdapterAllTasks(list, getContext());
+        adapter = new CustomAdapterAllTasks(list, getContext());
         lvTasks.setAdapter(adapter);
     }
 
