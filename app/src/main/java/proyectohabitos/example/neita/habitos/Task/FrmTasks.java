@@ -48,14 +48,13 @@ public class FrmTasks extends AppCompatActivity {
             //avisa cuando el usuario accede a una pestaña dandote la posición de ésta
             public void onPageSelected(int position) {
                 Fragment frag = mDemoCollectionPagerAdapter.getFragment(position);
-                if (frag instanceof FrgTodayTasks) {
-                    ((FrgTodayTasks) frag).update();
-                    Toast.makeText(FrmTasks.this, "LELE", Toast.LENGTH_LONG).show();
-                } else if (frag instanceof FrgAllTasks) {
-                    ((FrgAllTasks) frag).update();
-                    Toast.makeText(FrmTasks.this, "LOLO", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(FrmTasks.this, "PAILO", Toast.LENGTH_LONG).show();
+                if(frag!=null) {
+                    if (frag instanceof FrgTodayTasks) {
+                        ((FrgTodayTasks) frag).update();
+                    } else if (frag instanceof FrgAllTasks) {
+                        ((FrgAllTasks) frag).update();
+                    } else {
+                    }
                 }
             }
 
@@ -125,7 +124,10 @@ public class FrmTasks extends AppCompatActivity {
         }
 
         public Fragment getFragment(int posit) {
-            return fragmentM.findFragmentByTag((String) fragTags.get(posit));
+            if(fragTags!=null&&fragTags.get(posit)!=null) {
+                return fragmentM.findFragmentByTag((String) fragTags.get(posit));
+            }
+            return null;
         }
 
         @Override
