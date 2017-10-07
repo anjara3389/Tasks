@@ -4,7 +4,7 @@ package proyectohabitos.example.neita.habitos.Task;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -94,7 +94,7 @@ public class FrmTasks extends AppCompatActivity {
     }
 
     //Maneja operaciones con fragments
-    public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
+    public class DemoCollectionPagerAdapter extends FragmentPagerAdapter {
         private FragmentManager fragmentM;
         private ArrayList fragTags = new ArrayList();
 
