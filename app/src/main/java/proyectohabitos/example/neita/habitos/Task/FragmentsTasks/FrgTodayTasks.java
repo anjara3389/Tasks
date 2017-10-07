@@ -32,7 +32,7 @@ import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapterTodayTasks;
 
-
+//fragmento pestaña tareas de hoy
 public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
     private ArrayList<LstTask> list;

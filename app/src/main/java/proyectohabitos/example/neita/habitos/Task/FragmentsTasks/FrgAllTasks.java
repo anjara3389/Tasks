@@ -35,7 +35,7 @@ import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
 import proyectohabitos.example.neita.habitos.adapters.CustomAdapterAllTasks;
 
-
+//Fragmento pestaña todas las tareas
 public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
     ArrayList<LstTask> list;

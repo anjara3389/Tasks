@@ -8,12 +8,19 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
 public class FrmTasks extends AppCompatActivity {
+//esta actividad contiene dos fragmentos: FrgAllTasks,FrgTodayTasks que corresponden a dos pestañas
+
+
 /* Instances of this class are fragments representing a single
  object in our collection.*/
 
@@ -38,9 +45,17 @@ public class FrmTasks extends AppCompatActivity {
             }
 
             @Override
+            //avisa cuando el usuario accede a una pestaña dandote la posición de ésta
             public void onPageSelected(int position) {
-                if(position == 0){
-                   // getFragmentManager().findFragmentByTag()
+                Fragment frag = mDemoCollectionPagerAdapter.getFragment(position);
+                if (frag instanceof FrgTodayTasks) {
+                    ((FrgTodayTasks) frag).update();
+                    Toast.makeText(FrmTasks.this, "LELE", Toast.LENGTH_LONG).show();
+                } else if (frag instanceof FrgAllTasks) {
+                    ((FrgAllTasks) frag).update();
+                    Toast.makeText(FrmTasks.this, "LOLO", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(FrmTasks.this, "PAILO", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -61,7 +76,6 @@ public class FrmTasks extends AppCompatActivity {
             @Override
             public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
                 mViewPager.setCurrentItem(tab.getPosition());
-
             }
 
             @Override
@@ -79,13 +93,15 @@ public class FrmTasks extends AppCompatActivity {
 
     }
 
-    //     Since this is an object collection, use a FragmentStatePagerAdapter, and NOT a FragmentPagerAdapter
+    //Maneja operaciones con fragments
     public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
+        private FragmentManager fragmentM;
+        private ArrayList fragTags = new ArrayList();
+
         public DemoCollectionPagerAdapter(FragmentManager fm) {
             super(fm);
+            fragmentM = fm;
         }
-
-
         @Override
         public Fragment getItem(int i) {
             Fragment fragment = null;
@@ -97,6 +113,20 @@ public class FrmTasks extends AppCompatActivity {
             return fragment;
         }
 
+        @Override
+        //method is called by android everytime a page is added
+        public Object instantiateItem(ViewGroup container, int position) {
+            Object instantiateItem = super.instantiateItem(container, position);
+            if (instantiateItem instanceof Fragment) {//si el objeto es un fragmento
+                Fragment fragment = (Fragment) instantiateItem;
+                fragTags.add(position, fragment.getTag());
+            }
+            return instantiateItem;
+        }
+
+        public Fragment getFragment(int posit) {
+            return fragmentM.findFragmentByTag((String) fragTags.get(posit));
+        }
 
         @Override
         public int getCount() {
@@ -108,4 +138,5 @@ public class FrmTasks extends AppCompatActivity {
             return "OBJECT " + (position + 1);
         }
     }
+
 }
