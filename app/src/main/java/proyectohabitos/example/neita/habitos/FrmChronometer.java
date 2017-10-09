@@ -89,7 +89,9 @@ public class FrmChronometer extends AppCompatActivity {
                                 obj.update(db, currentSpan.id);
                             }
                         }
-                        timer.cancel();
+                        if (timer != null) {
+                            timer.cancel();
+                        }
 
                         //Se cancelan los servicios
                         AlarmTaskService.stopSound(FrmChronometer.this);
@@ -122,8 +124,12 @@ public class FrmChronometer extends AppCompatActivity {
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
-        if (totalSecBackwards == 0 && timer != null) {
-            timer.cancel();
+        if (totalSecBackwards == 0 || totalSecBackwards < 0) {
+            if (timer != null) {
+                timer.cancel();
+            }
+            play.setImageResource(R.drawable.pause); //botón y booleano del botón
+            playButton = false;
         }
 
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
@@ -167,10 +173,9 @@ public class FrmChronometer extends AppCompatActivity {
         obj = new Span().selectCurrentSpan(db, activityId) != null ? new Span().selectCurrentSpan(db, activityId) : new Span();
         lastWholeTime = new Span().selectLastTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, null);
         obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
-        setTimer();
-
         play.setImageResource(new Span().selectCurrentSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
         playButton = new Span().selectCurrentSpan(db, activityId) == null;
+        setTimer();
 
         if (new Span().selectCurrentSpan(db, activityId) != null) {
             timer = new Timer();

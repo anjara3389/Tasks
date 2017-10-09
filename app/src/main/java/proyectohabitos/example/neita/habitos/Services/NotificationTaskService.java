@@ -16,6 +16,7 @@ import com.google.android.gms.gcm.TaskParams;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTZone;
+import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
 
@@ -54,6 +55,8 @@ public class NotificationTaskService extends GcmTaskService {
         }
 
         BaseHelper.tryClose(db);
+
+        fireChronoActivity(bundle.getInt("activityId"));
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
@@ -82,6 +85,13 @@ public class NotificationTaskService extends GcmTaskService {
         nManager.notify(NOTIFICATION_ID, builder.build());
     }
 
+    //Lanza la actividad del cronometro
+    public void fireChronoActivity(Integer activityId) {
+        Intent i = new Intent(this, FrmChronometer.class);
+        i.putExtra("id", activityId);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
 
     public static void scheduleNotificationFire(long seconds, Context cnxt, Integer activityId) {
         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(cnxt);

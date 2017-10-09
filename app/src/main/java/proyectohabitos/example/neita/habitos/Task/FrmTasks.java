@@ -9,9 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
@@ -95,7 +95,7 @@ public class FrmTasks extends AppCompatActivity {
     //Maneja operaciones con fragments
     public class DemoCollectionPagerAdapter extends FragmentPagerAdapter {
         private FragmentManager fragmentM;
-        private ArrayList fragTags = new ArrayList();
+        private Map<Integer, String> fragTags = new HashMap<>();
 
         public DemoCollectionPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -118,14 +118,14 @@ public class FrmTasks extends AppCompatActivity {
             Object instantiateItem = super.instantiateItem(container, position);
             if (instantiateItem instanceof Fragment) {//si el objeto es un fragmento
                 Fragment fragment = (Fragment) instantiateItem;
-                fragTags.add(position, fragment.getTag());
+                fragTags.put(position, fragment.getTag());
             }
             return instantiateItem;
         }
 
         public Fragment getFragment(int posit) {
-            if(fragTags!=null&&fragTags.get(posit)!=null) {
-                return fragmentM.findFragmentByTag((String) fragTags.get(posit));
+            if (fragTags != null && fragTags.size() > 0 && fragTags.get(posit) != null) {
+                return fragmentM.findFragmentByTag(fragTags.get(posit));
             }
             return null;
         }
@@ -140,5 +140,4 @@ public class FrmTasks extends AppCompatActivity {
             return "OBJECT " + (position + 1);
         }
     }
-
 }
