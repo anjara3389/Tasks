@@ -24,7 +24,7 @@ public class FrmTasks extends AppCompatActivity {
 /* Instances of this class are fragments representing a single
  object in our collection.*/
 
-    DemoCollectionPagerAdapter mDemoCollectionPagerAdapter;
+    TasksPagerAdapter mTaskPagerAdapter;
     ViewPager mViewPager;
 
     @Override
@@ -34,9 +34,9 @@ public class FrmTasks extends AppCompatActivity {
         setContentView(R.layout.frm_tasks);
 
         // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
-        mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapter(getSupportFragmentManager());
+        mTaskPagerAdapter = new TasksPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.frmTasksPager);
-        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
+        mViewPager.setAdapter(mTaskPagerAdapter);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -47,13 +47,12 @@ public class FrmTasks extends AppCompatActivity {
             @Override
             //avisa cuando el usuario accede a una pestaña dandote la posición de ésta
             public void onPageSelected(int position) {
-                Fragment frag = mDemoCollectionPagerAdapter.getFragment(position);
+                Fragment frag = mTaskPagerAdapter.getFragment(position);
                 if(frag!=null) {
                     if (frag instanceof FrgTodayTasks) {
                         ((FrgTodayTasks) frag).update();
                     } else if (frag instanceof FrgAllTasks) {
                         ((FrgAllTasks) frag).update();
-                    } else {
                     }
                 }
             }
@@ -93,11 +92,11 @@ public class FrmTasks extends AppCompatActivity {
     }
 
     //Maneja operaciones con fragments
-    public class DemoCollectionPagerAdapter extends FragmentPagerAdapter {
+    public class TasksPagerAdapter extends FragmentPagerAdapter {
         private FragmentManager fragmentM;
         private Map<Integer, String> fragTags = new HashMap<>();
 
-        public DemoCollectionPagerAdapter(FragmentManager fm) {
+        public TasksPagerAdapter(FragmentManager fm) {
             super(fm);
             fragmentM = fm;
         }

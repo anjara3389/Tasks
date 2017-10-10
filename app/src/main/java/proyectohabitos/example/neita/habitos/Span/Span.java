@@ -55,24 +55,13 @@ public class Span {
         return null;
     }
 
-    public Span selectCurrentSpan(SQLiteDatabase db, int activityId) {
-       /* Format f=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Cursor d= db.rawQuery("SELECT s.id,s.beg_date,s.end_date " +
-                "FROM span s " +
-                "WHERE s.activity_id=" + activityId , null);
-        if(d.moveToFirst()){
-            do{
-                System.out.println(d.getInt(0)+f.format(d.getLong(1))+"-"+f.format(d.getLong(2)));
-            }while(d.moveToNext());
-        }
-        else{
-            System.out.println("NOPE");
-        }*/
-
+    //devuelve un spam abierto si es que hubiere (con fecha de inicio pero sin fecha de fin)
+    //si activityId no es=null busca los spans dentro de la actividad
+    public static Span selectOpenedSpan(SQLiteDatabase db, Integer activityId) {
         Cursor c = db.rawQuery("SELECT s.id,s.beg_date,s.end_date,s.activity_id " +
                 "FROM span s " +
                 "WHERE s.end_date IS NULL " +
-                "AND s.activity_id=" + activityId, null);
+                (activityId != null ? "AND s.activity_id=" + activityId : ""), null);
 
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
@@ -81,8 +70,8 @@ public class Span {
         return null;
     }
 
-    //La suma de los tiempos de la actividad en el día
-    public Long selectLastTime(SQLiteDatabase db, Integer activityId, Date date) {
+    //Devuelve la suma de los tiempos de una actividad en el día dado
+    public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Date date) {
         Long value = 0L;
         String q = "SELECT SUM(s.end_date-s.beg_date) " +
                 "FROM span s " +

@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateOnTZone;
+import proyectohabitos.example.neita.habitos.Span.Span;
 
 public class Task {
     public Integer id;
@@ -43,7 +45,6 @@ public class Task {
         this.reminder = reminder;
         this.chrono = chrono;
     }
-
     public ContentValues getValues() {
         ContentValues c = new ContentValues();//content values es un contenedor de valores
         c.put("name", name);
@@ -84,12 +85,43 @@ public class Task {
 
         return task;
     }
-
     public static void delete(int id, SQLiteDatabase db) {
         db.execSQL("DELETE FROM span WHERE activity_id=" + id);
         db.execSQL("DELETE FROM activity WHERE id=" + id);
         BaseHelper.tryClose(db);
     }
+
+    //Consulta si una tarea se realizó el dia dado
+    //chrono es null si no tiene crono
+    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, long date) {
+        if (chrono == null) { //si no tiene crono
+            Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
+                    "FROM span s " +
+                    "WHERE s.activity_id=" + activityId + " AND CAST((s.beg_date/86400000) as int)=" + (int) (date / 86400000), null);
+            if (c.moveToFirst()) //si hay datos
+            {
+                return c.getInt(0) == 1;
+            }
+        } else {  //si tiene crono
+            return new Span().selectTotalTime(db, activityId, new Date()) >= chrono * 60 * 1000;
+        }
+        return null;
+    }
+
+    //se checkea una tarea sin crono como realizada en el día
+    public static void checkTaskAsDone(int id, SQLiteDatabase db) {
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
+        db.execSQL(sql);
+        BaseHelper.tryClose(db);
+    }
+
+    //se descheckea una tarea sin crono (como no realizada en el día)
+    public static void uncheckTask(int Id, SQLiteDatabase db) {
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
+        db.execSQL(sql);
+        BaseHelper.tryClose(db);
+    }
+
 
     public static String getDay(Date date) {
         Calendar cal = new GregorianCalendar();
@@ -99,3 +131,4 @@ public class Task {
                         (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
     }
 }
+

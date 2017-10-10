@@ -68,8 +68,8 @@ public class FrmChronometer extends AppCompatActivity {
 
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         timer = new Timer();
-                        lastWholeTime = new Span().selectLastTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, null);
-                        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
+                        lastWholeTime = new Span().selectTotalTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectTotalTime(db, activityId, null);
+                        obj.begDate = Span.selectOpenedSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
                         obj.activityId = activityId;
                         obj.endDate = null;
                         obj.insert(db);
@@ -84,7 +84,7 @@ public class FrmChronometer extends AppCompatActivity {
                         obj.endDate = DateOnTZone.getTimeOnCurrTimeZone();
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                         if (activityId != null) {
-                            Span currentSpan = new Span().selectCurrentSpan(db, activityId);
+                            Span currentSpan = Span.selectOpenedSpan(db, activityId);
                             if (currentSpan != null) {
                                 obj.update(db, currentSpan.id);
                             }
@@ -100,7 +100,7 @@ public class FrmChronometer extends AppCompatActivity {
                         mGcmNetworkManager.cancelTask(NotificationTaskService.ACCESSIBILITY_SERVICE, NotificationTaskService.class);
 
 
-                        if (totalSecBackwards == 0) {
+                        if (totalSecBackwards == 0 || totalSecBackwards < 0) {
                             //se envía broadcast para cerrar la activity y se cierra la notificación.
                             sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(FrmChronometer.this.NOTIFICATION_SERVICE);
@@ -130,6 +130,7 @@ public class FrmChronometer extends AppCompatActivity {
             }
             play.setImageResource(R.drawable.pause); //botón y booleano del botón
             playButton = false;
+            totalSecBackwards = 0;
         }
 
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
@@ -169,15 +170,16 @@ public class FrmChronometer extends AppCompatActivity {
 
         //valores iniciales
         SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
+
         targetTime = new Task().select(db, activityId).chrono; //tiempo en minutos
-        obj = new Span().selectCurrentSpan(db, activityId) != null ? new Span().selectCurrentSpan(db, activityId) : new Span();
-        lastWholeTime = new Span().selectLastTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectLastTime(db, activityId, null);
-        obj.begDate = new Span().selectCurrentSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
-        play.setImageResource(new Span().selectCurrentSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
-        playButton = new Span().selectCurrentSpan(db, activityId) == null;
+        obj = new Span().selectOpenedSpan(db, activityId) != null ? new Span().selectOpenedSpan(db, activityId) : new Span();
+        lastWholeTime = new Span().selectTotalTime(db, activityId, null) == 0 ? 0 : (Long) new Span().selectTotalTime(db, activityId, null);
+        obj.begDate = new Span().selectOpenedSpan(db, activityId) != null ? obj.begDate : DateOnTZone.getTimeOnCurrTimeZone();
+        play.setImageResource(new Span().selectOpenedSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
+        playButton = new Span().selectOpenedSpan(db, activityId) == null;
         setTimer();
 
-        if (new Span().selectCurrentSpan(db, activityId) != null) {
+        if (new Span().selectOpenedSpan(db, activityId) != null) {
             timer = new Timer();
             timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
         }

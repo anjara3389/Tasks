@@ -100,47 +100,19 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         cal.setTimeZone(TimeZone.getDefault());
         cal.setTime(new Date());
 
-
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
-                "a.chrono, " +//3
-                "(SELECT COUNT(*)>0 " +
-                "FROM span s " +
-                "WHERE s.activity_id=a.id AND CAST((s.beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000) + ") " +//4
+                "a.chrono " +//3
                 "FROM Activity a " +
                 "WHERE a." + Task.getDay(cal.getTime()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
-
-            System.out.println("=====ACTIVIDADES=====");
-            System.out.println("////// " + c.getString(1) + c.getString(0));
-            Boolean done;
             do {
-                if (c.isNull(3)) {
-                    done = c.getInt(4) == 1;
-                } else {
-                    done = new Span().selectLastTime(db, c.getInt(0), new Date()) >= c.getLong(3) * 60 * 1000;
-                }
-
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), done);
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateOnTZone.getTimeOnCurrTimeZone()));
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
-        }
-
-
-        Cursor d = db.rawQuery("SELECT s.activity_id,s.beg_date/86400000 " +
-                "FROM span s ", null);
-        if (d.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
-        {
-            do {
-                System.out.println("=====SPAN=====");
-                System.out.println("//////actividad " + d.getString(0));
-                System.out.println("//////span " + d.getInt(1));
-                System.out.println(DateOnTZone.getTimeOnCurrTimeZone() + "//////fechanueva " + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000));
-            }
-            while (d.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
         BaseHelper.tryClose(db);
         return data;
@@ -149,22 +121,17 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
-
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date());
-
-        String msg = "";
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM span WHERE activity_id=" + posit + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000), null);
-            if (c.moveToFirst()) {
-                msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+            if (Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone()) != null) {
+                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone()) ? "Desmarcar" : "Marcar");
             }
         } else {
-            msg = "Iniciar";
+            SQLiteDatabase db = BaseHelper.getReadable(getContext());
+            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone())) {
+                menu.add(0, 3, 0, "Iniciar");
+            }
         }
-
-        menu.add(0, 3, 0, msg);
         menu.add(0, 4, 0, "Editar");
         menu.add(0, 5, 0, "Eliminar");
     }
@@ -176,10 +143,16 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             dial.show(getFragmentManager(), "MyDialog");
             return true;
         } else if (item.getItemId() == 3 && item.getTitle() == "Iniciar") {
+            SQLiteDatabase db = BaseHelper.getReadable(getContext());
+            if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
             Intent i = new Intent(getActivity(), FrmChronometer.class);
             i.putExtra("id", posit);
             startActivityForResult(i, 1);
-            update();
+                update();
+            } else {
+                Toast.makeText(getContext(), "Hay una tarea en curso.", Toast.LENGTH_SHORT).show();
+            }
+            BaseHelper.tryClose(db);
             return true;
         } else if (item.getItemId() == 3 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
@@ -205,22 +178,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     }
 
-    private void checkTaskAsDone(int id) {
-        SQLiteDatabase db = BaseHelper.getWritable(getContext());
-
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
-        db.execSQL(sql);
-        BaseHelper.tryClose(db);
-    }
-
-    private void uncheckTask(int Id) {
-        SQLiteDatabase db = BaseHelper.getWritable(getContext());
-
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
-        db.execSQL(sql);
-        BaseHelper.tryClose(db);
-    }
-
     @Override
     public void onFinishDialog(boolean ans, int code) {
         if (ans == true) {
@@ -231,12 +188,14 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 update();
             }
             if (code == CHECK_TASK) {
-                checkTaskAsDone(posit);
+                SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                Task.checkTaskAsDone(posit, db);
                 Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
                 update();
             }
             if (code == UNCHECK_TASK) {
-                uncheckTask(posit);
+                SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                Task.uncheckTask(posit, db);
                 Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
                 update();
             }

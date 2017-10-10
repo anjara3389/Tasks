@@ -48,7 +48,7 @@ public class NotificationTaskService extends GcmTaskService {
         Bundle bundle = taskParams.getExtras();
         //se cierra el span correspondiente
         SQLiteDatabase db = BaseHelper.getReadable(this);
-        Span span = new Span().selectCurrentSpan(db, bundle.getInt("activityId"));
+        Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
         if (span != null) {
             span.endDate = DateOnTZone.getTimeOnCurrTimeZone();
             span.update(db, span.id);
@@ -77,6 +77,7 @@ public class NotificationTaskService extends GcmTaskService {
                         .setContentTitle("Habitos")
                         .setContentText("Haz realizado tu actividad el día de hoy")
                         .addAction(R.drawable.ok, "Aceptar", pin)
+                        .setSound(null)
                         //.setContentIntent(pi)
                         .setPriority(Notification.PRIORITY_MAX)
                         .setDefaults(Notification.DEFAULT_ALL);
@@ -89,7 +90,7 @@ public class NotificationTaskService extends GcmTaskService {
     public void fireChronoActivity(Integer activityId) {
         Intent i = new Intent(this, FrmChronometer.class);
         i.putExtra("id", activityId);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
 

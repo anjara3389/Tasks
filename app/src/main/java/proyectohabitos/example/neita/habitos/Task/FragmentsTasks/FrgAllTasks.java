@@ -15,8 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,7 +39,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     ArrayList<LstTask> list;
     FloatingActionButton btn;
     private LstTask task;
-    private int posit;
+    private Integer posit;
     private static final int DELETE_TASK = 1;
     private static final int CHECK_TASK = 2;
     private static final int UNCHECK_TASK = 3;
@@ -130,37 +128,30 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         {
             do {
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
-
-                    for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
-
-                        Cursor d = db.rawQuery("SELECT COUNT(*)>0 " +
-                                "FROM span s " +
-                                "WHERE s.activity_id=" + c.getInt(0) + " AND CAST((s.beg_date/86400000) as int)=" + (int) (datesCurrWeek.get(i).getTime() / 86400000), null);
-
-                        if (d.moveToFirst()) {
-                            Calendar cal2 = new GregorianCalendar();
-                            cal2.setTime(datesCurrWeek.get(i));
-                            int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
-                                    (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
-                                            (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
-                            if (d.getInt(0) == 1) {  //si hay un span en la tarea y la fecha
-                                doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
-
-                            }
+                for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
+                    if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, datesCurrWeek.get(i).getTime()) != null) {
+                        Calendar cal2 = new GregorianCalendar();
+                        cal2.setTime(datesCurrWeek.get(i));
+                        int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
+                                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
+                                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
+                        if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, datesCurrWeek.get(i).getTime())) {  //si hay un span en la tarea y la fecha
+                            doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
                         }
                     }
-                    for (int i = 3; i <= 9; i++) {
-                        if (c.getInt(i) == 1) {
-                            if (doneDays.get(i - 3) == null) {
-                                doneDays.set(i - 3, false);
-                            }
+                }
+                for (int i = 3; i <= 9; i++) {
+                    if (c.getInt(i) == 1) {
+                        if (doneDays.get(i - 3) == null) {
+                            doneDays.set(i - 3, false);
                         }
                     }
+                }
 
                 if (!c.isNull(10)) {//si tiene chrono
                     for (int i = 0; i < datesCurrWeek.size(); i++) {
                         if (doneDays.get(i) != null) {
-                            doneDays.set(i, new Span().selectLastTime(db, c.getInt(0), datesCurrWeek.get(i)) >= c.getInt(10) * 60 * 1000);
+                            doneDays.set(i, new Span().selectTotalTime(db, c.getInt(0), datesCurrWeek.get(i)) >= c.getInt(10) * 60 * 1000);
                         }
                     }
                 }
@@ -181,7 +172,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
-        String msg;
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
         Cursor c = db.rawQuery("SELECT COUNT(*)>0,(SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()) + ") " +
                 "FROM span s " +
@@ -189,11 +179,12 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         if (c.moveToFirst()) {
             if (c.getInt(1) == 1) {
                 if (task.getChrono() == null) {
-                    msg = c.getInt(0) == 1 ? "Desmarcar" : "Marcar";
+                    menu.add(0, 0, 0, c.getInt(0) == 1 ? "Desmarcar" : "Marcar");
                 } else {
-                    msg = "Iniciar";
+                    if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone())) {
+                        menu.add(0, 0, 0, "Iniciar");
+                    }
                 }
-                menu.add(0, 0, 0, msg);
             }
         }
 
@@ -209,10 +200,16 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             dial.show(getFragmentManager(), "MyDialog");
             return true;
         } else if (item.getItemId() == 0 && item.getTitle() == "Iniciar") {
-            Intent i = new Intent(getActivity(), FrmChronometer.class);
-            i.putExtra("id", posit);
-            startActivityForResult(i, 1);
-            update();
+            SQLiteDatabase db = BaseHelper.getReadable(getContext());
+            if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
+                Intent i = new Intent(getActivity(), FrmChronometer.class);
+                i.putExtra("id", posit);
+                startActivityForResult(i, 1);
+                update();
+            } else {
+                Toast.makeText(getContext(), "Hay una tarea en curso.", Toast.LENGTH_SHORT).show();
+            }
+            BaseHelper.tryClose(db);
             return true;
         } else if (item.getItemId() == 0 && item.getTitle() == "Desmarcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
@@ -242,24 +239,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
     }
 
-    private void checkTaskAsDone(int id) {
-        SQLiteDatabase db = BaseHelper.getWritable(getContext());
-
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
-        db.execSQL(sql);
-        BaseHelper.tryClose(db);
-    }
-
-    private void uncheckTask(int Id) {
-        SQLiteDatabase db = BaseHelper.getWritable(getContext());
-
-        Format f = new SimpleDateFormat("yyyy-MM-dd");
-
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
-        db.execSQL(sql);
-        BaseHelper.tryClose(db);
-    }
-
     @Override
     public void onFinishDialog(boolean ans, int code) {
         if (ans == true) {
@@ -270,12 +249,14 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 update();
             }
             if (code == CHECK_TASK) {
-                checkTaskAsDone(posit);
+                SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                Task.checkTaskAsDone(posit, db);
                 Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
                 update();
             }
             if (code == UNCHECK_TASK) {
-                uncheckTask(posit);
+                SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                Task.uncheckTask(posit, db);
                 Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
                 update();
             }
