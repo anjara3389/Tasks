@@ -16,7 +16,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".Task.FrmTask" />
-        <activity android:name=".FrmChronometer" />
+        <activity
+            android:name=".FrmChronometer"
+            android:parentActivityName=".Task.FrmTask">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Task.FrmTask" />
+        </activity>
+
         <activity android:name=".Statistics.FrmStatistics" />
         <activity android:name=".Statistics.Fragments.WeeklyStatistics" />
         <activity android:name=".Statistics.Fragments.MonthlyStatistics" />
@@ -34,8 +42,8 @@
         <service
             android:name=".Services.NotificationTaskService"
             android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
@@ -44,8 +52,7 @@
         <service
             android:name=".Services.AlarmTaskService"
             android:exported="true"
-            android:launchMode="singleTask">
-        </service>
+            android:launchMode="singleTask"></service>
         <service
             android:name=".Services.ButtonNotifService"
             android:exported="true"

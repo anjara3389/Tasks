@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:baselineAligned="false">
-
     <ListView
         android:id="@+id/frg_today_taks_lst"
         android:layout_width="369dp"

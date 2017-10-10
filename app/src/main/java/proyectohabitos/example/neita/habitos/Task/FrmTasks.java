@@ -1,6 +1,7 @@
 package proyectohabitos.example.neita.habitos.Task;
 
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,11 +9,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
@@ -48,7 +54,7 @@ public class FrmTasks extends AppCompatActivity {
             //avisa cuando el usuario accede a una pestaña dandote la posición de ésta
             public void onPageSelected(int position) {
                 Fragment frag = mTaskPagerAdapter.getFragment(position);
-                if(frag!=null) {
+                if (frag != null) {
                     if (frag instanceof FrgTodayTasks) {
                         ((FrgTodayTasks) frag).update();
                     } else if (frag instanceof FrgAllTasks) {
@@ -89,6 +95,39 @@ public class FrmTasks extends AppCompatActivity {
         actionBar.addTab(actionBar.newTab().setText("Hoy").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Todas").setTabListener(tabListener));
 
+
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_action_bar, menu);
+        return true;
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_delete_spans: //BORRAR DESPUÉS *************** vacia los spams***+*SOLO PRUEBA
+                SQLiteDatabase db = BaseHelper.getReadable(this);
+                String sql = "DELETE FROM span";
+                db.execSQL(sql);
+                BaseHelper.tryClose(db);
+                Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
+                if (mTaskPagerAdapter.getFragment(0) instanceof FrgTodayTasks) {
+                    ((FrgTodayTasks) mTaskPagerAdapter.getFragment(0)).update();
+                } else if (mTaskPagerAdapter.getFragment(1) instanceof FrgAllTasks) {
+                    ((FrgAllTasks) mTaskPagerAdapter.getFragment(1)).update();
+                }
+
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     //Maneja operaciones con fragments
@@ -100,6 +139,7 @@ public class FrmTasks extends AppCompatActivity {
             super(fm);
             fragmentM = fm;
         }
+
         @Override
         public Fragment getItem(int i) {
             Fragment fragment = null;
@@ -139,4 +179,6 @@ public class FrmTasks extends AppCompatActivity {
             return "OBJECT " + (position + 1);
         }
     }
+
+
 }

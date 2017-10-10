@@ -118,6 +118,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         return data;
     }
 
+    //Menú de cada una de las filas
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
@@ -136,6 +137,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         menu.add(0, 5, 0, "Eliminar");
     }
 
+    //menú de cada una de las filas
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == 3 && item.getTitle() == "Marcar") {
             YesNoDialogFragment dial = new YesNoDialogFragment();
@@ -184,7 +186,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
             if (code == DELETE_TASK) {
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
                 Task.delete(posit, db);
-                Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Se eliminó la Tarea", Toast.LENGTH_LONG).show();
                 update();
             }
             if (code == CHECK_TASK) {
