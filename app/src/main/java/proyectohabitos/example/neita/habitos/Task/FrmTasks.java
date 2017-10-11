@@ -25,11 +25,7 @@ import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
 public class FrmTasks extends AppCompatActivity {
-//esta actividad contiene dos fragmentos: FrgAllTasks,FrgTodayTasks que corresponden a dos pestañas
-
-
-/* Instances of this class are fragments representing a single
- object in our collection.*/
+//Ésta actividad contiene dos fragmentos: FrgAllTasks,FrgTodayTasks que corresponden a dos pestañas(Hoy,Todas)
 
     TasksPagerAdapter mTaskPagerAdapter;
     ViewPager mViewPager;

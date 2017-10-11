@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services;
+package proyectohabitos.example.neita.habitos.Services.ChronometerNotification;
 
 
 import android.app.Service;
@@ -9,10 +9,10 @@ import android.os.IBinder;
 
 import proyectohabitos.example.neita.habitos.R;
 
-//PARA EJECUTAR LA ALARMA DEL CRONÓMETRO
+//PARA EJECUTAR LA ALARMA(SONIDO) DEL CRONÓMETRO
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
 //se necesita agregar el servicio en el manifest
-public class AlarmTaskService extends Service {
+public class ServiceChrSound extends Service {
     private MediaPlayer player;
 
     public IBinder onBind(Intent arg0) {
@@ -42,6 +42,6 @@ public class AlarmTaskService extends Service {
     }
 
     public static void stopSound(Context ctx) {
-        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), AlarmTaskService.class));
+        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), ServiceChrSound.class));
     }
 }

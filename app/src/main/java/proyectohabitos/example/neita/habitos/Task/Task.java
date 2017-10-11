@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTZone;
+import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.Span.Span;
 
 public class Task {
@@ -110,14 +110,14 @@ public class Task {
 
     //se checkea una tarea sin crono como realizada en el día
     public static void checkTaskAsDone(int id, SQLiteDatabase db) {
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone(new Date()) + "','" + DateOnTZone.getTimeOnCurrTimeZone(new Date()) + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTimeZone.getTimeOnCurrTimeZone(new Date()) + "','" + DateOnTimeZone.getTimeOnCurrTimeZone(new Date()) + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
 
     //se descheckea una tarea sin crono (como no realizada en el día)
     public static void uncheckTask(int Id, SQLiteDatabase db) {
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone(new Date()) / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTimeZone.getTimeOnCurrTimeZone(new Date()) / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }

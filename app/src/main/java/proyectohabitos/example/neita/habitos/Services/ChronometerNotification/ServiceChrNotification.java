@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services;
+package proyectohabitos.example.neita.habitos.Services.ChronometerNotification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -17,10 +18,11 @@ import com.google.android.gms.gcm.TaskParams;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTZone;
+import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
+import proyectohabitos.example.neita.habitos.Task.FrmTasks;
 
 import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 
@@ -30,10 +32,10 @@ import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 //se necesita agregar el servicio en el manifest
 //EN ESTA CLASE DE SERVICIO SE PUEDE PROGRAMAR EN CUANTO TIEMPO SE LANZA LA NOTIFICACIÓN
 
-public class NotificationTaskService extends GcmTaskService {
+public class ServiceChrNotification extends GcmTaskService {
     private static final String NOTIFIC = "notific";
 
-    public NotificationTaskService() {
+    public ServiceChrNotification() {
     }
 
     @Override
@@ -44,7 +46,7 @@ public class NotificationTaskService extends GcmTaskService {
     @Override
     public int onRunTask(TaskParams taskParams) {
         fireNotification();
-        Intent in = new Intent(this, AlarmTaskService.class);
+        Intent in = new Intent(this, ServiceChrSound.class);
         startService(in);
 
         Bundle bundle = taskParams.getExtras();
@@ -52,7 +54,7 @@ public class NotificationTaskService extends GcmTaskService {
         SQLiteDatabase db = BaseHelper.getReadable(this);
         Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
         if (span != null) {
-            span.endDate = DateOnTZone.getTimeOnCurrTimeZone(new Date());
+            span.endDate = DateOnTimeZone.getTimeOnCurrTimeZone(new Date());
             span.update(db, span.id);
         }
 
@@ -66,12 +68,12 @@ public class NotificationTaskService extends GcmTaskService {
     public void onDestroy() {
         super.onDestroy();
         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
-        mGcmNetworkManager.cancelTask(NOTIFIC, NotificationTaskService.class);
+        mGcmNetworkManager.cancelTask(NOTIFIC, ServiceChrNotification.class);
     }
 
     //Lanza la notificación
     public void fireNotification() {
-        Intent in = new Intent(this, ButtonNotifService.class);
+        Intent in = new Intent(this, ServiceChrButtonNotific.class);
         PendingIntent pin = PendingIntent.getService(this, 0, in, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
@@ -93,7 +95,17 @@ public class NotificationTaskService extends GcmTaskService {
         Intent i = new Intent(this, FrmChronometer.class);
         i.putExtra("id", activityId);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+
+        //--CUANDO SE CIERRA LA ACTIVIDAD EL PADRE SE ABRE (FrmTasks)--
+        TaskStackBuilder b = TaskStackBuilder.create(this);
+        b.addParentStack(FrmTasks.class);
+        Intent addrIntent = new Intent(this, FrmTasks.class);
+        addrIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        b.addNextIntent(addrIntent);
+        //--------------------------------------------------------------
+        b.addNextIntent(i);
+        b.startActivities();
+
     }
 
     public static void scheduleNotificationFire(long seconds, Context cnxt, Integer activityId) {
@@ -101,7 +113,7 @@ public class NotificationTaskService extends GcmTaskService {
         Bundle b = new Bundle();
         b.putInt("activityId", activityId);
         OneoffTask task = new OneoffTask.Builder()
-                .setService(NotificationTaskService.class)
+                .setService(ServiceChrNotification.class)
                 .setTag(NOTIFIC)
                 .setExecutionWindow(seconds - 1, seconds)
                 .setRequiredNetwork(NETWORK_STATE_ANY)

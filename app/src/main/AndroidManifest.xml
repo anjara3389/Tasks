@@ -18,7 +18,7 @@
         <activity android:name=".Task.FrmTask" />
         <activity
             android:name=".FrmChronometer"
-            android:parentActivityName=".Task.FrmTask">
+            android:parentActivityName=".Task.FrmTasks">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -40,7 +40,7 @@
 
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro-->
         <service
-            android:name=".Services.NotificationTaskService"
+            android:name=".Services.ChronometerNotification.ServiceChrNotification"
             android:exported="true"
             android:launchMode="singleTask"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
@@ -50,16 +50,11 @@
         </service>
 
         <service
-            android:name=".Services.AlarmTaskService"
-            android:exported="true"
-            android:launchMode="singleTask"></service>
-        <!-- BORRAAAAAAAAAAAAAAAAAAAAAR -->
-        <service
-            android:name=".Services.QuackDeleteService"
+            android:name=".Services.ChronometerNotification.ServiceChrSound"
             android:exported="true"
             android:launchMode="singleTask"></service>
         <service
-            android:name=".Services.ButtonNotifService"
+            android:name=".Services.ChronometerNotification.ServiceChrButtonNotific"
             android:exported="true"
             android:launchMode="singleTask"></service>
 

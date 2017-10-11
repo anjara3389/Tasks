@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services;
+package proyectohabitos.example.neita.habitos.Services.ChronometerNotification;
 
 
 import android.app.NotificationManager;
@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 
 //SERVICIO QUE FUNCIONA ENTRE EL SERVICIO DE LA NOTIFICACIÓN Y EL DE LA ALARMA... CUANDO SE PRESIONA EL BOTÓN DE LA NOTIFICACIÓN
 //se necesita agregar el servicio en el manifest
-public class ButtonNotifService extends Service {
-    public ButtonNotifService() {
+public class ServiceChrButtonNotific extends Service {
+    public ServiceChrButtonNotific() {
 
     }
 
@@ -35,13 +35,13 @@ public class ButtonNotifService extends Service {
         sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(12345);
-        AlarmTaskService.stopSound(this);
+        ServiceChrSound.stopSound(this);
         return START_STICKY;
 
     }
 
     public static void stopService(Context ctx) {
-        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), AlarmTaskService.class));
+        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), ServiceChrSound.class));
     }
 
 }
