@@ -5,10 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Date;
-
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTZone;
 
 public class Span {
     public Integer id;
@@ -71,12 +68,12 @@ public class Span {
     }
 
     //Devuelve la suma de los tiempos de una actividad en el día dado
-    public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Date date) {
+    public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Long dateTime) {
         Long value = 0L;
         String q = "SELECT SUM(s.end_date-s.beg_date) " +
                 "FROM span s " +
                 "WHERE s.activity_id=" + activityId + " " +
-                "AND CAST((s.beg_date/86400000) as int)=" + (int) ((date != null ? date.getTime() : DateOnTZone.getTimeOnCurrTimeZone()) / 86400000);
+                "AND CAST((s.beg_date/86400000) as int)=" + (int) (dateTime / 86400000);
 
         Cursor c = db.rawQuery(q, null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos

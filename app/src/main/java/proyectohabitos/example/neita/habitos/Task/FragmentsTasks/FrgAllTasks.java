@@ -129,13 +129,13 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             do {
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
                 for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
-                    if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, datesCurrWeek.get(i).getTime()) != null) {
+                    if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) != null) {
                         Calendar cal2 = new GregorianCalendar();
                         cal2.setTime(datesCurrWeek.get(i));
                         int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
                                 (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
                                         (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
-                        if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, datesCurrWeek.get(i).getTime())) {  //si hay un span en la tarea y la fecha
+                        if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i)))) {  //si hay un span en la tarea y la fecha
                             doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
                         }
                     }
@@ -151,7 +151,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 if (!c.isNull(10)) {//si tiene chrono
                     for (int i = 0; i < datesCurrWeek.size(); i++) {
                         if (doneDays.get(i) != null) {
-                            doneDays.set(i, new Span().selectTotalTime(db, c.getInt(0), datesCurrWeek.get(i)) >= c.getInt(10) * 60 * 1000);
+                            doneDays.set(i, new Span().selectTotalTime(db, c.getInt(0), DateOnTZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) >= c.getInt(10) * 60 * 1000);
                         }
                     }
                 }
@@ -173,15 +173,13 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
-        Cursor c = db.rawQuery("SELECT COUNT(*)>0,(SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()) + ") " +
-                "FROM span s " +
-                "WHERE s.activity_id=" + posit, null);
+        Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()), null);
         if (c.moveToFirst()) {
-            if (c.getInt(1) == 1) {
+            if (c.getInt(0) == 1) {
                 if (task.getChrono() == null) {
-                    menu.add(0, 0, 0, c.getInt(0) == 1 ? "Desmarcar" : "Marcar");
+                    menu.add(0, 0, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
                 } else {
-                    if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone())) {
+                    if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone(new Date()))) {
                         menu.add(0, 0, 0, "Iniciar");
                     }
                 }
@@ -207,7 +205,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 startActivityForResult(i, 1);
                 update();
             } else {
-                Toast.makeText(getContext(), "Hay una tarea en curso.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Hay una tarea en curso", Toast.LENGTH_SHORT).show();
             }
             BaseHelper.tryClose(db);
             return true;

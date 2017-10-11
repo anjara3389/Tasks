@@ -14,6 +14,8 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.TaskParams;
 
+import java.util.Date;
+
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTZone;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
@@ -50,7 +52,7 @@ public class NotificationTaskService extends GcmTaskService {
         SQLiteDatabase db = BaseHelper.getReadable(this);
         Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
         if (span != null) {
-            span.endDate = DateOnTZone.getTimeOnCurrTimeZone();
+            span.endDate = DateOnTZone.getTimeOnCurrTimeZone(new Date());
             span.update(db, span.id);
         }
 

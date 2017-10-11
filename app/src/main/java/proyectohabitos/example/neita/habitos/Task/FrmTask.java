@@ -169,7 +169,7 @@ public class FrmTask extends AppCompatActivity {
             obj.v = vier.isChecked();
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
-            obj.sinceDate = DateOnTZone.getTimeOnCurrTimeZone();
+            obj.sinceDate = DateOnTZone.getTimeOnCurrTimeZone(new Date());
             obj.reminder = remind;
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 

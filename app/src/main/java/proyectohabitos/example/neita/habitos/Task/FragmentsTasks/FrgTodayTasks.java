@@ -109,7 +109,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateOnTZone.getTimeOnCurrTimeZone()));
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateOnTZone.getTimeOnCurrTimeZone(new Date())));
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
@@ -124,12 +124,12 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         menu.setHeaderTitle("Selecciona una Acción");
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone()) != null) {
-                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone()) ? "Desmarcar" : "Marcar");
+            if (Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone(new Date())) != null) {
+                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTZone.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
             }
         } else {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone())) {
+            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTZone.getTimeOnCurrTimeZone(new Date()))) {
                 menu.add(0, 3, 0, "Iniciar");
             }
         }

@@ -93,31 +93,31 @@ public class Task {
 
     //Consulta si una tarea se realizó el dia dado
     //chrono es null si no tiene crono
-    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, long date) {
+    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Long dateTime) {
         if (chrono == null) { //si no tiene crono
             Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
-                    "WHERE s.activity_id=" + activityId + " AND CAST((s.beg_date/86400000) as int)=" + (int) (date / 86400000), null);
+                    "WHERE s.activity_id=" + activityId + " AND CAST((s.beg_date/86400000) as int)=" + (int) (dateTime / 86400000), null);
             if (c.moveToFirst()) //si hay datos
             {
                 return c.getInt(0) == 1;
             }
         } else {  //si tiene crono
-            return new Span().selectTotalTime(db, activityId, new Date()) >= chrono * 60 * 1000;
+            return new Span().selectTotalTime(db, activityId, dateTime) >= chrono * 60 * 1000;
         }
         return null;
     }
 
     //se checkea una tarea sin crono como realizada en el día
     public static void checkTaskAsDone(int id, SQLiteDatabase db) {
-        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone() + "','" + DateOnTZone.getTimeOnCurrTimeZone() + "')";
+        String sql = "INSERT INTO span (activity_id,beg_date,end_date) VALUES (" + id + ",'" + DateOnTZone.getTimeOnCurrTimeZone(new Date()) + "','" + DateOnTZone.getTimeOnCurrTimeZone(new Date()) + "')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
 
     //se descheckea una tarea sin crono (como no realizada en el día)
     public static void uncheckTask(int Id, SQLiteDatabase db) {
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone() / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((beg_date/86400000) as int)=" + (int) (DateOnTZone.getTimeOnCurrTimeZone(new Date()) / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
