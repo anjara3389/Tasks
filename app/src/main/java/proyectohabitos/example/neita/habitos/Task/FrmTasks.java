@@ -1,8 +1,8 @@
 package proyectohabitos.example.neita.habitos.Task;
 
 
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +21,6 @@ import java.util.Map;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Services.QuackDeleteService;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
@@ -119,8 +118,10 @@ public class FrmTasks extends AppCompatActivity {
                 db.execSQL(sql);
                 BaseHelper.tryClose(db);
                 Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(this, QuackDeleteService.class);
-                startService(i);
+                MediaPlayer player = MediaPlayer.create(this, R.raw.quack);
+                player.setLooping(false); // Set looping
+                player.setVolume(100, 100);
+                player.start();
                 Fragment frag = mTaskPagerAdapter.getFragment(mViewPager.getCurrentItem());
 
                 if (frag instanceof FrgTodayTasks) {
