@@ -18,7 +18,6 @@ public class ButtonNotifService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("ON CREATE///");
     }
 
     @Override
@@ -33,7 +32,6 @@ public class ButtonNotifService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("ON START COMMAND///");
         sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(12345);

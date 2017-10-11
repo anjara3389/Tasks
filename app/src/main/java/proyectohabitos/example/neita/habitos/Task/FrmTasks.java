@@ -1,6 +1,7 @@
 package proyectohabitos.example.neita.habitos.Task;
 
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Services.QuackDeleteService;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
@@ -117,12 +119,15 @@ public class FrmTasks extends AppCompatActivity {
                 db.execSQL(sql);
                 BaseHelper.tryClose(db);
                 Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
-                if (mTaskPagerAdapter.getFragment(0) instanceof FrgTodayTasks) {
-                    ((FrgTodayTasks) mTaskPagerAdapter.getFragment(0)).update();
-                } else if (mTaskPagerAdapter.getFragment(1) instanceof FrgAllTasks) {
-                    ((FrgAllTasks) mTaskPagerAdapter.getFragment(1)).update();
-                }
+                Intent i = new Intent(this, QuackDeleteService.class);
+                startService(i);
+                Fragment frag = mTaskPagerAdapter.getFragment(mViewPager.getCurrentItem());
 
+                if (frag instanceof FrgTodayTasks) {
+                    ((FrgTodayTasks) frag).update();
+                } else if (frag instanceof FrgAllTasks) {
+                    ((FrgAllTasks) frag).update();
+                }
                 break;
             default:
                 break;

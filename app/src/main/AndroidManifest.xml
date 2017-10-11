@@ -53,6 +53,11 @@
             android:name=".Services.AlarmTaskService"
             android:exported="true"
             android:launchMode="singleTask"></service>
+        <!-- BORRAAAAAAAAAAAAAAAAAAAAAR -->
+        <service
+            android:name=".Services.QuackDeleteService"
+            android:exported="true"
+            android:launchMode="singleTask"></service>
         <service
             android:name=".Services.ButtonNotifService"
             android:exported="true"
