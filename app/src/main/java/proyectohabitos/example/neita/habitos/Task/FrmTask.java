@@ -176,7 +176,9 @@ public class FrmTask extends AppCompatActivity {
 
             if (isNew) {
                 int id = obj.insert(db);
-                ServiceAlarmNotification.scheduleNotificationFire(Task.getNextAlarm(db, id), this, id);
+                if (Task.getNextAlarm(db, id) != null) {
+                    ServiceAlarmNotification.scheduleNotificationFire(Task.getNextAlarm(db, id), this, id);
+                }
                 BaseHelper.tryClose(db);
 
             } else {

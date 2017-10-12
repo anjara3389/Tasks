@@ -146,18 +146,28 @@ public class Task {
     public static Long getNextAlarm(SQLiteDatabase db, int taskId) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
+        Calendar cal2 = new GregorianCalendar();
+        cal2.setTime(new Date());
         int day = getDayInt(cal.getTime());
-        int ind = day;
+        //int ind = day;
         Cursor c = db.rawQuery("SELECT l,m,x,j,v,s,d,reminder FROM activity WHERE id=" + taskId, null);
         Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         if (c.moveToFirst()) {
-            for (int i = ind; i <= 14 - ind; i++) { //2 semanas
+            for (int i = 0; i < 8; i++) {
                 if (c.getInt(day) == 1) {
-                    System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis()));
-                    System.out.println("PROX ALARMA: " + f.format(c.getLong(7)));
-                    System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis() - cal.getTimeInMillis() % (24 * 60 * 60 * 1000) + c.getLong(7)));
-                    return (cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000))) + c.getLong(7);
+
+                    long currDay = cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000));
+                    System.out.println(cal.getTimeZone());
+                    System.out.println("PRO: " + ((currDay + c.getLong(7) >= DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))));
+                    System.out.println("PRO " + (currDay + c.getLong(7)));
+                    System.out.println("PRO " + (DateOnTimeZone.getTimeOnCurrTimeZone(new Date())));
+                    if ((!cal.getTime().equals(cal2.getTime())) || ((cal.getTime().equals(cal2.getTime())) && (currDay + c.getLong(7) >= DateOnTimeZone.getTimeOnCurrTimeZone(new Date())))) {
+                        System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis()));
+                        System.out.println("PROX ALARMA: " + f.format(c.getLong(7)));
+                        System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis() - cal.getTimeInMillis() % (24 * 60 * 60 * 1000) + c.getLong(7)));
+                        return (cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000))) + c.getLong(7);
+                    }
                 }
                 cal.add(Calendar.DAY_OF_YEAR, +1);
                 day = getDayInt(cal.getTime());

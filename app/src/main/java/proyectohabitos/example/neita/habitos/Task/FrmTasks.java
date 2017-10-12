@@ -110,8 +110,10 @@ public class FrmTasks extends AppCompatActivity {
             // action with ID action_refresh was selected
             case R.id.action_delete_spans: //BORRAR DESPUÉS *************** vacia los spams***+*SOLO PRUEBA
                 SQLiteDatabase db = BaseHelper.getReadable(this);
-                String sql = "DELETE FROM span";
+                String sql = "DELETE FROM activity";
+                String sql2 = "DELETE FROM span";
                 db.execSQL(sql);
+                db.execSQL(sql2);
                 BaseHelper.tryClose(db);
                 Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
                 MediaPlayer player = MediaPlayer.create(this, R.raw.quack);
