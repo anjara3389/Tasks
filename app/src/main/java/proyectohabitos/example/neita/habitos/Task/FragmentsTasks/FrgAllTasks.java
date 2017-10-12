@@ -130,13 +130,8 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
                 for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
                     if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) != null) {
-                        Calendar cal2 = new GregorianCalendar();
-                        cal2.setTime(datesCurrWeek.get(i));
-                        int day = cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
-                                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
-                                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
                         if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i)))) {  //si hay un span en la tarea y la fecha
-                            doneDays.set(day, true); //cambia el dato del arraylist en la posición correspondiente
+                            doneDays.set(Task.getDayInt(datesCurrWeek.get(i)), true); //cambia el dato del arraylist en la posición correspondiente
                         }
                     }
                 }
@@ -147,7 +142,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                         }
                     }
                 }
-
                 if (!c.isNull(10)) {//si tiene chrono
                     for (int i = 0; i < datesCurrWeek.size(); i++) {
                         if (doneDays.get(i) != null) {
@@ -155,11 +149,9 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                         }
                     }
                 }
-
                 LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
                 data.add(task);
             }
-
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
 

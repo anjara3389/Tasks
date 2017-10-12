@@ -58,6 +58,26 @@
             android:exported="true"
             android:launchMode="singleTask"></service>
 
+        <!-- servicios conectado a la clase para programar alamra-->
+        <service
+            android:name=".Services.AlarmNotification.ServiceAlarmNotification"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Services.AlarmNotification.ServiceAlarmSound"
+            android:exported="true"
+            android:launchMode="singleTask"></service>
+        <service
+            android:name=".Services.AlarmNotification.ServiceAlarmButtonNotific"
+            android:exported="true"
+            android:launchMode="singleTask"></service>
+
         <receiver android:name="proyectohabitos.example.neita.habitos.MyBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.hmkcode.android.USER_ACTION" />

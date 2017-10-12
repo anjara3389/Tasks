@@ -29,6 +29,7 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
 
 public class FrmTask extends AppCompatActivity {
 
@@ -170,11 +171,14 @@ public class FrmTask extends AppCompatActivity {
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
             obj.sinceDate = DateOnTimeZone.getTimeOnCurrTimeZone(new Date());
-            obj.reminder = remind;
+            obj.reminder = remind % (24 * 60 * 60 * 1000);
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
-                obj.insert(db);
+                int id = obj.insert(db);
+                ServiceAlarmNotification.scheduleNotificationFire(Task.getNextAlarm(db, id), this, id);
+                BaseHelper.tryClose(db);
+
             } else {
                 obj.update(db, id);
             }

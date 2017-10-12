@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -45,6 +47,7 @@ public class Task {
         this.reminder = reminder;
         this.chrono = chrono;
     }
+
     public ContentValues getValues() {
         ContentValues c = new ContentValues();//content values es un contenedor de valores
         c.put("name", name);
@@ -61,9 +64,8 @@ public class Task {
         return c;
     }
 
-    public void insert(SQLiteDatabase db) {
-        db.insert("activity", null, getValues());
-        BaseHelper.tryClose(db);
+    public int insert(SQLiteDatabase db) {
+        return (int) db.insert("activity", null, getValues());
     }
 
     public void update(SQLiteDatabase db, Integer id) {
@@ -85,6 +87,7 @@ public class Task {
 
         return task;
     }
+
     public static void delete(int id, SQLiteDatabase db) {
         db.execSQL("DELETE FROM span WHERE activity_id=" + id);
         db.execSQL("DELETE FROM activity WHERE id=" + id);
@@ -129,6 +132,38 @@ public class Task {
         return cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? "l" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? "m" :
                 (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? "x" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? "j" :
                         (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? "v" : (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? "s" : "d")))));
+    }
+
+    public static int getDayInt(Date date) {
+        Calendar cal2 = new GregorianCalendar();
+        cal2.setTime(date);
+        return cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
+                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
+                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
+    }
+
+    //da la fecha y hora de la proxima alarma de una tarea
+    public static Long getNextAlarm(SQLiteDatabase db, int taskId) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        int day = getDayInt(cal.getTime());
+        int ind = day;
+        Cursor c = db.rawQuery("SELECT l,m,x,j,v,s,d,reminder FROM activity WHERE id=" + taskId, null);
+        Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        if (c.moveToFirst()) {
+            for (int i = ind; i <= 14 - ind; i++) { //2 semanas
+                if (c.getInt(day) == 1) {
+                    System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis()));
+                    System.out.println("PROX ALARMA: " + f.format(c.getLong(7)));
+                    System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis() - cal.getTimeInMillis() % (24 * 60 * 60 * 1000) + c.getLong(7)));
+                    return (cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000))) + c.getLong(7);
+                }
+                cal.add(Calendar.DAY_OF_YEAR, +1);
+                day = getDayInt(cal.getTime());
+            }
+        }
+        return null;
     }
 }
 
