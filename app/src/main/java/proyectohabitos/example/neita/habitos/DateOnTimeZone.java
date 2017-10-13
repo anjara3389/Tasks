@@ -11,4 +11,8 @@ public class DateOnTimeZone {
     public static long getTimeOnCurrTimeZone(Date date) {
         return date.getTime() + TimeZone.getDefault().getOffset(date.getTime());
     }
+
+    public static long getTimeOnCurrTimeZoneDT(Long dateTime) {
+        return dateTime + TimeZone.getDefault().getOffset(dateTime);
+    }
 }

@@ -20,6 +20,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +31,10 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmButtonNotific;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmSound;
+import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 
 public class FrmTask extends AppCompatActivity {
 
@@ -175,15 +180,24 @@ public class FrmTask extends AppCompatActivity {
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
-                int id = obj.insert(db);
-                if (Task.getNextAlarm(db, id) != null) {
-                    ServiceAlarmNotification.scheduleNotificationFire(Task.getNextAlarm(db, id), this, id);
-                }
+                id = obj.insert(db);
                 BaseHelper.tryClose(db);
 
             } else {
                 obj.update(db, id);
+
+                //Se cancelan los servicios
+                ServiceAlarmSound.stopSound(FrmTask.this);
+                ServiceAlarmButtonNotific.stopService(FrmTask.this);
+                GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmTask.this);
+                mGcmNetworkManager.cancelTask(ServiceChrNotification.ACCESSIBILITY_SERVICE, ServiceAlarmNotification.class);
             }
+            db = BaseHelper.getWritable(this);
+            if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
+                Toast.makeText(this, "sec:" + (int) ((Task.getNextAlarm(db, id) - DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) / 1000), Toast.LENGTH_SHORT).show();
+                ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
+            }
+            BaseHelper.tryClose(db);
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();

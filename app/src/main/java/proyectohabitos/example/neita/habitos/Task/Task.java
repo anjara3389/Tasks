@@ -5,8 +5,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -149,24 +147,17 @@ public class Task {
         Calendar cal2 = new GregorianCalendar();
         cal2.setTime(new Date());
         int day = getDayInt(cal.getTime());
-        //int ind = day;
         Cursor c = db.rawQuery("SELECT l,m,x,j,v,s,d,reminder FROM activity WHERE id=" + taskId, null);
-        Format f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         if (c.moveToFirst()) {
             for (int i = 0; i < 8; i++) {
                 if (c.getInt(day) == 1) {
 
-                    long currDay = cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000));
-                    System.out.println(cal.getTimeZone());
-                    System.out.println("PRO: " + ((currDay + c.getLong(7) >= DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))));
-                    System.out.println("PRO " + (currDay + c.getLong(7)));
-                    System.out.println("PRO " + (DateOnTimeZone.getTimeOnCurrTimeZone(new Date())));
-                    if ((!cal.getTime().equals(cal2.getTime())) || ((cal.getTime().equals(cal2.getTime())) && (currDay + c.getLong(7) >= DateOnTimeZone.getTimeOnCurrTimeZone(new Date())))) {
-                        System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis()));
-                        System.out.println("PROX ALARMA: " + f.format(c.getLong(7)));
-                        System.out.println("PROX ALARMA: " + f.format(cal.getTimeInMillis() - cal.getTimeInMillis() % (24 * 60 * 60 * 1000) + c.getLong(7)));
-                        return (cal.getTimeInMillis() - (cal.getTimeInMillis() % (24 * 60 * 60 * 1000))) + c.getLong(7);
+                    long rawDate = DateOnTimeZone.getTimeOnCurrTimeZoneDT(cal.getTimeInMillis());
+                    long remindDateTime = (rawDate - (rawDate % (24 * 60 * 60 * 1000)) + DateOnTimeZone.getTimeOnCurrTimeZoneDT(c.getLong(7)));
+
+                    if ((!cal.getTime().equals(cal2.getTime())) || ((cal.getTime().equals(cal2.getTime())) && (remindDateTime >= DateOnTimeZone.getTimeOnCurrTimeZone(new Date())))) {
+                        return remindDateTime;
                     }
                 }
                 cal.add(Calendar.DAY_OF_YEAR, +1);
