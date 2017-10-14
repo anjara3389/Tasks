@@ -31,10 +31,7 @@ import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmButtonNotific;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
-import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmSound;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 
 public class FrmTask extends AppCompatActivity {
 
@@ -185,12 +182,9 @@ public class FrmTask extends AppCompatActivity {
 
             } else {
                 obj.update(db, id);
-
-                //Se cancelan los servicios
-                ServiceAlarmSound.stopSound(FrmTask.this);
-                ServiceAlarmButtonNotific.stopService(FrmTask.this);
+                //Se cancela la programación de los servicios
                 GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmTask.this);
-                mGcmNetworkManager.cancelTask(ServiceChrNotification.ACCESSIBILITY_SERVICE, ServiceAlarmNotification.class);
+                mGcmNetworkManager.cancelTask(ServiceAlarmNotification.REMIND + id, ServiceAlarmNotification.class);
             }
             db = BaseHelper.getWritable(this);
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {

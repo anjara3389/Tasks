@@ -185,7 +185,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         if (ans == true) {
             if (code == DELETE_TASK) {
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
-                Task.delete(posit, db);
+                Task.delete(posit, db, this.getContext());
                 Toast.makeText(getContext(), "Se eliminó la Tarea", Toast.LENGTH_LONG).show();
                 update();
             }

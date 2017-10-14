@@ -234,7 +234,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         if (ans == true) {
             if (code == DELETE_TASK) {
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
-                Task.delete(posit, db);
+                Task.delete(posit, db, this.getContext());
                 Toast.makeText(getContext(), "Se eliminó la actividad", Toast.LENGTH_LONG).show();
                 update();
             }

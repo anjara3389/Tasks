@@ -33,7 +33,7 @@ import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 //EN ESTA CLASE DE SERVICIO SE PUEDE PROGRAMAR EN CUANTO TIEMPO SE LANZA LA NOTIFICACIÓN
 
 public class ServiceChrNotification extends GcmTaskService {
-    private static final String NOTIFIC = "notific";
+    public static final String CHRON = "chron";
 
     public ServiceChrNotification() {
     }
@@ -67,8 +67,8 @@ public class ServiceChrNotification extends GcmTaskService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
-        mGcmNetworkManager.cancelTask(NOTIFIC, ServiceChrNotification.class);
+        // GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
+        //mGcmNetworkManager.cancelTask(NOTIFIC, ServiceChrNotification.class);
     }
 
     //Lanza la notificación
@@ -114,7 +114,7 @@ public class ServiceChrNotification extends GcmTaskService {
         b.putInt("activityId", activityId);
         OneoffTask task = new OneoffTask.Builder()
                 .setService(ServiceChrNotification.class)
-                .setTag(NOTIFIC)
+                .setTag(CHRON + activityId)
                 .setExecutionWindow(seconds - 1, seconds)
                 .setRequiredNetwork(NETWORK_STATE_ANY)
                 .setPersisted(true)

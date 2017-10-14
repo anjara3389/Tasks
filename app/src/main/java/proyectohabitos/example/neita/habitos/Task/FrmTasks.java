@@ -16,11 +16,15 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
@@ -112,6 +116,9 @@ public class FrmTasks extends AppCompatActivity {
                 SQLiteDatabase db = BaseHelper.getReadable(this);
                 String sql = "DELETE FROM activity";
                 String sql2 = "DELETE FROM span";
+                GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
+                mGcmNetworkManager.cancelAllTasks(ServiceAlarmNotification.class);
+                mGcmNetworkManager.cancelAllTasks(ServiceChrNotification.class);
                 db.execSQL(sql);
                 db.execSQL(sql2);
                 BaseHelper.tryClose(db);

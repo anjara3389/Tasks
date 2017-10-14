@@ -2,8 +2,11 @@ package proyectohabitos.example.neita.habitos.Task;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.google.android.gms.gcm.GcmNetworkManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +14,8 @@ import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTimeZone;
+import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Span.Span;
 
 public class Task {
@@ -86,8 +91,14 @@ public class Task {
         return task;
     }
 
-    public static void delete(int id, SQLiteDatabase db) {
+    public static void delete(int id, SQLiteDatabase db, Context c) {
+        //Se cancela la programación de los servicios
+        GcmNetworkManager gcmManag = GcmNetworkManager.getInstance(c);
+        gcmManag.cancelTask(ServiceAlarmNotification.REMIND + id, ServiceAlarmNotification.class);
+        gcmManag.cancelTask(ServiceChrNotification.CHRON + id, ServiceAlarmNotification.class);
+        //Se eliminan los spans
         db.execSQL("DELETE FROM span WHERE activity_id=" + id);
+        //se elimina la actividad
         db.execSQL("DELETE FROM activity WHERE id=" + id);
         BaseHelper.tryClose(db);
     }
@@ -99,8 +110,7 @@ public class Task {
             Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
                     "WHERE s.activity_id=" + activityId + " AND CAST((s.beg_date/86400000) as int)=" + (int) (dateTime / 86400000), null);
-            if (c.moveToFirst()) //si hay datos
-            {
+            if (c.moveToFirst()) {//si hay datos
                 return c.getInt(0) == 1;
             }
         } else {  //si tiene crono

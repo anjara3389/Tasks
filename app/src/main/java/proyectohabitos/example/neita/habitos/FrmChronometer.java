@@ -98,8 +98,7 @@ public class FrmChronometer extends AppCompatActivity {
                         ServiceChrSound.stopSound(FrmChronometer.this);
                         ServiceChrButtonNotific.stopService(FrmChronometer.this);
                         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmChronometer.this);
-                        mGcmNetworkManager.cancelTask(ServiceChrNotification.ACCESSIBILITY_SERVICE, ServiceChrNotification.class);
-
+                        mGcmNetworkManager.cancelTask(ServiceChrNotification.CHRON + activityId, ServiceChrNotification.class);
 
                         if (totalSecBackwards == 0 || totalSecBackwards < 0) {
                             //se envía broadcast para cerrar la activity y se cierra la notificación.
@@ -125,10 +124,7 @@ public class FrmChronometer extends AppCompatActivity {
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
-
-
         txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
-        //and i have a question that i dont know what to do .... well, the span has to close from the service ok ... but if i have opened the activity of the chronometer
         if (((totalSec / 60f) * 100f / targetTime) <= 100f) {
             pgBar.setProgress((int) ((totalSec / 60f) * 100f) / targetTime);
             percent.setText(((int) ((totalSec / 60f) * 100f / targetTime)) + "%");

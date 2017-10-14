@@ -14,7 +14,10 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.TaskParams;
 
+import java.util.Date;
+
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateOnTimeZone;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.Task;
 
@@ -27,7 +30,7 @@ import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 //EN ESTA CLASE DE SERVICIO SE PUEDE PROGRAMAR EN CUANTO TIEMPO SE LANZA LA NOTIFICACIÓN
 
 public class ServiceAlarmNotification extends GcmTaskService {
-    private static final String NOTIFIC_ALARM = "notificAlarm";
+    public static final String REMIND = "remind";
 
     public ServiceAlarmNotification() {
     }
@@ -41,11 +44,17 @@ public class ServiceAlarmNotification extends GcmTaskService {
     public int onRunTask(TaskParams taskParams) {
         Bundle bundle = taskParams.getExtras();
         SQLiteDatabase db = BaseHelper.getReadable(this);
-        //se lanza la notificación
-        fireNotification(new Task().select(db, bundle.getInt("activityId")).name);
-        //se inicia el sonido
-        Intent in = new Intent(this, ServiceAlarmSound.class);
-        startService(in);
+        Task task = new Task().select(db, bundle.getInt("activityId"));
+
+
+        if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))) { //si la tarea no está realizada hoy
+            //se lanza la notificación
+            fireNotification(task.name);
+            //se inicia el sonido
+            Intent in = new Intent(this, ServiceAlarmSound.class);
+            startService(in);
+        }
+
         //se programa la siguiente alarma
         Long time = Task.getNextAlarm(db, bundle.getInt("activityId"));
         if (time != null) {
@@ -58,8 +67,8 @@ public class ServiceAlarmNotification extends GcmTaskService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
-        mGcmNetworkManager.cancelTask(NOTIFIC_ALARM, ServiceAlarmNotification.class);
+        // GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
+        // mGcmNetworkManager.cancelTask(NOTIFIC_ALARM, ServiceAlarmNotification.class);
     }
 
     //Lanza la notificación
@@ -88,7 +97,7 @@ public class ServiceAlarmNotification extends GcmTaskService {
         b.putInt("activityId", activityId);
         OneoffTask task = new OneoffTask.Builder()
                 .setService(ServiceAlarmNotification.class)
-                .setTag(NOTIFIC_ALARM)
+                .setTag(REMIND + activityId)
                 .setExecutionWindow(seconds - 1, seconds)
                 .setRequiredNetwork(NETWORK_STATE_ANY)
                 .setPersisted(true)
