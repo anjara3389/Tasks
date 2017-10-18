@@ -16,10 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateOnTimeZone;
@@ -100,62 +97,21 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date());
-        ArrayList<Date> datesCurrWeek = new ArrayList<>();
-
-        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) { //cambia la fecha del calendario hasta que encuentra el primer día de la semana que es lunes
-            cal.add(Calendar.DAY_OF_YEAR, -1);
-        }
-        for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
-            datesCurrWeek.add(cal.getTime());
-            cal.add(Calendar.DAY_OF_YEAR, 1);
-        }
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
-                "a.l, " + //3
-                "a.m, " + //4
-                "a.x, " + //5
-                "a.j, " + //6
-                "a.v, " + //7
-                "a.s, " + //8
-                "a.d, " +//9*/
-                "a.chrono " +//10
+                "a.chrono " +//3
                 "FROM Activity a " +
                 "ORDER BY a." + Task.getDay(new Date()) + " DESC", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
-                for (int i = 0; i < datesCurrWeek.size(); i++) { //si hay un span en una tarea y una fecha,por cada una de las tareas  y por cada una de las fechas
-                    if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) != null) {
-                        if (Task.getIfTaskIsDoneDay(db, c.getInt(0), null, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i)))) {  //si hay un span en la tarea y la fecha
-                            doneDays.set(Task.getDayInt(datesCurrWeek.get(i)), true); //cambia el dato del arraylist en la posición correspondiente
-                        }
-                    }
-                }
-                for (int i = 3; i <= 9; i++) {
-                    if (c.getInt(i) == 1) {
-                        if (doneDays.get(i - 3) == null) {
-                            doneDays.set(i - 3, false);
-                        }
-                    }
-                }
-                if (!c.isNull(10)) {//si tiene chrono
-                    for (int i = 0; i < datesCurrWeek.size(); i++) {
-                        if (doneDays.get(i) != null) {
-                            doneDays.set(i, new Span().selectTotalTime(db, c.getInt(0), DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) >= c.getInt(10) * 60 * 1000);
-                        }
-                    }
-                }
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
+                ArrayList<Boolean> doneDays = Task.getDoneDaysOfTheWeekByActivity(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), new Date());
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(3) ? null : c.getInt(3), false);
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
-
-
         BaseHelper.tryClose(db);
 
         return data;

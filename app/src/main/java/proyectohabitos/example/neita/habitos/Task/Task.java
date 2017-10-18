@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -103,8 +105,13 @@ public class Task {
         BaseHelper.tryClose(db);
     }
 
-    //Consulta si una tarea se realizó el dia dado
-    //chrono es null si no tiene crono
+    //
+    //
+
+    /*Consulta si una tarea se realizó el dia dado
+    chrono es null si no tiene crono
+    dateTime debe ser dado dandole la zona horaria correspondiente
+     */
     public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Long dateTime) {
         if (chrono == null) { //si no tiene crono
             Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
@@ -150,7 +157,60 @@ public class Task {
                         (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
     }
 
-    //da la fecha y hora de la proxima alarma de una tarea
+    /*Retorna un arraylist con las fechas de todos los días de la semana correspondiente a la fecha dada.
+     */
+    public static ArrayList<Date> getDatesOfWeek(SQLiteDatabase db, Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        ArrayList<Date> datesCurrWeek = new ArrayList<>();
+
+        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) { //cambia la fecha del calendario(restando días) hasta que encuentra el primer día de la semana que es lunes
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
+            datesCurrWeek.add(cal.getTime());
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return datesCurrWeek;
+    }
+
+    /*Retorna una lista con la realización o no realización de una tarea en cada uno de los días de una semana (posición 0=Lunes, 1=Martes, etc) - la semana correspondiente a la fecha dada.
+    Dentro del arrayList:
+    si el valor de la posición dada es null, significa que la tarea no necesitaba ser realizada(el usuario no programó ese día para realizar la actividad)
+    Si el val de la posición es true, significa que la tarea debía hacerse y se realizó el día indicado.
+    Si el val de la pos es false, significa que debía hacerse y no se realizó el día indicado.
+     */
+
+    public static ArrayList<Boolean> getDoneDaysOfTheWeekByActivity(SQLiteDatabase db, int activityId, Long chrono, Date date) {
+        ArrayList<Date> datesCurrWeek = Task.getDatesOfWeek(db, date); //cada una de las fechas de la semana.
+        ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
+        Cursor c = db.rawQuery("SELECT a.l, " + //0
+                "a.m, " + //1
+                "a.x, " + //2
+                "a.j, " + //3
+                "a.v, " + //4
+                "a.s, " + //5
+                "a.d " +//6
+                "FROM Activity a " +
+                "WHERE a.id=" + activityId + " ", null);
+        if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
+        {
+            //si se realizó la tarea en una fecha por cada una de las fechas de la semana
+            for (int i = 0; i < datesCurrWeek.size(); i++) {
+                if (c.getInt(i) == 1) { //si hoy tenía que hacerse la actividad
+                    if (Task.getIfTaskIsDoneDay(db, activityId, chrono, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) != null && Task.getIfTaskIsDoneDay(db, activityId, chrono, DateOnTimeZone.getTimeOnCurrTimeZone(datesCurrWeek.get(i)))) {
+                        //Si se realizó la tarea el día indicado se cambia el valor de ese día a true
+                        doneDays.set(Task.getDayInt(datesCurrWeek.get(i)), true);
+                    } else { //si no re realizó la tarea el día indicado
+                        doneDays.set(i, false);
+                    }
+                }
+            }
+        }
+        return doneDays;
+    }
+
+    //da la fecha y hora de la próxima alarma de una tarea
     public static Long getNextAlarm(SQLiteDatabase db, int taskId) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
@@ -176,5 +236,35 @@ public class Task {
         }
         return null;
     }
+
+    /*Da el porcentaje de realización de una tarea en un intervalo de tiempo dado
+    si interv es 0 semanal,interv es 1 mensual,interv es 2 global
+    dateTime debe ser dado dandole la zona horaria correspondiente
+     */
+    public static double getStatistics(int activityId, int interv, SQLiteDatabase db) {
+        Task task = new Task().select(db, activityId);
+        if (interv == 0) {
+            int doneTasks = 0;
+            int total = 0;
+            ArrayList<Boolean> days = getDoneDaysOfTheWeekByActivity(db, task.id, task.chrono, new Date());
+            for (int i = 0; i < days.size(); i++) {
+                if (days.get(i) != null) {
+                    total++;
+                    if (days.get(i)) {
+                        doneTasks++;
+                    }
+                }
+            }
+            return doneTasks * 100 / total;
+        } else if (interv == 1) {
+
+        } else if (interv == 2) {
+
+        }
+        //getIfTaskIsDoneDay(db, activityId, task.chrono, );
+        return 0;
+    }
+
+
 }
 
