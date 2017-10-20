@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTimeZone;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
@@ -172,8 +172,8 @@ public class FrmTask extends AppCompatActivity {
             obj.v = vier.isChecked();
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
-            obj.sinceDate = DateOnTimeZone.getTimeOnCurrTimeZone(new Date());
-            obj.reminder = remind % (24 * 60 * 60 * 1000);
+            obj.sinceDate = DateUtils.getTimeOnCurrTimeZone(new Date());
+            obj.reminder = remind % (24 * 60 * 60 * 1000); //se le quita la fecha y solo se deja la hora
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
@@ -188,8 +188,8 @@ public class FrmTask extends AppCompatActivity {
             }
             db = BaseHelper.getWritable(this);
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
-                Toast.makeText(this, "sec:" + (int) ((Task.getNextAlarm(db, id) - DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) / 1000), Toast.LENGTH_SHORT).show();
-                ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
+                Toast.makeText(this, "sec:" + (int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), Toast.LENGTH_SHORT).show();
+                ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
             BaseHelper.tryClose(db);
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();

@@ -19,26 +19,25 @@
         <activity
             android:name=".FrmChronometer"
             android:parentActivityName=".Task.FrmTasks">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Task.FrmTask" />
         </activity>
-
         <activity android:name=".Statistics.FrmStatistics" />
         <activity android:name=".Statistics.Fragments.WeeklyStatistics" />
         <activity android:name=".Statistics.Fragments.MonthlyStatistics" />
         <activity android:name=".Statistics.Fragments.GlobalStatistics" />
-        <activity android:name=".DialogFragments.NumPickersDialogFragment"></activity>
+        <activity android:name=".DialogFragments.NumPickersDialogFragment" />
 
-        <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro-->
-        <uses-permission android:name="android.permission.INTERNET" />  <!-- acceso a internet-->
+        <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
+        <uses-permission android:name="android.permission.INTERNET" /> <!-- acceso a internet -->
         <uses-permission android:name="android.permission.WAKE_LOCK" />
         <uses-permission android:name="android.permission.VIBRATE" />
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
-        <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro-->
+        <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro -->
         <service
             android:name=".Services.ChronometerNotification.ServiceChrNotification"
             android:exported="true"
@@ -48,17 +47,16 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Services.ChronometerNotification.ServiceChrSound"
             android:exported="true"
-            android:launchMode="singleTask"></service>
+            android:launchMode="singleTask" />
         <service
             android:name=".Services.ChronometerNotification.ServiceChrButtonNotific"
             android:exported="true"
-            android:launchMode="singleTask"></service>
+            android:launchMode="singleTask" />
 
-        <!-- servicios conectado a la clase para programar alamra-->
+        <!-- servicios conectado a la clase para programar alamra -->
         <service
             android:name=".Services.AlarmNotification.ServiceAlarmNotification"
             android:exported="true"
@@ -68,22 +66,22 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Services.AlarmNotification.ServiceAlarmSound"
             android:exported="true"
-            android:launchMode="singleTask"></service>
+            android:launchMode="singleTask" />
         <service
             android:name=".Services.AlarmNotification.ServiceAlarmButtonNotific"
             android:exported="true"
-            android:launchMode="singleTask"></service>
+            android:launchMode="singleTask" />
 
-        <receiver android:name="proyectohabitos.example.neita.habitos.MyBroadcastReceiver">
+        <receiver android:name=".MyBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.hmkcode.android.USER_ACTION" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".Statistics.FrmSta"></activity>
     </application>
 
 </manifest>

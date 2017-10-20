@@ -17,7 +17,7 @@ import com.google.android.gms.gcm.TaskParams;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTimeZone;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.Task;
 
@@ -47,7 +47,7 @@ public class ServiceAlarmNotification extends GcmTaskService {
         Task task = new Task().select(db, bundle.getInt("activityId"));
 
 
-        if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))) { //si la tarea no está realizada hoy
+        if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, DateUtils.getTimeOnCurrTimeZone(new Date()))) { //si la tarea no está realizada hoy
             //se lanza la notificación
             fireNotification(task.name);
             //se inicia el sonido

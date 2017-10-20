@@ -16,15 +16,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTimeZone;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
-import proyectohabitos.example.neita.habitos.Statistics.FrmStatistics;
+import proyectohabitos.example.neita.habitos.Statistics.FrmSta;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -93,21 +94,46 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         lvTasks.setAdapter(adapter);
     }
 
+    /*Retorna una lista
+    realización o no realización de cada una de las tareas en cada uno de los días de una semana (posición 0=Lunes, 1=Martes, etc) - la semana correspondiente a la fecha dada.
+    Dentro del arrayList:
+    si el valor de la posición dada es null, significa que la tarea no necesitaba ser realizada(el usuario no programó ese día para realizar la actividad)
+    Si el val de la posición es true, significa que la tarea debía hacerse y se realizó el día indicado.
+    Si el val de la pos es false, significa que debía hacerse y no se realizó el día indicado.
+     */
     private ArrayList<LstTask> getTasks() {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
-
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
-                "a.chrono " +//3
+                "a.l," +//3
+                "a.m, " + //4
+                "a.x, " + //5
+                "a.j, " + //6
+                "a.v, " + //7
+                "a.s, " + //8
+                "a.d, " +//9
+                "a.chrono " +//10
                 "FROM Activity a " +
-                "ORDER BY a." + Task.getDay(new Date()) + " DESC", null);
+                "ORDER BY a." + DateUtils.getDay(new Date()) + " DESC", null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                ArrayList<Boolean> doneDays = Task.getDoneDaysOfTheWeekByActivity(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), new Date());
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(3) ? null : c.getInt(3), false);
+                ArrayList<Date> datesCurrWeek = Task.getDatesOfWeek(new Date()); //cada una de las fechas de la semana.
+                ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
+                //si se realizó la tarea en una fecha por cada una de las fechas de la semana
+                for (int i = 0; i < datesCurrWeek.size(); i++) {
+                    if (c.getInt(i + 3) == 1) { //si hoy tenía que hacerse la actividad
+                        if (Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(10) ? null : c.getLong(10), DateUtils.getTimeOnCurrTimeZone(datesCurrWeek.get(i))) != null && Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(10) ? null : c.getLong(10), DateUtils.getTimeOnCurrTimeZone(datesCurrWeek.get(i)))) {
+                            doneDays.set(DateUtils.getDayInt(datesCurrWeek.get(i)), true); //Si se realizó la tarea el día indicado se cambia el valor de ese día a true
+                        } else {
+                            doneDays.set(i, false);//si no re realizó la tarea el día indicado se cambia a false
+                        }
+                    }
+                }
+
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), doneDays, c.isNull(10) ? null : c.getInt(10), false);
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
@@ -121,13 +147,13 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
-        Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + Task.getDay(new Date()), null);
+        Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + DateUtils.getDay(new Date()), null);
         if (c.moveToFirst()) {
             if (c.getInt(0) == 1) {
                 if (task.getChrono() == null) {
-                    menu.add(0, 0, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
+                    menu.add(0, 0, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
                 } else {
-                    if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))) {
+                    if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateUtils.getTimeOnCurrTimeZone(new Date()))) {
                         menu.add(0, 0, 0, "Iniciar");
                     }
                 }
@@ -176,7 +202,8 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             update();
             return true;
         } else if (item.getItemId() == 6) {
-            Intent i = new Intent(getActivity(), FrmStatistics.class);
+            Intent i = new Intent(getActivity(), FrmSta.class);
+            i.putExtra("id", posit);
             startActivity(i);
             return true;
         } else {

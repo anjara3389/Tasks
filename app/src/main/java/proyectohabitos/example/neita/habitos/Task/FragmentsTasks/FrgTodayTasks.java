@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateOnTimeZone;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
@@ -105,11 +105,11 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 "a.reminder, " +//2
                 "a.chrono " +//3
                 "FROM Activity a " +
-                "WHERE a." + Task.getDay(cal.getTime()), null);
+                "WHERE a." + DateUtils.getDay(cal.getTime()), null);
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateOnTimeZone.getTimeOnCurrTimeZone(new Date())));
+                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateUtils.getTimeOnCurrTimeZone(new Date())));
                 data.add(task);
             }
             while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
@@ -124,12 +124,12 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         menu.setHeaderTitle("Selecciona una Acción");
         if (task.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (Task.getIfTaskIsDoneDay(db, posit, null, DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) != null) {
-                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateOnTimeZone.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
+            if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
+                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
             }
         } else {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateOnTimeZone.getTimeOnCurrTimeZone(new Date()))) {
+            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateUtils.getTimeOnCurrTimeZone(new Date()))) {
                 menu.add(0, 3, 0, "Iniciar");
             }
         }
