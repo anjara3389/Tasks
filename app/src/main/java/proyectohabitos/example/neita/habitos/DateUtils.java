@@ -18,6 +18,10 @@ public class DateUtils {
         return dateTime + TimeZone.getDefault().getOffset(dateTime);
     }
 
+    public static long getTimeOnGMT(Date dateTime) {
+        return dateTime.getTime() - TimeZone.getDefault().getOffset(dateTime.getTime());
+    }
+
     /*retorna el primer día de la semana, del mes o del año.
     *primer día de la semana: v=0
     *primer día del mes: v=1
@@ -46,7 +50,7 @@ public class DateUtils {
         begCal.setTime(date);
         return begCal;
     }
-    
+
     public static Date trimDate(Date date) {
         GregorianCalendar c1 = getGregCalendar(date);
         GregorianCalendar c2 = new GregorianCalendar();

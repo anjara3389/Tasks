@@ -188,13 +188,12 @@ public class Task {
 
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.l, task.m, task.x, task.j, task.v, task.s, task.d));
-        while (!begCal.getTime().equals(endCal.getTime())) {
+        while (!begCal.getTime().after(endCal.getTime())) {
             if (daysOfWeek.get(DateUtils.getDayInt(begCal.getTime()))) { //si la tarea tiene que hacerse el día
                 doneAndNotDone.add(doneAndNotDone.size(), getIfTaskIsDoneDay(db, taskId, task.chrono, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
             }
-            if (!begCal.getTime().equals(endCal.getTime())) {
                 begCal.add(Calendar.DAY_OF_YEAR, +1);//se incrementa la fecha del calendario en 1 día
-            }
+
         }
         return doneAndNotDone;
     }
@@ -216,6 +215,10 @@ public class Task {
         Long since = interv == 0 ? task.sinceDate : (long) DateUtils.getGregCalendar(new Date(task.sinceDate)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
         //el día(interv == 0),mes(interv == 1) o el año(interv == 2) actual
         now = interv == 0 ? now : (long) DateUtils.getGregCalendar(new Date()).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
+
+        System.out.println(interv + "since///" + since);
+        System.out.println(interv + "now///" + now);
+        System.out.println(interv + "IGUALES///" + (since.equals(now)));
 
         if (since.equals(now)) { //si el día,mes o año en el que se creó la actividad es igual al día,mes o al año actual
             begD = new Date();

@@ -172,10 +172,10 @@ public class FrmTask extends AppCompatActivity {
             obj.v = vier.isChecked();
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
-            obj.sinceDate = DateUtils.getTimeOnCurrTimeZone(new Date()) - (DateUtils.getTimeOnCurrTimeZone(new Date()) % (24 * 60 * 60 * 1000));
+            obj.sinceDate = new Date().getTime() - (new Date().getTime() % (24 * 60 * 60 * 1000));
 
             Date begD = new Date();
-            begD.setTime(DateUtils.getTimeOnCurrTimeZone(new Date()));
+            begD.setTime(new Date().getTime());
             System.out.println("CREAADO" + begD);
             obj.reminder = remind % (24 * 60 * 60 * 1000); //se le quita la fecha y solo se deja la hora
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
