@@ -38,11 +38,11 @@ public class FrmSta extends AppCompatActivity {
         weekBar.setProgress((int) Task.getStatistics(taskId, 0, db));
         txtPorWeek.setText((int) Task.getStatistics(taskId, 0, db) + "%");
 
-        //monthBar.setProgress((int)Task.getStatistics(taskId,1,db));
-        //txtPorMonth.setText((int)Task.getStatistics(taskId,1,db)+"%");
+        monthBar.setProgress((int) Task.getStatistics(taskId, 1, db));
+        txtPorMonth.setText((int) Task.getStatistics(taskId, 1, db) + "%");
 
-        //GlobBar.setProgress((int)Task.getStatistics(taskId,2,db));
-        //txtPorGlob.setText((int)Task.getStatistics(taskId,2,db)+"%");
+        GlobBar.setProgress((int) Task.getStatistics(taskId, 2, db));
+        txtPorGlob.setText((int) Task.getStatistics(taskId, 2, db) + "%");
 
         BaseHelper.tryClose(db);
     }

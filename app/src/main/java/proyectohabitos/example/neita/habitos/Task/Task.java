@@ -110,7 +110,6 @@ public class Task {
     dateTime debe ser dado dandole la zona horaria correspondiente
      */
     public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Long dateTime) {
-        System.out.println("date    timeeeeee///" + dateTime);
         if (chrono == null) { //si no tiene crono
             Cursor c = db.rawQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
@@ -138,9 +137,6 @@ public class Task {
         BaseHelper.tryClose(db);
     }
 
-
-
-
     /*Retorna un arraylist con las fechas de todos los días de la semana correspondiente a la fecha dada.
      */
     public static ArrayList<Date> getDatesOfWeek(Date date) {
@@ -154,8 +150,6 @@ public class Task {
         }
         return datesCurrWeek;
     }
-
-
 
     //da la fecha y hora de la próxima alarma de una tarea
     public static Long getNextAlarm(SQLiteDatabase db, int taskId) {
@@ -189,17 +183,12 @@ public class Task {
      */
     public static ArrayList<Boolean> getDoneAndNotDone(Date begDate, Date endDate, int taskId, SQLiteDatabase db) {
         ArrayList<Boolean> doneAndNotDone = new ArrayList();
-        Calendar begCal = DateUtils.getGregCalendar(begDate);
-        Calendar endCal = DateUtils.getGregCalendar(endDate);
+        Calendar begCal = DateUtils.getGregCalendar(DateUtils.trimDate(begDate));
+        Calendar endCal = DateUtils.getGregCalendar(DateUtils.trimDate(endDate));
 
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.l, task.m, task.x, task.j, task.v, task.s, task.d));
-        System.out.println("lel");
         while (!begCal.getTime().equals(endCal.getTime())) {
-            System.out.println("RESPUESTA" + begCal.getTime().equals(endCal.getTime()));
-            System.out.println("RESPUESTAbegtime" + begCal.getTime());
-            System.out.println("RESPUESTAendtime" + endCal.getTime());
-
             if (daysOfWeek.get(DateUtils.getDayInt(begCal.getTime()))) { //si la tarea tiene que hacerse el día
                 doneAndNotDone.add(doneAndNotDone.size(), getIfTaskIsDoneDay(db, taskId, task.chrono, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
             }
@@ -211,41 +200,35 @@ public class Task {
     }
 
 
-
     /*Da el porcentaje de realización de una tarea en un intervalo de tiempo dado
-    si interv es 0 semanal,interv es 1 mensual,interv es 2 global
+    si interv es 0 semanal,interv es 1 mensual,interv es 2 anual
     dateTime debe ser dado dandole la zona horaria correspondiente
      */
     public static double getStatistics(int taskId, int interv, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> doneAndNotDone;
-        Date begD = null;
+        Date begD;
         int doneTasks = 0;
 
-        Long since = DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) - (DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha;
-        Long today = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha
+        Long sinceDay = DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) - (DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día en que se creó la actividad;
+        Long now = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día de hoy.
 
-        if (interv == 2) {//si es anual
-            since = (long) DateUtils.getGregCalendar(new Date(since)).get(GregorianCalendar.YEAR);//año en el que se creó la actividad
-            today = (long) DateUtils.getGregCalendar(new Date()).get(GregorianCalendar.YEAR); //año actual
-        }
+        //el día(interv == 0),mes(interv == 1) o el año(interv == 2) en el que se creó la actividad
+        Long since = interv == 0 ? sinceDay : (long) DateUtils.getGregCalendar(new Date(sinceDay)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
+        //el día(interv == 0),mes(interv == 1) o el año(interv == 2) actual
+        now = interv == 0 ? now : (long) DateUtils.getGregCalendar(new Date()).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
+
         System.out.println(interv + "since///" + since);
-        System.out.println(interv + "today///" + today);
+        System.out.println(interv + "now///" + now);
+        System.out.println(interv + "IGUALES///" + (since == now));
 
-        if (since == today) { //si el día o año de hoy se creó la actividad
+        if (since == now) { //si el día,mes o año en el que se creó la actividad es igual al día,mes o al año actual
             begD = new Date();
-            begD.setTime(since);
+            begD.setTime(sinceDay);
         } else {
-            if (interv == 0) {//SEMANAL
-                begD = DateUtils.getFirstDate(0, new Date());//primer día de la semana
-            } else if (interv == 1) {//MENSUAL
-                begD = DateUtils.getFirstDate(1, new Date());//primer día del mes
-            } else if (interv == 2) {//ANUAL
-                begD = DateUtils.getFirstDate(2, new Date());//primer día del año
-            }
+            //begD es igual al primer día de la semana(interv == 0) o primer día del mes(interv == 1) o primer día del año interv == 2
+            begD = DateUtils.getFirstDate(interv == 0 ? 0 : interv == 1 ? 1 : 2, new Date());
         }
-
-        System.out.println(interv + "date///" + begD);
         doneAndNotDone = getDoneAndNotDone(begD, new Date(), task.id, db);
 
         for (int i = 0; i < doneAndNotDone.size(); i++) {//Se saca el total de trues

@@ -46,6 +46,14 @@ public class DateUtils {
         begCal.setTime(date);
         return begCal;
     }
+    
+    public static Date trimDate(Date date) {
+        GregorianCalendar c1 = getGregCalendar(date);
+        GregorianCalendar c2 = new GregorianCalendar();
+        c2.set(c1.get(GregorianCalendar.YEAR), c1.get(GregorianCalendar.MONTH), c1.get(GregorianCalendar.DAY_OF_MONTH), 0, 0, 0);
+        c2.set(GregorianCalendar.MILLISECOND, 0);
+        return c2.getTime();
+    }
 
     /*retorna el dia de la semana correspondiente a la fecha dada como una letra.
     ejemp: si es martes retorna m
