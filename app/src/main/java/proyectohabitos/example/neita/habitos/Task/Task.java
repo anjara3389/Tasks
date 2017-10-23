@@ -202,7 +202,7 @@ public class Task {
 
     /*Da el porcentaje de realización de una tarea en un intervalo de tiempo dado
     si interv es 0 semanal,interv es 1 mensual,interv es 2 anual
-    dateTime debe ser dado dandole la zona horaria correspondiente
+    a dateTimese le debe dar la zona horaria correspondiente
      */
     public static double getStatistics(int taskId, int interv, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
@@ -210,25 +210,21 @@ public class Task {
         Date begD;
         int doneTasks = 0;
 
-        Long sinceDay = DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) - (DateUtils.getTimeOnCurrTimeZoneDT(task.sinceDate) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día en que se creó la actividad;
         Long now = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día de hoy.
 
         //el día(interv == 0),mes(interv == 1) o el año(interv == 2) en el que se creó la actividad
-        Long since = interv == 0 ? sinceDay : (long) DateUtils.getGregCalendar(new Date(sinceDay)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
+        Long since = interv == 0 ? task.sinceDate : (long) DateUtils.getGregCalendar(new Date(task.sinceDate)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
         //el día(interv == 0),mes(interv == 1) o el año(interv == 2) actual
         now = interv == 0 ? now : (long) DateUtils.getGregCalendar(new Date()).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
 
-        System.out.println(interv + "since///" + since);
-        System.out.println(interv + "now///" + now);
-        System.out.println(interv + "IGUALES///" + (since == now));
-
-        if (since == now) { //si el día,mes o año en el que se creó la actividad es igual al día,mes o al año actual
+        if (since.equals(now)) { //si el día,mes o año en el que se creó la actividad es igual al día,mes o al año actual
             begD = new Date();
-            begD.setTime(sinceDay);
+            begD.setTime(task.sinceDate);
         } else {
             //begD es igual al primer día de la semana(interv == 0) o primer día del mes(interv == 1) o primer día del año interv == 2
             begD = DateUtils.getFirstDate(interv == 0 ? 0 : interv == 1 ? 1 : 2, new Date());
         }
+        System.out.println(interv + "BEGD///" + begD);
         doneAndNotDone = getDoneAndNotDone(begD, new Date(), task.id, db);
 
         for (int i = 0; i < doneAndNotDone.size(); i++) {//Se saca el total de trues
