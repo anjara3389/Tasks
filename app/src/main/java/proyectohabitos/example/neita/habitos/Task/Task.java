@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateUtils;
@@ -209,10 +210,15 @@ public class Task {
         Date begD;
         int doneTasks = 0;
 
-        Long now = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día de hoy.
+        Long sinceDate = task.sinceDate - (task.sinceDate % (24 * 60 * 60 * 1000)) - TimeZone.getDefault().getOffset(task.sinceDate - (task.sinceDate % (24 * 60 * 60 * 1000)));//en mi zona horaria está bien
+        Long now = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));
+        // Long now = DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) - (DateUtils.getTimeOnCurrTimeZoneDT(new Date().getTime()) % (24 * 60 * 60 * 1000));//se le quita la hora y solo queda la fecha. Día de hoy.
+        Long sinceDay = sinceDate;
+
+
 
         //el día(interv == 0),mes(interv == 1) o el año(interv == 2) en el que se creó la actividad
-        Long since = interv == 0 ? task.sinceDate : (long) DateUtils.getGregCalendar(new Date(task.sinceDate)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
+        Long since = interv == 0 ? sinceDay : (long) DateUtils.getGregCalendar(new Date(sinceDate)).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
         //el día(interv == 0),mes(interv == 1) o el año(interv == 2) actual
         now = interv == 0 ? now : (long) DateUtils.getGregCalendar(new Date()).get((interv == 1 ? GregorianCalendar.MONTH : GregorianCalendar.YEAR));
 
@@ -222,7 +228,8 @@ public class Task {
 
         if (since.equals(now)) { //si el día,mes o año en el que se creó la actividad es igual al día,mes o al año actual
             begD = new Date();
-            begD.setTime(task.sinceDate);
+            begD.setTime(sinceDate);
+
         } else {
             //begD es igual al primer día de la semana(interv == 0) o primer día del mes(interv == 1) o primer día del año interv == 2
             begD = DateUtils.getFirstDate(interv == 0 ? 0 : interv == 1 ? 1 : 2, new Date());
