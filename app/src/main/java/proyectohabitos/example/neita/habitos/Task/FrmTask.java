@@ -172,16 +172,14 @@ public class FrmTask extends AppCompatActivity {
             obj.v = vier.isChecked();
             obj.s = sab.isChecked();
             obj.d = dom.isChecked();
+            //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
             obj.sinceDate = new Date().getTime();
-
-            System.out.println("CREAADO" + obj.sinceDate);
-            obj.reminder = remind % (24 * 60 * 60 * 1000); //se le quita la fecha y solo se deja la hora
+            obj.reminder = remind != 0 ? DateUtils.trimTime(remind) : 0; //se le quita la fecha y solo se deja la hora
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
                 id = obj.insert(db);
                 BaseHelper.tryClose(db);
-
             } else {
                 obj.update(db, id);
                 //Se cancela la programación de los servicios

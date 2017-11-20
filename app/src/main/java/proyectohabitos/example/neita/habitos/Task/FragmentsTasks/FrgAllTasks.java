@@ -120,7 +120,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
         {
             do {
-                ArrayList<Date> datesCurrWeek = Task.getDatesOfWeek(new Date()); //cada una de las fechas de la semana.
+                ArrayList<Date> datesCurrWeek = DateUtils.getDatesOfWeek(new Date()); //cada una de las fechas de la semana.
                 ArrayList<Boolean> doneDays = new ArrayList(Arrays.asList(null, null, null, null, null, null, null));
                 //si se realizó la tarea en una fecha por cada una de las fechas de la semana
                 for (int i = 0; i < datesCurrWeek.size(); i++) {
