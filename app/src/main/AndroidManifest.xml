@@ -81,7 +81,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Statistics.FrmSta"></activity>
+        <activity android:name=".Statistics.FrmStatistics"></activity>
     </application>
 
 </manifest>

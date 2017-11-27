@@ -25,7 +25,7 @@ import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
-import proyectohabitos.example.neita.habitos.Statistics.FrmSta;
+import proyectohabitos.example.neita.habitos.Statistics.FrmStatistics;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -202,7 +202,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             update();
             return true;
         } else if (item.getItemId() == 6) {
-            Intent i = new Intent(getActivity(), FrmSta.class);
+            Intent i = new Intent(getActivity(), FrmStatistics.class);
             i.putExtra("id", posit);
             startActivity(i);
             return true;

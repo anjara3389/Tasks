@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
 
+//Los lapsos de tiempo en los que se realiza la tarea cuando tiene cronómetro
+//cuando la tarea no tiene cronómetro, al marcarla se creará un nuevo spam con misma fecha de inicio y fin
 public class Span {
     public Integer id;
     public Long begDate;

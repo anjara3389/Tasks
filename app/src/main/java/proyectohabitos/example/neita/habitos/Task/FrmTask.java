@@ -33,6 +33,7 @@ import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFra
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
 
+//el formulario para crear o editar una actividad
 public class FrmTask extends AppCompatActivity {
 
     Task obj;
@@ -121,7 +122,6 @@ public class FrmTask extends AppCompatActivity {
         switchChrono.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isChecked) {
                     NumPickersDialogFragment numPicksDialog = new NumPickersDialogFragment();
                     numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
@@ -155,6 +155,7 @@ public class FrmTask extends AppCompatActivity {
         getSupportActionBar().hide();
     }
 
+    //guarda el registro editandolo o eliminandolo
     private void save() {
         try {
             if (!lun.isChecked() && !mar.isChecked() && !mier.isChecked() && !juev.isChecked() && !vier.isChecked() && !sab.isChecked() && !dom.isChecked()) {
@@ -174,7 +175,7 @@ public class FrmTask extends AppCompatActivity {
             obj.d = dom.isChecked();
             //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
             obj.sinceDate = new Date().getTime();
-            obj.reminder = remind != 0 ? DateUtils.trimTime(remind) : 0; //se le quita la fecha y solo se deja la hora
+            obj.reminder = remind != 0 ? DateUtils.trimTime(remind) : null; //se le quita la fecha y solo se deja la hora
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
@@ -200,6 +201,7 @@ public class FrmTask extends AppCompatActivity {
         }
     }
 
+    //cuando se edita para recobrar la información de la tarea y llenarla en los campos
     private void recoverData() {
         SQLiteDatabase db = BaseHelper.getReadable(this);
         obj = new Task().select(db, id);
@@ -224,6 +226,7 @@ public class FrmTask extends AppCompatActivity {
         }
     }
 
+    //cuando se acaba de selecciona el tiempo del cronómetro
     public void onFinishNumbersDialog(boolean ans, int hrs, int min) {
         if (ans == true) {
             chrono.setVisibility(View.VISIBLE);
@@ -236,6 +239,7 @@ public class FrmTask extends AppCompatActivity {
     }
 
 
+    //METODOS DEL DATE PICKER
     public static class TimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

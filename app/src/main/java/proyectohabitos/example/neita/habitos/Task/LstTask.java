@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+//representa una fila de una tarea en los listview de la tareas
 public class LstTask {
     private Integer idTask;
     private String name;
@@ -46,17 +46,6 @@ public class LstTask {
     public boolean isDone() {
         return isDone;
     }
-
-   /* public String getTextDays() {
-        String text = "";
-        for (int i = 0; i < days.size(); i++) {
-            text += days.get(i);
-            if (i != days.size() - 1) {
-                text += ", ";
-            }
-        }
-        return text;
-    }*/
 
     public String getTextReminder() {
         SimpleDateFormat f = new SimpleDateFormat("hh:mm a");

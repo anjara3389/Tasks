@@ -93,7 +93,6 @@ public class ServiceAlarmNotification extends GcmTaskService {
     public static void scheduleNotificationFire(long seconds, Context cnxt, Integer activityId) {
         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(cnxt);
         Bundle b = new Bundle();
-        System.out.println(seconds + "SEGUNNDOOOOOOS");
         b.putInt("activityId", activityId);
         OneoffTask task = new OneoffTask.Builder()
                 .setService(ServiceAlarmNotification.class)

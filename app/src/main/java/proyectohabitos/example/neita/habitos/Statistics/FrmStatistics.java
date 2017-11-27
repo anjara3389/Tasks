@@ -1,116 +1,49 @@
 package proyectohabitos.example.neita.habitos.Statistics;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
+import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Statistics.Fragments.GlobalStatistics;
-import proyectohabitos.example.neita.habitos.Statistics.Fragments.MonthlyStatistics;
-import proyectohabitos.example.neita.habitos.Statistics.Fragments.WeeklyStatistics;
+import proyectohabitos.example.neita.habitos.Task.Task;
 
 public class FrmStatistics extends AppCompatActivity {
 
-    DemoCollectionPagerAdapterSta mDemoCollectionPagerAdapter;
-    ViewPager mViewPager;
+    private int taskId;
+    private CircularProgressBar weekBar, monthBar, GlobBar;
+    private TextView txtPorWeek, txtPorMonth, txtPorGlob;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final ActionBar actionBar = getSupportActionBar();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_statistics);
 
+        Bundle bundle = getIntent().getExtras();
+        taskId = bundle.getInt("id");
 
-        mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapterSta(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.frmTasksPagerStatistics);
-        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
-
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if(position == 0){
-                    // getFragmentManager().findFragmentByTag()
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        // Specify that tabs should be displayed in the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        weekBar = (CircularProgressBar) findViewById(R.id.week_pbar);
+        monthBar = (CircularProgressBar) findViewById(R.id.month_pbar);
+        GlobBar = (CircularProgressBar) findViewById(R.id.global_pbar);
+        txtPorWeek = (TextView) findViewById(R.id.frm_sta_txt_per_sem);
+        txtPorMonth = (TextView) findViewById(R.id.frm_sta_txt_per_mont);
+        txtPorGlob = (TextView) findViewById(R.id.frm_sta_txt_per_glob);
 
 
-        // Create a tab listener that is called when the user changes tabs.
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+        SQLiteDatabase db = BaseHelper.getReadable(FrmStatistics.this);
 
+        weekBar.setProgress((int) Task.getStatistics(taskId, 0, db));
+        txtPorWeek.setText((int) Task.getStatistics(taskId, 0, db) + "%");
 
-            @Override
-            public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-                mViewPager.setCurrentItem(tab.getPosition());
+        monthBar.setProgress((int) Task.getStatistics(taskId, 1, db));
+        txtPorMonth.setText((int) Task.getStatistics(taskId, 1, db) + "%");
 
-            }
+        GlobBar.setProgress((int) Task.getStatistics(taskId, 2, db));
+        txtPorGlob.setText((int) Task.getStatistics(taskId, 2, db) + "%");
 
-            @Override
-            public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
-            }
-
-            @Override
-            public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
-            }
-        };
-
-        // Add 3 tabs, specifying the tab's text and TabListener
-
-        actionBar.addTab(actionBar.newTab().setText("Sem").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("Mes").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("Global").setTabListener(tabListener));
-    }
-
-    public class DemoCollectionPagerAdapterSta extends FragmentStatePagerAdapter {
-        public DemoCollectionPagerAdapterSta(FragmentManager fm) {
-            super(fm);
-        }
-
-
-
-        @Override
-        public Fragment getItem(int i) {
-            Fragment fragment = null; //do i need another method? yes, calling DemoObjectFragment twicehe same fragment twice, and we want different gragments ... whaaaaaaaat
-            if (i == 0) {
-                fragment = new WeeklyStatistics();
-
-            } else if (i == 1) {
-                fragment = new MonthlyStatistics();
-            }
-
-         else if (i == 2) {
-            fragment = new GlobalStatistics();
-        }
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
-        } //whats this OBJECT? i wanna change the tittles
-        //change it if you want to, right now the titles are not visible, we'l need to add tabs to see them 6hhhhhh
+        BaseHelper.tryClose(db);
     }
 }
