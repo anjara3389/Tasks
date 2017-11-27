@@ -32,7 +32,7 @@ public class NumPickersDialogFragment extends DialogFragment {
         min = (NumberPicker) v.findViewById(R.id.number_pickers_min);
         hrs.setMinValue(0);
         hrs.setMaxValue(23);
-        min.setMinValue(0);
+        min.setMinValue(1);
         min.setMaxValue(59);
 
         //Gets whether the selector wheel wraps when reaching the min/max value.
@@ -53,6 +53,17 @@ public class NumPickersDialogFragment extends DialogFragment {
                 )
                 .setView(v)
                 .create();
+
+        hrs.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                if (newVal == 0) {
+                    min.setMinValue(1);
+                } else {
+                    min.setMinValue(0);
+                }
+            }
+        });
 
         dlg.setOnShowListener(new DialogInterface.OnShowListener() {
 

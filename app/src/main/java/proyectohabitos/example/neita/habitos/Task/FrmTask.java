@@ -246,6 +246,7 @@ public class FrmTask extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
+
             return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
         }
 
@@ -265,6 +266,7 @@ public class FrmTask extends AppCompatActivity {
                 imgRing.setVisibility(View.VISIBLE);
                 reminder.setVisibility(View.VISIBLE);
             }
+
         }
 
         @Override
