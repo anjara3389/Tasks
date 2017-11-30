@@ -117,6 +117,7 @@ public class FrmChronometer extends AppCompatActivity {
 
     }
 
+
     private void setTimer() {
         totalSec = ((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate) + lastWholeTime) / 1000l;
         totalSecBackwards = (targetTime * 60) - totalSec;

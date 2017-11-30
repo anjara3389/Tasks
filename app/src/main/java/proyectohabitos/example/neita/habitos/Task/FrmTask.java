@@ -6,10 +6,12 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -48,7 +50,6 @@ public class FrmTask extends AppCompatActivity {
     private static ImageView imgRing, imgTemp;
     private CardView cardView;
     private static Switch switchRemind, switchChrono;
-    private FloatingActionButton btnOk;
     private boolean clean;
 
     @Override
@@ -57,7 +58,6 @@ public class FrmTask extends AppCompatActivity {
         setContentView(R.layout.frm_task);
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
-        btnOk = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
 
         lun = (ImageView) findViewById(R.id.row_lun_task);
         mar = (ImageView) findViewById(R.id.row_mar_task);
@@ -104,16 +104,6 @@ public class FrmTask extends AppCompatActivity {
         sab.setOnClickListener(checkUncheckDay(sab));
         dom.setOnClickListener(checkUncheckDay(dom));
 
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (etName.getText().toString().trim().equals("")) {
-                    Toast.makeText(FrmTask.this, "Escriba nombre", Toast.LENGTH_LONG).show();
-                } else {
-                    save();
-                }
-            }
-        });
         switchRemind.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -162,7 +152,29 @@ public class FrmTask extends AppCompatActivity {
                 numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
             }
         });
-        getSupportActionBar().hide();
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_action_bar, menu);
+        menu.findItem(R.id.action_delete_spans).setVisible(false);
+        setTitle(isNew ? "   Nueva actividad" : "   Editar actividad");
+        return true;
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.okTask:
+                save();
+            default:
+                break;
+        }
+        return true;
     }
 
     private View.OnClickListener checkUncheckDay(final ImageView day) {
@@ -173,6 +185,7 @@ public class FrmTask extends AppCompatActivity {
             }
         };
     }
+
 
     private void setChecked(final ImageView day, Boolean check) {
         if (check == null) {
@@ -191,6 +204,9 @@ public class FrmTask extends AppCompatActivity {
     //guarda el registro editandolo o eliminandolo
     private void save() {
         try {
+            if (etName.getText().toString().trim().equals("")) {
+                throw new Exception("Escriba nombre");
+            }
             if (!isCheckedDay(lun) && !isCheckedDay(mar) && !isCheckedDay(mier) && !isCheckedDay(juev) && !isCheckedDay(vier) && !isCheckedDay(sab) && !isCheckedDay(dom)) {
                 throw new Exception("Seleccionar por lo menos un día");
             }
