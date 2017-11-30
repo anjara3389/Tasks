@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -47,7 +49,6 @@ public class FrmChronometer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_chronometer);
-        getSupportActionBar().hide();
 
         play = (FloatingActionButton) findViewById(R.id.frm_chrono_play);
         txtTimer = (TextView) findViewById(R.id.chrono_txt_chrono);
@@ -117,6 +118,16 @@ public class FrmChronometer extends AppCompatActivity {
 
     }
 
+    //Menu de la action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_action_bar, menu);
+        menu.findItem(R.id.action_delete_spans).setVisible(false);
+        menu.findItem(R.id.okTask).setVisible(false);
+        setTitle("   Cronómetro");
+        return true;
+    }
 
     private void setTimer() {
         totalSec = ((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate) + lastWholeTime) / 1000l;
