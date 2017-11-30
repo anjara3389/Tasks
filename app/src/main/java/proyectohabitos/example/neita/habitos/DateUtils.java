@@ -80,6 +80,23 @@ public class DateUtils {
         return cal.getTime();
     }
 
+    /*retorna el ultimo día de la semana
+   *primer día de la semana: v=0
+   *primer día del mes: v=1
+    */
+    public static Date getLastDate(Integer v, Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        if (v == 0) { //UTLIMO DIA DE LA SEMANA
+            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) { //cambia la fecha del calendario(sumando días) hasta que encuentra el ultimo día de la semana que es domingo
+                cal.add(Calendar.DAY_OF_YEAR, 1);
+            }
+        } else if (v == 1) {//PRIMER DIA DEL MES
+            cal.set(GregorianCalendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        }
+        return cal.getTime();
+    }
+
     /*Retorna un arraylist con las fechas de todos los días de la semana correspondiente a la fecha dada.
      */
     public static ArrayList<Date> getDatesOfWeek(Date date) {

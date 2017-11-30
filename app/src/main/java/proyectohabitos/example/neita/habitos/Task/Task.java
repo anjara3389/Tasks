@@ -188,14 +188,17 @@ public class Task {
     si interv es 0 semanal,interv es 1 mensual,interv es 2 anual
     a dateTimese le debe dar la zona horaria correspondiente
 
+    Si total es true significa que coje el porcentaje con respecto a toda la semana(hasta el domingo) o el mes completo(hasta el ultimo día del mes)
+    Si total es false significa que coje el porcentaje hasta el día actual(el día de hoy)
+
     //CAAAAAAAAAMBIAAAAR .. LA SEMANA INICIA EN DOMINGO, HALLAR OTRA FORMA DE IDENTIFICAR LA SEMANA
      */
-    public static double getStatistics(int taskId, int interv, SQLiteDatabase db) {
+    public static double getStatistics(int taskId, int interv, boolean total, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> doneAndNotDone;
         Date begD;
         int doneTasks = 0;
-        Date nowDate = new Date();
+        Date nowDate = total == false ? new Date() : DateUtils.getLastDate(interv, new Date());
 
         Long nowDay = DateUtils.datePlusTZ(nowDate.getTime());//se le quita la hora y solo queda la fecha y se le suma la diferencia horaria. Día de hoy.
         Long sinceDay = DateUtils.datePlusTZ(task.sinceDate);//se le quita la hora y solo queda la fecha y se le suma la diferencia horaria. Día de en que se creó la tarea.
@@ -211,10 +214,10 @@ public class Task {
         }
         doneAndNotDone = getDoneAndNotDone(begD, nowDate, task.id, db);
 
-        System.out.println(interv + "since///" + since);
-        System.out.println(interv + "now///" + now);
-        System.out.println(interv + "IGUALES///" + (since.equals(now)));
-        System.out.println(interv + "BEGD///" + begD);
+        //System.out.println(interv + "since///" + since);
+        //System.out.println(interv + "now///" + now);
+        //System.out.println(interv + "IGUALES///" + (since.equals(now)));
+        //System.out.println(interv + "BEGD///" + begD);
 
         for (int i = 0; i < doneAndNotDone.size(); i++) {//Se saca el total de trues
             if (doneAndNotDone.get(i)) {
@@ -224,10 +227,6 @@ public class Task {
         return doneAndNotDone.size() != 0 ? doneTasks * 100 / doneAndNotDone.size() : 0;
     }
 
+
 }
-
-      /*
-
-
-*/
 

@@ -10,177 +10,269 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:layout_weight="1.4"
-                android:labelFor="@+id/lala"
-                app:cardCornerRadius="30dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                            android:id="@+id/week_pbar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="50dp"
-                            app:cpb_background_progressbar_color="#B2DFDB"
-                            app:cpb_background_progressbar_width="25dp"
-                            app:cpb_progressbar_color="@color/colorPrimary"
-                            app:cpb_progressbar_width="20dp" />
-
-                        <TextView
-                            android:id="@+id/frm_sta_txt_sem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:gravity="center"
-                            android:text="Semanal"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/frm_sta_txt_per_sem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:text="0%"
-                            android:textSize="36sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:layout_weight="1.4"
-                android:labelFor="@+id/lala"
-                app:cardCornerRadius="30dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                            android:id="@+id/month_pbar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="50dp"
-                            app:cpb_background_progressbar_color="#B2DFDB"
-                            app:cpb_background_progressbar_width="25dp"
-                            app:cpb_progressbar_color="@color/colorPrimary"
-                            app:cpb_progressbar_width="20dp" />
-
-                        <TextView
-                            android:id="@+id/frm_sta_txt_men"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:gravity="center"
-                            android:text="Mensual"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/frm_sta_txt_per_mont"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:text="0%"
-                            android:textSize="36sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="184dp"
+        android:layout_height="252dp"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="238dp"
             android:layout_margin="10dp"
             android:elevation="24dp"
             android:labelFor="@+id/lala"
             app:cardCornerRadius="30dp">
 
             <LinearLayout
-                android:layout_width="183dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/frm_sta_txt_glob"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:gravity="center"
-                    android:text="Anual"
-                    android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/frm_sta_txt_per_glob"
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="13dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="25dp"
+                        android:allowUndo="false"
+                        android:gravity="center"
+                        android:text="Semanal"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_sem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:text="Al día actual"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_per_sem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="47dp"
+                        android:layout_marginTop="0dp"
+                        android:gravity="center_horizontal"
+                        android:text="0%"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:text="Total"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_whole_sem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="47dp"
+                        android:layout_marginTop="0dp"
+                        android:gravity="center_horizontal"
+                        android:text="0%"
+                        android:textSize="36sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textSize="36sp" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="45dp">
+
+                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                            android:id="@+id/week_pbar"
+                            android:layout_width="153dp"
+                            android:layout_height="153dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="0dp"
+                            android:layout_marginTop="8dp"
+                            app:cpb_background_progressbar_color="#B2DFDB"
+                            app:cpb_background_progressbar_width="35dp"
+                            app:cpb_progressbar_color="@color/colorPrimary"
+                            app:cpb_progressbar_width="35dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintLeft_toLeftOf="@+id/whole_week_pbar"
+                            app:layout_constraintRight_toRightOf="@+id/whole_week_pbar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            tools:layout_editor_absoluteX="21dp"
+                            tools:layout_editor_absoluteY="21dp" />
+
+                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                            android:id="@+id/whole_week_pbar"
+                            android:layout_width="153dp"
+                            android:layout_height="156dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            app:cpb_background_progressbar_color="#B2DFDB"
+                            app:cpb_background_progressbar_width="1dp"
+                            app:cpb_progressbar_color="@color/colorPrimaryDark"
+                            app:cpb_progressbar_width="35dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteX="21dp" />
+
+                    </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/global_pbar"
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="238dp"
+            android:layout_margin="10dp"
+            android:elevation="24dp"
+            android:labelFor="@+id/lala"
+            app:cardCornerRadius="30dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="210dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                app:cpb_background_progressbar_color="#B2DFDB"
-                app:cpb_background_progressbar_width="25dp"
-                app:cpb_progressbar_color="@color/colorPrimary"
-                app:cpb_progressbar_width="20dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="13dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="25dp"
+                        android:allowUndo="false"
+                        android:gravity="center"
+                        android:text="mensual"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_sem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:text="Al día actual"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_per_mont"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="47dp"
+                        android:layout_marginTop="0dp"
+                        android:gravity="center_horizontal"
+                        android:text="0%"
+                        android:textSize="36sp" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center"
+                        android:text="Total"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/frm_sta_txt_whole_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="47dp"
+                        android:layout_marginTop="0dp"
+                        android:gravity="center_horizontal"
+                        android:text="0%"
+                        android:textSize="36sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="45dp">
+
+                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                            android:id="@+id/month_pbar"
+                            android:layout_width="153dp"
+                            android:layout_height="154dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            app:cpb_background_progressbar_color="#B2DFDB"
+                            app:cpb_background_progressbar_width="35dp"
+                            app:cpb_progressbar_color="@color/colorPrimary"
+                            app:cpb_progressbar_width="35dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                            android:id="@+id/whole_month_pbar"
+                            android:layout_width="153dp"
+                            android:layout_height="156dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginTop="8dp"
+                            app:cpb_background_progressbar_color="#B2DFDB"
+                            app:cpb_background_progressbar_width="1dp"
+                            app:cpb_progressbar_color="@color/colorPrimaryDark"
+                            app:cpb_progressbar_width="35dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteX="21dp" />
+
+                    </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
     </LinearLayout>
