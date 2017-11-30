@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,20 +35,21 @@ import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceA
 //el formulario para crear o editar una actividad
 public class FrmTask extends AppCompatActivity {
 
-    Task obj;
-    EditText etName;
-    CheckBox lun, mar, mier, juev, vier, sab, dom;
-    ImageButton reminderButton;
-    static TextView reminder, chrono;
-    boolean isNew;
-    int id;
-    static long remind;
-    Long chron;
-    static ImageView imgRing, imgTemp;
-    CardView cardView;
-    static Switch switchRemind, switchChrono;
-    FloatingActionButton btn;
-    boolean clean;
+    private Task obj;
+    private EditText etName;
+
+    private ImageView lun, mar, mier, juev, vier, sab, dom;
+    private ImageButton reminderButton;
+    private static TextView reminder, chrono;
+    private boolean isNew;
+    private int id;
+    private static long remind;
+    private Long chron;
+    private static ImageView imgRing, imgTemp;
+    private CardView cardView;
+    private static Switch switchRemind, switchChrono;
+    private FloatingActionButton btnOk;
+    private boolean clean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +57,16 @@ public class FrmTask extends AppCompatActivity {
         setContentView(R.layout.frm_task);
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
-        btn = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
-        lun = (CheckBox) findViewById(R.id.activity_add_task_chk_lun);
-        mar = (CheckBox) findViewById(R.id.activity_add_task_chk_mar);
-        mier = (CheckBox) findViewById(R.id.activity_add_task_chk_mierc);
-        juev = (CheckBox) findViewById(R.id.activity_add_task_chk_juev);
-        vier = (CheckBox) findViewById(R.id.activity_add_task_chk_vier);
-        sab = (CheckBox) findViewById(R.id.activity_add_task_chk_sab);
-        dom = (CheckBox) findViewById(R.id.activity_add_task_chk_dom);
+        btnOk = (FloatingActionButton) findViewById(R.id.activity_add_task_add_button);
+
+        lun = (ImageView) findViewById(R.id.row_lun_task);
+        mar = (ImageView) findViewById(R.id.row_mar_task);
+        mier = (ImageView) findViewById(R.id.row_mierc_task);
+        juev = (ImageView) findViewById(R.id.row_juev_task);
+        vier = (ImageView) findViewById(R.id.row_viern_task);
+        sab = (ImageView) findViewById(R.id.row_sab_task);
+        dom = (ImageView) findViewById(R.id.row_dom_task);
+
         reminderButton = (ImageButton) findViewById(R.id.activity_add_task_reminder2);
         reminder = (TextView) findViewById(R.id.activity_add_task_reminder);
         chrono = (TextView) findViewById(R.id.activity_add_task_chrono);
@@ -94,7 +96,15 @@ public class FrmTask extends AppCompatActivity {
             }
         }
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        lun.setOnClickListener(checkUncheckDay(lun));
+        mar.setOnClickListener(checkUncheckDay(mar));
+        mier.setOnClickListener(checkUncheckDay(mier));
+        juev.setOnClickListener(checkUncheckDay(juev));
+        vier.setOnClickListener(checkUncheckDay(vier));
+        sab.setOnClickListener(checkUncheckDay(sab));
+        dom.setOnClickListener(checkUncheckDay(dom));
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (etName.getText().toString().trim().equals("")) {
@@ -155,10 +165,33 @@ public class FrmTask extends AppCompatActivity {
         getSupportActionBar().hide();
     }
 
+    private View.OnClickListener checkUncheckDay(final ImageView day) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setChecked(day, null);
+            }
+        };
+    }
+
+    private void setChecked(final ImageView day, Boolean check) {
+        if (check == null) {
+            day.setImageResource(isCheckedDay(day) ? R.drawable.no_filled : R.drawable.filled);
+            day.setTag(isCheckedDay(day) ? "no_filled" : "filled");
+        } else {
+            day.setImageResource(check ? R.drawable.filled : R.drawable.no_filled);
+            day.setTag(check ? "filled" : "no_filled");
+        }
+    }
+
+    private boolean isCheckedDay(ImageView day) {
+        return day.getTag().equals("no_filled") ? false : true;
+    }
+
     //guarda el registro editandolo o eliminandolo
     private void save() {
         try {
-            if (!lun.isChecked() && !mar.isChecked() && !mier.isChecked() && !juev.isChecked() && !vier.isChecked() && !sab.isChecked() && !dom.isChecked()) {
+            if (!isCheckedDay(lun) && !isCheckedDay(mar) && !isCheckedDay(mier) && !isCheckedDay(juev) && !isCheckedDay(vier) && !isCheckedDay(sab) && !isCheckedDay(dom)) {
                 throw new Exception("Seleccionar por lo menos un día");
             }
             SQLiteDatabase db = BaseHelper.getWritable(this);
@@ -166,13 +199,13 @@ public class FrmTask extends AppCompatActivity {
                 obj = new Task();
             }
             obj.name = etName.getText().toString();
-            obj.l = lun.isChecked();
-            obj.m = mar.isChecked();
-            obj.x = mier.isChecked();
-            obj.j = juev.isChecked();
-            obj.v = vier.isChecked();
-            obj.s = sab.isChecked();
-            obj.d = dom.isChecked();
+            obj.l = isCheckedDay(lun);
+            obj.m = isCheckedDay(mar);
+            obj.x = isCheckedDay(mier);
+            obj.j = isCheckedDay(juev);
+            obj.v = isCheckedDay(vier);
+            obj.s = isCheckedDay(sab);
+            obj.d = isCheckedDay(dom);
             //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
             obj.sinceDate = new Date().getTime();
             obj.reminder = remind != 0 ? DateUtils.trimTime(remind) : null; //se le quita la fecha y solo se deja la hora
@@ -209,13 +242,13 @@ public class FrmTask extends AppCompatActivity {
         SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
 
         etName.setText(obj.name);
-        lun.setChecked(obj.l);
-        mar.setChecked(obj.m);
-        mier.setChecked(obj.x);
-        juev.setChecked(obj.j);
-        vier.setChecked(obj.v);
-        sab.setChecked(obj.s);
-        dom.setChecked(obj.d);
+        setChecked(lun, obj.l);
+        setChecked(mar, obj.m);
+        setChecked(mier, obj.x);
+        setChecked(juev, obj.j);
+        setChecked(vier, obj.v);
+        setChecked(sab, obj.s);
+        setChecked(dom, obj.d);
         if (obj.reminder != null) {
             reminder.setText(f.format(new Date(obj.reminder)));
             remind = obj.reminder;
