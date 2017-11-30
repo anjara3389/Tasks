@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <ScrollView
+            android:id="@+id/frm_task_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -91,9 +92,9 @@
                     android:id="@+id/card_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:elevation="0dp"
                     android:layout_gravity="top"
+                    android:layout_marginBottom="10dp"
+                    android:elevation="0dp"
                     android:padding="@dimen/fab_margin"
                     android:paddingBottom="@dimen/fab_margin"
                     android:paddingTop="@dimen/fab_margin">
@@ -124,10 +125,10 @@
                                     android:text="Repetir"
                                     android:textAllCaps="true"
                                     android:textSize="12sp"
+                                    app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintLeft_toRightOf="@+id/imageButton"
                                     app:layout_constraintRight_toRightOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.0" />
+                                    app:layout_constraintTop_toTopOf="parent" />
 
                                 <ImageButton
                                     android:id="@+id/imageButton"
@@ -373,11 +374,11 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    android:layout_gravity="top"
                     android:id="@+id/card_view_3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/card_view"
+                    android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp">
@@ -503,11 +504,11 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    android:layout_gravity="top"
                     android:id="@+id/card_view_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/card_view"
+                    android:layout_gravity="top"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp">
@@ -572,8 +573,8 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/alarm"
-                                app:layout_constraintVertical_bias="0.0" />
+                                app:layout_constraintVertical_bias="0.0"
+                                app:srcCompat="@drawable/alarm" />
 
                         </android.support.constraint.ConstraintLayout>
 

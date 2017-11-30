@@ -3,6 +3,7 @@ package proyectohabitos.example.neita.habitos.Task;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,11 +13,14 @@ import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +55,7 @@ public class FrmTask extends AppCompatActivity {
     private CardView cardView;
     private static Switch switchRemind, switchChrono;
     private boolean clean;
+    private ScrollView scroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,7 @@ public class FrmTask extends AppCompatActivity {
         switchChrono = (Switch) findViewById(R.id.activity_add_task_switch_2);
         imgRing = (ImageView) findViewById(R.id.activity_add_task_ring);
         imgTemp = (ImageView) findViewById(R.id.activity_add_task_image_chrono);
+        scroll = (ScrollView) findViewById(R.id.frm_task_scroll);
 
         Bundle bundle = getIntent().getExtras();
         isNew = bundle.getBoolean("isNew");
@@ -150,6 +156,21 @@ public class FrmTask extends AppCompatActivity {
             public void onClick(View v) {
                 NumPickersDialogFragment numPicksDialog = new NumPickersDialogFragment();
                 numPicksDialog.show(getSupportFragmentManager(), "Cronómetro");
+            }
+        });
+
+        scroll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event != null && event.getAction() == MotionEvent.ACTION_MOVE) {
+                    InputMethodManager imm = ((InputMethodManager) FrmTask.this.getSystemService(Context.INPUT_METHOD_SERVICE));
+                    boolean isKeyboardUp = imm.isAcceptingText();
+
+                    if (isKeyboardUp) {
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                }
+                return false;
             }
         });
     }
