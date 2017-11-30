@@ -136,7 +136,7 @@ public class FrmChronometer extends AppCompatActivity {
         min = (int) (totalSecBackwards % 3600) / 60;
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
-        if (totalSecBackwards > 0) {
+        if (totalSecBackwards >= 0) {
             txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
             if (((totalSec / 60f) * 100f / targetTime) <= 100f) {
                 pgBar.setProgress((int) ((totalSec / 60f) * 100f) / targetTime);
