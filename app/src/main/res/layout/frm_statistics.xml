@@ -102,8 +102,8 @@
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/whole_week_pbar"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
@@ -116,13 +116,12 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp" />
+                            tools:layout_editor_absoluteX="21dp" />
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/week_pbar"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginBottom="26dp"
                             android:layout_marginLeft="26dp"
                             android:layout_marginRight="26dp"
@@ -137,8 +136,8 @@
                             app:layout_constraintRight_toRightOf="@+id/whole_week_pbar"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="0.0"
-                            android:layout_marginStart="26dp"
-                            android:layout_marginEnd="26dp" />
+                            tools:layout_editor_absoluteX="21dp"
+                            tools:layout_editor_absoluteY="21dp" />
 
                     </android.support.constraint.ConstraintLayout>
                 </LinearLayout>
@@ -241,8 +240,8 @@
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/whole_month_pbar"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
@@ -255,13 +254,12 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp" />
+                            tools:layout_editor_absoluteX="21dp" />
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/month_pbar"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginBottom="26dp"
                             android:layout_marginLeft="26dp"
                             android:layout_marginRight="26dp"
@@ -276,8 +274,8 @@
                             app:layout_constraintRight_toRightOf="@+id/whole_week_pbar"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="0.0"
-                            android:layout_marginStart="26dp"
-                            android:layout_marginEnd="26dp" />
+                            tools:layout_editor_absoluteX="21dp"
+                            tools:layout_editor_absoluteY="21dp" />
 
                     </android.support.constraint.ConstraintLayout>
                 </LinearLayout>
@@ -297,8 +295,8 @@
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/month_pbar"
-                            android:layout_width="1dp"
-                            android:layout_height="1dp"
+                            android:layout_width="153dp"
+                            android:layout_height="154dp"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
@@ -311,14 +309,12 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp" />
+                            app:layout_constraintVertical_bias="0.0" />
 
                         <com.mikhaellopez.circularprogressbar.CircularProgressBar
                             android:id="@+id/whole_month_pbar"
-                            android:layout_width="1dp"
-                            android:layout_height="1dp"
+                            android:layout_width="153dp"
+                            android:layout_height="156dp"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
@@ -331,8 +327,7 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp" />
+                            tools:layout_editor_absoluteX="21dp" />
 
                     </android.support.constraint.ConstraintLayout>
                 </LinearLayout>

@@ -53,6 +53,7 @@ public class NumPickersDialogFragment extends DialogFragment {
                 )
                 .setView(v)
                 .create();
+        dlg.setCanceledOnTouchOutside(false); //que no se pueda cancelar al tocar afuera
 
         hrs.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
