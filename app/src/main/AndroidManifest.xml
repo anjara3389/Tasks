@@ -20,8 +20,7 @@
         </activity>
         <activity
             android:name=".Task.FrmTask"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Task.FrmTasks" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FrmChronometer"
             android:parentActivityName=".Task.FrmTasks"

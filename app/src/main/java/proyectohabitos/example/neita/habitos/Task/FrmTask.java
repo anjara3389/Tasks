@@ -46,7 +46,7 @@ public class FrmTask extends AppCompatActivity {
 
     private ImageView lun, mar, mier, juev, vier, sab, dom;
     private ImageButton reminderButton;
-    private static TextView reminder, chrono;
+    private static TextView reminder, chrono, lblRemind, lblChrono;
     private boolean isNew;
     private int id;
     private static long remind;
@@ -62,6 +62,10 @@ public class FrmTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_task);
 
+        //para cuando se de atrás
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
 
         lun = (ImageView) findViewById(R.id.row_lun_task);
@@ -75,6 +79,8 @@ public class FrmTask extends AppCompatActivity {
         reminderButton = (ImageButton) findViewById(R.id.activity_add_task_reminder2);
         reminder = (TextView) findViewById(R.id.activity_add_task_reminder);
         chrono = (TextView) findViewById(R.id.activity_add_task_chrono);
+        lblRemind = (TextView) findViewById(R.id.frm_task_txt_alarm);
+        lblChrono = (TextView) findViewById(R.id.frm_task_txt_chrono);
         cardView = (CardView) findViewById(R.id.card_view_2);
         switchRemind = (Switch) findViewById(R.id.activity_add_task_switch);
         switchChrono = (Switch) findViewById(R.id.activity_add_task_switch_2);
@@ -143,6 +149,18 @@ public class FrmTask extends AppCompatActivity {
                 }
             }
         });
+        lblRemind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchRemind.setChecked(!switchRemind.isChecked());
+            }
+        });
+        lblChrono.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchChrono.setChecked(!switchChrono.isChecked());
+            }
+        });
 
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +211,9 @@ public class FrmTask extends AppCompatActivity {
             // action with ID action_refresh was selected
             case R.id.okTask:
                 save();
+            case android.R.id.home://cuando se de flecha atrás
+                onBackPressed();
+                return true;
             default:
                 break;
         }
