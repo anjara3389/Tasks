@@ -137,8 +137,8 @@ public class FrmChronometer extends AppCompatActivity {
         sec = (int) ((totalSecBackwards % 3600) % 60);
 
         if (totalSecBackwards >= 0) {
-            txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec);
-            if (((totalSec / 60f) * 100f / targetTime) <= 100f) {
+            txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec); //cambia la etiqueta del cronómetro
+            if (((totalSec / 60f) * 100f / targetTime) <= 100f) { //si el tiempo no está completo
                 pgBar.setProgress((int) ((totalSec / 60f) * 100f) / targetTime);
                 percent.setText(((int) ((totalSec / 60f) * 100f / targetTime)) + "%");
             } else {
@@ -146,12 +146,12 @@ public class FrmChronometer extends AppCompatActivity {
                 percent.setText((100) + "%");
             }
         } else {
-            if (timer != null) {
-                timer.cancel();
-            }
             play.setImageResource(R.drawable.pause); //botón y booleano del botón
             playButton = false;
             totalSecBackwards = 0;
+            if (timer != null) {
+                timer.cancel();
+            }
         }
     }
 
