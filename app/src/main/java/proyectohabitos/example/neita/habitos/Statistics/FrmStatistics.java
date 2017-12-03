@@ -3,6 +3,8 @@ package proyectohabitos.example.neita.habitos.Statistics;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -51,5 +53,16 @@ public class FrmStatistics extends AppCompatActivity {
         txtWholeMonth.setText((int) Task.getStatistics(taskId, 1, true, db) + "%");
 
         BaseHelper.tryClose(db);
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_action_bar, menu);
+        menu.findItem(R.id.action_delete_spans).setVisible(false);
+        menu.findItem(R.id.okTask).setVisible(false);
+        setTitle("   Estadísticas");
+        return true;
     }
 }

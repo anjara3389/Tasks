@@ -20,7 +20,8 @@
         </activity>
         <activity
             android:name=".Task.FrmTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Task.FrmTasks" />
         <activity
             android:name=".FrmChronometer"
             android:parentActivityName=".Task.FrmTasks"
@@ -32,7 +33,8 @@
         </activity>
         <activity
             android:name=".Statistics.FrmStatistics"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Task.FrmTasks" />
 
         <activity android:name=".DialogFragments.NumPickersDialogFragment" />
 
