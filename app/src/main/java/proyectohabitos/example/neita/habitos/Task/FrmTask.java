@@ -167,7 +167,6 @@ public class FrmTask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TimePicker mTimePicker = new TimePicker();
-                mTimePicker.getDialog().setCanceledOnTouchOutside(false);
                 mTimePicker.show(getFragmentManager(), "Select time");
             }
         });
