@@ -69,9 +69,7 @@ public class DateUtils {
         cal.setTime(date);
 
         if (v == 0) { //PRIMER DIA DE LA SEMANA
-            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) { //cambia la fecha del calendario(restando días) hasta que encuentra el primer día de la semana que es lunes
-                cal.add(Calendar.DAY_OF_YEAR, -1);
-            }
+            cal.set(GregorianCalendar.DAY_OF_WEEK, 1);
         } else if (v == 1) {//PRIMER DIA DEL MES
             cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
         } else if (v == 2) {//PRIMER DIA DEL AÑO
@@ -88,10 +86,8 @@ public class DateUtils {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
         if (v == 0) { //UTLIMO DIA DE LA SEMANA
-            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) { //cambia la fecha del calendario(sumando días) hasta que encuentra el ultimo día de la semana que es domingo
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-            }
-        } else if (v == 1) {//PRIMER DIA DEL MES
+            cal.set(GregorianCalendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
+        } else if (v == 1) {//ULTIMO DIA DEL MES
             cal.set(GregorianCalendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         }
         return cal.getTime();
@@ -103,7 +99,6 @@ public class DateUtils {
         Calendar cal = new GregorianCalendar();
         cal.setTime(DateUtils.getFirstDate(0, date));
         ArrayList<Date> datesCurrWeek = new ArrayList<>();
-
         for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
             datesCurrWeek.add(cal.getTime());
             cal.add(Calendar.DAY_OF_YEAR, 1);

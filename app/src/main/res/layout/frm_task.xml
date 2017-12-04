@@ -170,6 +170,37 @@
                                     android:layout_height="40dp"
                                     android:layout_weight="1">
 
+                                    <TextView
+                                        android:id="@+id/row_txt_dom"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentBottom="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentTop="true"
+                                        android:elevation="1dp"
+                                        android:gravity="center"
+                                        android:text="D" />
+
+                                    <ImageView
+                                        android:id="@+id/row_dom_task"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentTop="true"
+                                        android:gravity="center"
+                                        android:tag="no_filled"
+                                        app:srcCompat="@drawable/no_filled" />
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_weight="1">
+
                                     <ImageView
                                         android:id="@+id/row_lun_task"
                                         android:layout_width="match_parent"
@@ -331,37 +362,6 @@
                                         android:id="@+id/row_sab_task"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:tag="no_filled"
-                                        app:srcCompat="@drawable/no_filled" />
-                                </RelativeLayout>
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:layout_weight="1">
-
-                                    <TextView
-                                        android:id="@+id/row_txt_dom"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_alignParentLeft="true"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_alignParentStart="true"
-                                        android:layout_alignParentTop="true"
-                                        android:elevation="1dp"
-                                        android:gravity="center"
-                                        android:text="D" />
-
-                                    <ImageView
-                                        android:id="@+id/row_dom_task"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentLeft="true"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_alignParentStart="true"
-                                        android:layout_alignParentTop="true"
-                                        android:gravity="center"
                                         android:tag="no_filled"
                                         app:srcCompat="@drawable/no_filled" />
                                 </RelativeLayout>
