@@ -225,6 +225,10 @@ public class FrmTask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setChecked(day, null);
+
+                //ocultar el teclado
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(etName.getWindowToken(), 0);
             }
         };
     }
