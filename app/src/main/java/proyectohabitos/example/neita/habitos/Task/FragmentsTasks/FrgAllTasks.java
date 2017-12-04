@@ -107,13 +107,13 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         Cursor c = db.rawQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
-                "a.l," +//3
-                "a.m, " + //4
-                "a.x, " + //5
-                "a.j, " + //6
-                "a.v, " + //7
-                "a.s, " + //8
-                "a.d, " +//9
+                "a.d, " +//3
+                "a.l," +//4
+                "a.m, " + //5
+                "a.x, " + //6
+                "a.j, " + //7
+                "a.v, " + //8
+                "a.s, " + //9
                 "a.chrono " +//10
                 "FROM Activity a " +
                 "ORDER BY a." + DateUtils.getDay(new Date()) + " DESC", null);

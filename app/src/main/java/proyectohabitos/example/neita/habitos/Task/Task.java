@@ -38,16 +38,16 @@ public class Task {
 
     }
 
-    public Task(Integer id, String name, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, boolean d, Long sinceDate, Long reminder, Long chrono) {
+    public Task(Integer id, String name, boolean d, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, Long sinceDate, Long reminder, Long chrono) {
         this.id = id;
         this.name = name;
+        this.d = d;
         this.l = l;
         this.m = m;
         this.x = x;
         this.j = j;
         this.v = v;
         this.s = s;
-        this.d = d;
         this.sinceDate = sinceDate;
         this.reminder = reminder;
         this.chrono = chrono;
@@ -79,7 +79,7 @@ public class Task {
     }
 
     public Task select(SQLiteDatabase db, Integer id) {
-        String sql = "SELECT id,name,l,m,x,j,v,s,d,since_date,reminder, chrono " +
+        String sql = "SELECT id,name,d,l,m,x,j,v,s,since_date,reminder, chrono " +
                 "FROM activity " +
                 "WHERE id=" + id;
 
@@ -144,7 +144,7 @@ public class Task {
         Calendar cal2 = new GregorianCalendar();
         cal2.setTime(new Date());
         int day = DateUtils.getDayInt(cal.getTime());
-        Cursor c = db.rawQuery("SELECT l,m,x,j,v,s,d,reminder FROM activity WHERE id=" + taskId, null);
+        Cursor c = db.rawQuery("SELECT d,l,m,x,j,v,s,reminder FROM activity WHERE id=" + taskId, null);
 
         if (c.moveToFirst()) {
             for (int i = 0; i < 8; i++) {
@@ -173,7 +173,7 @@ public class Task {
         Calendar endCal = DateUtils.getGregCalendar(DateUtils.trimDate(endDate));
 
         Task task = new Task().select(db, taskId);
-        ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.l, task.m, task.x, task.j, task.v, task.s, task.d));
+        ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.d, task.l, task.m, task.x, task.j, task.v, task.s));
         while (!begCal.getTime().after(endCal.getTime())) {
             if (daysOfWeek.get(DateUtils.getDayInt(begCal.getTime()))) { //si la tarea tiene que hacerse el día
                 doneAndNotDone.add(doneAndNotDone.size(), getIfTaskIsDoneDay(db, taskId, task.chrono, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false

@@ -148,13 +148,13 @@ public class DateUtils {
     }
 
     /*retorna el dia de la semana correspondiente a la fecha dada como un numero de 0 a 6.
-  ejemp: si es martes retorna 1
+  ejemp: si es martes retorna 2
   */
     public static int getDayInt(Date date) {
         Calendar cal2 = new GregorianCalendar();
         cal2.setTime(date);
-        return cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 0 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 1 : //para saber qué día es la fecha en i
-                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 2 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 3 :
-                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 4 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ? 5 : 6)))));
+        return (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 0 : cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 1 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 2 : //para saber qué día es la fecha en i
+                (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 3 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 4 :
+                        (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 5 : 6)))));
     }
 }

@@ -108,13 +108,14 @@ public class FrmTask extends AppCompatActivity {
             }
         }
 
+        dom.setOnClickListener(checkUncheckDay(dom));
         lun.setOnClickListener(checkUncheckDay(lun));
         mar.setOnClickListener(checkUncheckDay(mar));
         mier.setOnClickListener(checkUncheckDay(mier));
         juev.setOnClickListener(checkUncheckDay(juev));
         vier.setOnClickListener(checkUncheckDay(vier));
         sab.setOnClickListener(checkUncheckDay(sab));
-        dom.setOnClickListener(checkUncheckDay(dom));
+
 
         switchRemind.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -305,13 +306,13 @@ public class FrmTask extends AppCompatActivity {
         SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
 
         etName.setText(obj.name);
+        setChecked(dom, obj.d);
         setChecked(lun, obj.l);
         setChecked(mar, obj.m);
         setChecked(mier, obj.x);
         setChecked(juev, obj.j);
         setChecked(vier, obj.v);
         setChecked(sab, obj.s);
-        setChecked(dom, obj.d);
         if (obj.reminder != null) {
             reminder.setText(f.format(new Date(obj.reminder)));
             remind = obj.reminder;

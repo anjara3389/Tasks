@@ -21,13 +21,14 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
     // View lookup cache
     private static class ViewHolder {
         TextView txt1;
+        ImageView dom;
         ImageView lun;
         ImageView mar;
         ImageView mier;
         ImageView juev;
         ImageView viern;
         ImageView sab;
-        ImageView dom;
+
     }
 
     public CustomAdapterAllTasks(ArrayList<LstTask> data, Context context) {
@@ -70,28 +71,29 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
         }*/
 
 
-   //     if (convertView == null) {
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
-            viewHolder.txt1 = (TextView) convertView.findViewById(R.id.all_task_row_txt1);
+        //     if (convertView == null) {
+        viewHolder = new ViewHolder();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        convertView = inflater.inflate(R.layout.row_all_tasks, parent, false);
+        viewHolder.txt1 = (TextView) convertView.findViewById(R.id.all_task_row_txt1);
 
+        viewHolder.dom = (ImageView) convertView.findViewById(R.id.row_dom);
         viewHolder.lun = (ImageView) convertView.findViewById(R.id.row_lun);
-            viewHolder.mar = (ImageView) convertView.findViewById(R.id.row_mar);
-            viewHolder.mier = (ImageView) convertView.findViewById(R.id.row_mierc);
-            viewHolder.juev = (ImageView) convertView.findViewById(R.id.row_juev);
-            viewHolder.viern = (ImageView) convertView.findViewById(R.id.row_viern);
-            viewHolder.sab = (ImageView) convertView.findViewById(R.id.row_sab);
-            viewHolder.dom = (ImageView) convertView.findViewById(R.id.row_dom);
+        viewHolder.mar = (ImageView) convertView.findViewById(R.id.row_mar);
+        viewHolder.mier = (ImageView) convertView.findViewById(R.id.row_mierc);
+        viewHolder.juev = (ImageView) convertView.findViewById(R.id.row_juev);
+        viewHolder.viern = (ImageView) convertView.findViewById(R.id.row_viern);
+        viewHolder.sab = (ImageView) convertView.findViewById(R.id.row_sab);
 
 
-            viewHolder.lun.setImageResource(getItem(position).getDays().get(0) == null ? R.drawable.no_filled : getItem(position).getDays().get(0) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.mar.setImageResource(getItem(position).getDays().get(1) == null ? R.drawable.no_filled : getItem(position).getDays().get(1) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.mier.setImageResource(getItem(position).getDays().get(2) == null ? R.drawable.no_filled : getItem(position).getDays().get(2) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.juev.setImageResource(getItem(position).getDays().get(3) == null ? R.drawable.no_filled : getItem(position).getDays().get(3) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.viern.setImageResource(getItem(position).getDays().get(4) == null ? R.drawable.no_filled : getItem(position).getDays().get(4) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.sab.setImageResource(getItem(position).getDays().get(5) == null ? R.drawable.no_filled : getItem(position).getDays().get(5) == false ? R.drawable.no_filled_green : R.drawable.filled);
-            viewHolder.dom.setImageResource(getItem(position).getDays().get(6) == null ? R.drawable.no_filled : getItem(position).getDays().get(6) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.dom.setImageResource(getItem(position).getDays().get(0) == null ? R.drawable.no_filled : getItem(position).getDays().get(0) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.lun.setImageResource(getItem(position).getDays().get(1) == null ? R.drawable.no_filled : getItem(position).getDays().get(1) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.mar.setImageResource(getItem(position).getDays().get(2) == null ? R.drawable.no_filled : getItem(position).getDays().get(2) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.mier.setImageResource(getItem(position).getDays().get(3) == null ? R.drawable.no_filled : getItem(position).getDays().get(3) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.juev.setImageResource(getItem(position).getDays().get(4) == null ? R.drawable.no_filled : getItem(position).getDays().get(4) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.viern.setImageResource(getItem(position).getDays().get(5) == null ? R.drawable.no_filled : getItem(position).getDays().get(5) == false ? R.drawable.no_filled_green : R.drawable.filled);
+        viewHolder.sab.setImageResource(getItem(position).getDays().get(6) == null ? R.drawable.no_filled : getItem(position).getDays().get(6) == false ? R.drawable.no_filled_green : R.drawable.filled);
+
 /*
 
             // result=convertView;
@@ -106,6 +108,8 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
         //lastPosition = position;
 
         viewHolder.txt1.setText(dataModel);
+        viewHolder.dom.setOnClickListener(this);
+        viewHolder.dom.setTag(position);
         viewHolder.lun.setOnClickListener(this);
         viewHolder.lun.setTag(position);
         viewHolder.mar.setOnClickListener(this);
@@ -118,8 +122,7 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
         viewHolder.viern.setTag(position);
         viewHolder.sab.setOnClickListener(this);
         viewHolder.sab.setTag(position);
-        viewHolder.dom.setOnClickListener(this);
-        viewHolder.dom.setTag(position);
+
         // Return the completed view to render on screen
         return convertView;
     }
