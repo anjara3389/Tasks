@@ -183,15 +183,12 @@ public class Task {
         return doneAndNotDone;
     }
 
-
     /*Da el porcentaje de realización de una tarea en un intervalo de tiempo dado
     si interv es 0 semanal,interv es 1 mensual,interv es 2 anual
-    a dateTimese le debe dar la zona horaria correspondiente
-
+    a dateTime se le debe dar la zona horaria correspondiente
     Si total es true significa que coje el porcentaje con respecto a toda la semana(hasta el domingo) o el mes completo(hasta el ultimo día del mes)
     Si total es false significa que coje el porcentaje hasta el día actual(el día de hoy)
 
-    //CAAAAAAAAAMBIAAAAR .. LA SEMANA INICIA EN DOMINGO, HALLAR OTRA FORMA DE IDENTIFICAR LA SEMANA
      */
     public static double getStatistics(int taskId, int interv, boolean total, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
@@ -213,11 +210,6 @@ public class Task {
             begD = DateUtils.getFirstDate(interv, nowDate); //begD es igual al primer día de la sem(interv == 0) o primer día del mes(interv == 1) o primer día del año interv == 2
         }
         doneAndNotDone = getDoneAndNotDone(begD, nowDate, task.id, db);
-
-        //System.out.println(interv + "since///" + since);
-        //System.out.println(interv + "now///" + now);
-        //System.out.println(interv + "IGUALES///" + (since.equals(now)));
-        //System.out.println(interv + "BEGD///" + begD);
 
         for (int i = 0; i < doneAndNotDone.size(); i++) {//Se saca el total de trues
             if (doneAndNotDone.get(i)) {

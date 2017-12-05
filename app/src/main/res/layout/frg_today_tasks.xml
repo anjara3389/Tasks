@@ -38,6 +38,7 @@
         android:clickable="true"
         android:src="@drawable/add"
         android:tint="@android:color/background_light"
+        app:backgroundTint="#42A5F5"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

@@ -108,6 +108,7 @@
                     android:layout_width="71dp"
                     android:layout_height="68dp"
                     android:clickable="true"
+                    app:backgroundTint="#42A5F5"
                     app:fabSize="mini"
                     app:srcCompat="@drawable/play"
                     tools:layout_editor_absoluteX="33dp"
