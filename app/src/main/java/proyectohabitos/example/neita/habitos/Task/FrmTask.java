@@ -35,11 +35,12 @@ import java.util.GregorianCalendar;
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
+import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
 
 //el formulario para crear o editar una actividad
-public class FrmTask extends AppCompatActivity {
+public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.MyDialogDialogListener {
 
     private Task obj;
     private EditText etName;
@@ -57,12 +58,14 @@ public class FrmTask extends AppCompatActivity {
     private boolean clean;
     private ScrollView scroll;
 
+    private static final int BACK = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_task);
 
-        //para cuando se de atrás
+        //para cuando se de flecha atrás
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -212,13 +215,32 @@ public class FrmTask extends AppCompatActivity {
             case R.id.okTask:
                 save();
             case android.R.id.home://cuando se de flecha atrás
-                onBackPressed();
+                if (validateBackArrowShowDialog()) {
+                    YesNoDialogFragment dial = new YesNoDialogFragment();
+                    dial.setInfo(this, FrmTask.this, "Volver", "Se perderán los cambios, ¿Realmente desea volver?", BACK);
+                    dial.show(getSupportFragmentManager(), "MyDialog");
+                } else {
+                    onBackPressed();
+                }
                 return true;
             default:
                 break;
         }
         return true;
     }
+
+    private boolean validateBackArrowShowDialog() {
+        if (isNew) {
+            return isCheckedDay(lun) || isCheckedDay(mar) || isCheckedDay(mier) || isCheckedDay(juev) || isCheckedDay(vier) || isCheckedDay(sab) || isCheckedDay(dom) || !etName.getText().toString().trim().isEmpty() || switchChrono.isChecked() || switchRemind.isChecked();
+        } else {
+            SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
+            return obj.l != isCheckedDay(lun) || obj.m != isCheckedDay(mar) || obj.x != isCheckedDay(mier) || obj.j != isCheckedDay(juev)
+                    || obj.v != isCheckedDay(vier) || obj.s != isCheckedDay(sab) || obj.d != isCheckedDay(dom)
+                    || (obj.reminder == null && !reminder.getText().toString().trim().isEmpty()) || (obj.reminder != null && !reminder.getText().toString().equals(f.format(new Date(obj.reminder))) ||
+                    (obj.chrono == null && !chrono.getText().toString().trim().isEmpty()) || (obj.chrono != null && !chrono.getText().toString().equals(obj.chrono / 60 + " Hrs " + obj.chrono % 60 + " Min")));
+        }
+    }
+
 
     private View.OnClickListener checkUncheckDay(final ImageView day) {
         return new View.OnClickListener() {
@@ -285,7 +307,6 @@ public class FrmTask extends AppCompatActivity {
             }
             db = BaseHelper.getWritable(this);
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
-                Toast.makeText(this, "sec:" + (int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), Toast.LENGTH_SHORT).show();
                 ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
             BaseHelper.tryClose(db);
@@ -362,7 +383,6 @@ public class FrmTask extends AppCompatActivity {
                 imgRing.setVisibility(View.VISIBLE);
                 reminder.setVisibility(View.VISIBLE);
             }
-
         }
 
         @Override
@@ -371,6 +391,16 @@ public class FrmTask extends AppCompatActivity {
             if (remind == 0 || remind == -1) {
                 switchRemind.setChecked(false);
             }
+        }
+    }
+
+    @Override
+    public void onFinishDialog(boolean ans, int code) {
+        if (ans == true) {
+            if (code == BACK) {
+                onBackPressed();
+            }
+
         }
     }
 

@@ -488,7 +488,6 @@
                                     android:paddingBottom="0dp"
                                     android:paddingTop="1dp"
                                     android:singleLine="false"
-                                    android:text="Cronómetro"
                                     android:textAlignment="viewStart"
                                     android:textColor="@android:color/background_dark"
                                     android:textSize="14sp"
