@@ -35,13 +35,11 @@ import proyectohabitos.example.neita.habitos.adapters.CustomAdapterTodayTasks;
 //fragmento pestaña tareas de hoy
 public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDialogDialogListener {
     private ListView lvTasks;
-    private ArrayList<LstTask> list;
-    private FloatingActionButton btn;
-    private LstTask task;
+    private ArrayList<LstTask> lstTasks;
+    private FloatingActionButton btnAdd;
+    private LstTask lstTask;
     private int posit;
     private static final int DELETE_TASK = 1;
-    private static final int CHECK_TASK = 2;
-    private static final int UNCHECK_TASK = 3;
 
     @Override
     public void onResume() { //actualiza después de editar
@@ -54,22 +52,41 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         View rootView = inflater.inflate(R.layout.frg_today_tasks, container, false);
 
         lvTasks = (ListView) rootView.findViewById(R.id.frg_today_taks_lst);
-        btn = (FloatingActionButton) rootView.findViewById(R.id.frg_today_tasks_btn);
+        btnAdd = (FloatingActionButton) rootView.findViewById(R.id.frg_today_tasks_btn);
         update();
         registerForContextMenu(lvTasks);
 
-        //cuando se seleccciona un item del list view
+        //cuando se seleccciona un item del list view con long click
         lvTasks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                posit = list.get(position).getIdTask();
-                task = list.get(position);
+                posit = lstTasks.get(position).getIdTask();
+                lstTask = lstTasks.get(position);
                 return false;
             }
         });
-
-        btn.setOnClickListener(new View.OnClickListener() {
+        //cuando se seleccciona un item del list view con click
+        lvTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                posit = lstTasks.get(position).getIdTask();
+                lstTask = lstTasks.get(position);
+                if (lstTask.getChrono() == null) {
+                    SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                    if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
+                        if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                            checkTask(false);
+                        } else {
+                            checkTask(true);
+                        }
+                    }
+                } else {
+                    startChrono();
+                }
+            }
+        });
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), FrmTask.class);
@@ -87,8 +104,8 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     }
 
     public void update() {
-        list = getActivities();
-        CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(list, getContext());
+        lstTasks = getActivities();
+        CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(lstTasks, getContext());
         lvTasks.setAdapter(adapter);
     }
 
@@ -122,62 +139,76 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
-        if (task.getChrono() == null) {
+        if (lstTask.getChrono() == null) {
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
             if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
-                menu.add(0, 3, 0, Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) ? "Desmarcar" : "Marcar");
+                if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                    menu.add(0, 0, 0, "Desmarcar");
+                } else {
+                    menu.add(0, 1, 0, "Marcar");
+                }
             }
         } else {
-            SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (!Task.getIfTaskIsDoneDay(db, posit, (long) task.getChrono(), DateUtils.getTimeOnCurrTimeZone(new Date()))) {
-                menu.add(0, 3, 0, "Iniciar");
-            }
+            menu.add(0, 2, 0, "Iniciar");
         }
-        menu.add(0, 4, 0, "Editar");
-        menu.add(0, 5, 0, "Eliminar");
+        menu.add(0, 3, 0, "Editar");
+        menu.add(0, 4, 0, "Eliminar");
     }
 
     //menú de cada una de las filas
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == 3 && item.getTitle() == "Marcar") {
-            YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Marcar", "¿Haz realizado esta actividad hoy?", CHECK_TASK);
-            dial.show(getFragmentManager(), "MyDialog");
+        if (item.getItemId() == 0) {
+            checkTask(false);
             return true;
-        } else if (item.getItemId() == 3 && item.getTitle() == "Iniciar") {
-            SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
-            Intent i = new Intent(getActivity(), FrmChronometer.class);
-            i.putExtra("id", posit);
-            startActivityForResult(i, 1);
-                update();
-            } else {
-                Toast.makeText(getContext(), "Hay una tarea en curso.", Toast.LENGTH_SHORT).show();
-            }
-            BaseHelper.tryClose(db);
+        } else if (item.getItemId() == 1) {
+            checkTask(true);
             return true;
-        } else if (item.getItemId() == 3 && item.getTitle() == "Desmarcar") {
-            YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Desmarcar", "¿Desmarcar actividad?", UNCHECK_TASK);
-            dial.show(getFragmentManager(), "MyDialog");
-            update();
+        } else if (item.getItemId() == 2) {
+            startChrono();
             return true;
-        } else if (item.getItemId() == 4) {
+        } else if (item.getItemId() == 3) {
             Intent i = new Intent(getActivity(), FrmTask.class);
             i.putExtra("id", posit);
             i.putExtra("isNew", false);
             startActivity(i);
             return true;
-        } else if (item.getItemId() == 5) {
+        } else if (item.getItemId() == 4) {
             YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
+            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la tarea?", DELETE_TASK);
             dial.show(getFragmentManager(), "MyDialog");
             update();
             return true;
         } else {
             return false;
         }
+    }
 
+    private void checkTask(boolean check) {
+        SQLiteDatabase db = BaseHelper.getWritable(getContext());
+        if (check) {
+            Task.checkTaskAsDone(posit, db);
+        } else {
+            Task.uncheckTask(posit, db);
+        }
+        Toast.makeText(getContext(), check ? "Realizada" : "No Realizada", Toast.LENGTH_SHORT).show();
+        update();
+    }
+
+    private void startChrono() {
+        SQLiteDatabase db = BaseHelper.getReadable(getContext());
+        if (!Task.getIfTaskIsDoneDay(db, posit, (long) lstTask.getChrono(), DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+            if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
+                Intent i = new Intent(getActivity(), FrmChronometer.class);
+                i.putExtra("id", posit);
+                startActivityForResult(i, 1);
+                update();
+            } else {
+                Toast.makeText(getContext(), "Hay una tarea en curso.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "La tarea ya se realizó", Toast.LENGTH_SHORT).show();
+        }
+        BaseHelper.tryClose(db);
     }
 
     @Override
@@ -187,18 +218,6 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
                 Task.delete(posit, db, this.getContext());
                 Toast.makeText(getContext(), "Se eliminó la Tarea", Toast.LENGTH_LONG).show();
-                update();
-            }
-            if (code == CHECK_TASK) {
-                SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                Task.checkTaskAsDone(posit, db);
-                Toast.makeText(getContext(), "Realizada", Toast.LENGTH_SHORT).show();
-                update();
-            }
-            if (code == UNCHECK_TASK) {
-                SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                Task.uncheckTask(posit, db);
-                Toast.makeText(getContext(), "Desmarcada", Toast.LENGTH_SHORT).show();
                 update();
             }
         }
