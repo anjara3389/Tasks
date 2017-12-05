@@ -58,7 +58,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         registerForContextMenu(lvTasks);
 
 
-        //cuando se seleccciona un item del list view
+        //cuando se seleccciona un item del list view con click sostenido
         lvTasks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -187,35 +187,36 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     }
 
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == 0) {
-            checkTask(false);
-            return true;
-        } else if (item.getItemId() == 1) {
-            checkTask(true);
-            return true;
-        } else if (item.getItemId() == 2) {
-            startChrono();
-            return true;
-        } else if (item.getItemId() == 3) {
-            Intent i = new Intent(getActivity(), FrmTask.class);
-            i.putExtra("id", posit);
-            i.putExtra("isNew", false);
-            startActivity(i);
-            return true;
-        } else if (item.getItemId() == 4) {
-            YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
-            dial.show(getFragmentManager(), "MyDialog");
-            update();
-            return true;
-        } else if (item.getItemId() == 5) {
-            Intent i = new Intent(getActivity(), FrmStatistics.class);
-            i.putExtra("id", posit);
-            startActivity(i);
-            return true;
-        } else {
-            return false;
+        if (item.getGroupId() == 1) {
+            if (item.getItemId() == 0) {
+                checkTask(false);
+                return true;
+            } else if (item.getItemId() == 1) {
+                checkTask(true);
+                return true;
+            } else if (item.getItemId() == 2) {
+                startChrono();
+                return true;
+            } else if (item.getItemId() == 3) {
+                Intent i = new Intent(getActivity(), FrmTask.class);
+                i.putExtra("id", posit);
+                i.putExtra("isNew", false);
+                startActivity(i);
+                return true;
+            } else if (item.getItemId() == 4) {
+                YesNoDialogFragment dial = new YesNoDialogFragment();
+                dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la actividad?", DELETE_TASK);
+                dial.show(getFragmentManager(), "MyDialog");
+                update();
+                return true;
+            } else if (item.getItemId() == 5) {
+                Intent i = new Intent(getActivity(), FrmStatistics.class);
+                i.putExtra("id", posit);
+                startActivity(i);
+                return true;
+            }
         }
+            return false;
     }
 
     private void checkTask(boolean check) {

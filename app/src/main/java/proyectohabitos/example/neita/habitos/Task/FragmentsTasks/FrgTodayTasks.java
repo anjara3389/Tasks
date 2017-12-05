@@ -157,30 +157,31 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     //menú de cada una de las filas
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == 0) {
-            checkTask(false);
-            return true;
-        } else if (item.getItemId() == 1) {
-            checkTask(true);
-            return true;
-        } else if (item.getItemId() == 2) {
-            startChrono();
-            return true;
-        } else if (item.getItemId() == 3) {
-            Intent i = new Intent(getActivity(), FrmTask.class);
-            i.putExtra("id", posit);
-            i.putExtra("isNew", false);
-            startActivity(i);
-            return true;
-        } else if (item.getItemId() == 4) {
-            YesNoDialogFragment dial = new YesNoDialogFragment();
-            dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la tarea?", DELETE_TASK);
-            dial.show(getFragmentManager(), "MyDialog");
-            update();
-            return true;
-        } else {
-            return false;
+        if (item.getGroupId() == 0) {
+            if (item.getItemId() == 0) {
+                checkTask(false);
+                return true;
+            } else if (item.getItemId() == 1) {
+                checkTask(true);
+                return true;
+            } else if (item.getItemId() == 2) {
+                startChrono();
+                return true;
+            } else if (item.getItemId() == 3) {
+                Intent i = new Intent(getActivity(), FrmTask.class);
+                i.putExtra("id", posit);
+                i.putExtra("isNew", false);
+                startActivity(i);
+                return true;
+            } else if (item.getItemId() == 4) {
+                YesNoDialogFragment dial = new YesNoDialogFragment();
+                dial.setInfo(this, this.getContext(), "Eliminar", "¿Desea eliminar la tarea?", DELETE_TASK);
+                dial.show(getFragmentManager(), "MyDialog");
+                update();
+                return true;
+            }
         }
+            return false;
     }
 
     private void checkTask(boolean check) {
