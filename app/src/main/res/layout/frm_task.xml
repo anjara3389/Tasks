@@ -7,19 +7,19 @@
     android:layout_height="match_parent"
     tools:context="proyectohabitos.example.neita.habitos.Task.FrmTask">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/barFrmAbout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/barFrmAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
 
         <ScrollView
             android:id="@+id/frm_task_scroll"
@@ -51,7 +51,7 @@
                             android:layout_alignStart="@+id/card_view"
                             android:layout_marginLeft="40dp"
                             android:layout_marginRight="40dp"
-                            android:layout_marginTop="70dp"
+                            android:layout_marginTop="55dp"
                             android:layout_weight="1"
                             android:text="Actividad"
                             android:textAllCaps="true"

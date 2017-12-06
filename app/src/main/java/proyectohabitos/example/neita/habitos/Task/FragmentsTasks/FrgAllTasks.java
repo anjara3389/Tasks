@@ -75,18 +75,21 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 posit = list.get(position).getIdTask();
                 lstTask = list.get(position);
-
-                if (lstTask.getChrono() == null) {
-                    SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                    if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
-                        if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
-                            checkTask(false);
-                        } else {
-                            checkTask(true);
+                SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                if (Task.isTodayTask(db, posit)) {
+                    if (lstTask.getChrono() == null) {
+                        if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
+                            if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                                checkTask(false);
+                            } else {
+                                checkTask(true);
+                            }
                         }
+                    } else {
+                        startChrono();
                     }
                 } else {
-                    startChrono();
+                    Toast.makeText(getContext(), "La tarea no está programada para hoy", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -167,9 +170,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
-        Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + posit + " AND ac." + DateUtils.getDay(new Date()), null);
-        if (c.moveToFirst()) {
-            if (c.getInt(0) == 1) {
+        if (Task.isTodayTask(db, posit)) {
                 if (lstTask.getChrono() == null) {
                     if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
                         menu.add(1, 0, 0, "Desmarcar");
@@ -179,7 +180,6 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 } else {
                     menu.add(1, 2, 0, "Iniciar");
                 }
-            }
         }
         menu.add(1, 3, 0, "Editar");
         menu.add(1, 4, 0, "Eliminar");

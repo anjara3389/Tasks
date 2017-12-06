@@ -137,6 +137,11 @@ public class Task {
         BaseHelper.tryClose(db);
     }
 
+    //devuelve si la tarea con el id es una tarea que se debe hacer el día de hoy
+    public static boolean isTodayTask(SQLiteDatabase db, int id) {
+        Cursor c = db.rawQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + id + " AND ac." + DateUtils.getDay(new Date()), null);
+        return c.moveToFirst() && c.getInt(0) == 1;
+    }
     //da la fecha y hora de la próxima alarma de una tarea
     public static Long getNextAlarm(SQLiteDatabase db, int taskId) {
         Calendar cal = new GregorianCalendar();
