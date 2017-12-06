@@ -79,7 +79,7 @@
                                 android:layout_weight="1"
                                 android:backgroundTint="@color/cardview_light_background"
                                 android:ems="10"
-                                android:hint="Tocar piano"
+                                android:hint="Ejemplo: Tocar piano"
                                 android:inputType="textPersonName"
                                 android:textColor="@color/cardview_light_background"
                                 android:textColorHighlight="@color/cardview_shadow_start_color"

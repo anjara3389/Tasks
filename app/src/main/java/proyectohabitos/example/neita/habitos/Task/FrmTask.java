@@ -227,7 +227,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             case android.R.id.home://cuando se de flecha atrás
                 if (validateBackArrowShowDialog()) {
                     YesNoDialogFragment dial = new YesNoDialogFragment();
-                    dial.setInfo(this, FrmTask.this, "Volver", "Se perderán los cambios, ¿Realmente desea volver?", BACK);
+                    dial.setInfo(this, FrmTask.this, "Se perderán los cambios", "¿Desea volver?", BACK);
                     dial.show(getSupportFragmentManager(), "MyDialog");
                 } else {
                     onBackPressed();
