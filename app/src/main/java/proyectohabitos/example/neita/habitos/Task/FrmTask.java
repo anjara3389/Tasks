@@ -223,6 +223,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             // action with ID action_refresh was selected
             case R.id.okTask:
                 save();
+                return true;
             case android.R.id.home://cuando se de flecha atrás
                 if (validateBackArrowShowDialog()) {
                     YesNoDialogFragment dial = new YesNoDialogFragment();
