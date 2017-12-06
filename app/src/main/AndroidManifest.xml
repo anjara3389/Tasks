@@ -20,7 +20,9 @@
         </activity>
         <activity
             android:name=".Task.FrmTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".FrmChronometer"
             android:parentActivityName=".Task.FrmTasks"

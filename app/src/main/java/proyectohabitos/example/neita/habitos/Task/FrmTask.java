@@ -9,9 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -65,9 +64,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_task);
 
-        //para cuando se de flecha atrás
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         etName = (EditText) findViewById(R.id.activity_add_task_txt_name);
 
@@ -93,6 +90,16 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
 
         Bundle bundle = getIntent().getExtras();
         isNew = bundle.getBoolean("isNew");
+
+        //para cuando se de flecha atrás
+
+        Toolbar bar = (Toolbar) findViewById(R.id.barFrmAbout);
+        setSupportActionBar(bar);
+        getSupportActionBar().setTitle(isNew ? "   Nueva actividad" : "   Editar actividad");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (!isNew) {
             id = bundle.getInt("id");
@@ -197,15 +204,6 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         });
     }
 
-    //Menu de la action bar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_action_bar, menu);
-        menu.findItem(R.id.action_delete_spans).setVisible(false);
-        setTitle(isNew ? "   Nueva actividad" : "   Editar actividad");
-        return true;
-    }
 
     //Menu de la action bar
     @Override
