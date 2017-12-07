@@ -145,7 +145,8 @@ public class FrmChronometer extends AppCompatActivity {
                 pgBar.setProgress(100);
                 percent.setText((100) + "%");
             }
-        } else {
+        }
+        if (totalSecBackwards <= 0) {
             play.setImageResource(R.drawable.pause); //botón y booleano del botón
             playButton = false;
             totalSecBackwards = 0;
