@@ -130,7 +130,7 @@
                                     android:layout_marginLeft="8dp"
                                     android:layout_marginRight="8dp"
                                     android:layout_marginStart="8dp"
-                                    android:layout_marginTop="16dp"
+                                    android:layout_marginTop="12dp"
                                     android:text="Repetir"
                                     android:textAllCaps="true"
                                     android:textSize="12sp"
@@ -145,7 +145,7 @@
                                     android:layout_height="18dp"
                                     android:layout_marginLeft="0dp"
                                     android:layout_marginStart="26dp"
-                                    android:layout_marginTop="16dp"
+                                    android:layout_marginTop="12dp"
                                     android:adjustViewBounds="true"
                                     android:background="@android:color/transparent"
                                     android:cropToPadding="true"
@@ -158,6 +158,26 @@
                                     app:srcCompat="@drawable/calendar" />
 
                             </android.support.constraint.ConstraintLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textView2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Los días en los que realizaras la tarea"
+                                android:textAllCaps="false"
+                                android:textSize="12sp"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintLeft_toRightOf="@+id/imageButton"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
                         </TableRow>
 
                         <TableRow
@@ -392,39 +412,88 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp">
 
-                    <LinearLayout
+                    <TableLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:baselineAligned="false"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
-                        <android.support.constraint.ConstraintLayout
+                        <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="match_parent">
 
-                            <Switch
-                                android:id="@+id/activity_add_task_switch_2"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="12dp"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/frm_task_txt_chrono"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginBottom="3dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginRight="60dp"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginTop="8dp"
+                                    android:paddingRight="190dp"
+                                    android:text="Cronómetro"
+                                    android:textAllCaps="true"
+                                    android:textSize="12sp"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
+                                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_switch_2"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.555" />
+
+                                <ImageButton
+                                    android:id="@+id/activity_add_task_reminder2"
+                                    android:layout_width="17dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginBottom="3dp"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="8dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@android:color/transparent"
+                                    android:cropToPadding="true"
+                                    android:elevation="0dp"
+                                    android:scaleType="fitCenter"
+                                    android:tint="?android:attr/colorControlNormal"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/timer" />
+
+                                <Switch
+                                    android:id="@+id/activity_add_task_switch_2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="16dp"
+                                    android:layout_marginRight="-82dp"
+                                    android:layout_marginTop="6dp"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </android.support.constraint.ConstraintLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
                             <TextView
-                                android:id="@+id/frm_task_txt_chrono"
+                                android:id="@+id/textView9"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginBottom="16dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginLeft="8dp"
+                                android:layout_marginLeft="25dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="16dp"
-                                android:text="Cronómetro"
-                                android:textAllCaps="true"
+                                android:layout_marginTop="5dp"
+                                android:text="El tiempo que invertirás"
+                                android:textAllCaps="false"
                                 android:textSize="12sp"
                                 android:visibility="visible"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -432,33 +501,11 @@
                                 app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
+                        </TableRow>
 
-                            <ImageButton
-                                android:id="@+id/activity_add_task_reminder2"
-                                android:layout_width="17dp"
-                                android:layout_height="18dp"
-                                android:layout_marginBottom="16dp"
-                                android:layout_marginLeft="26dp"
-                                android:layout_marginStart="26dp"
-                                android:layout_marginTop="16dp"
-                                android:adjustViewBounds="true"
-                                android:background="@android:color/transparent"
-                                android:cropToPadding="true"
-                                android:elevation="0dp"
-                                android:scaleType="fitCenter"
-                                android:tint="?android:attr/colorControlNormal"
-                                android:visibility="visible"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/timer" />
-
-                        </android.support.constraint.ConstraintLayout>
-
-                        <LinearLayout
+                        <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:layout_height="match_parent">
 
                             <android.support.constraint.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -504,10 +551,8 @@
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintLeft_toRightOf="@+id/activity_add_task_image_chrono" />
                             </android.support.constraint.ConstraintLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        </TableRow>
+                    </TableLayout>
 
                 </android.support.v7.widget.CardView>
 
@@ -521,119 +566,147 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp">
 
-                    <LinearLayout
+                    <TableLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
-                        <android.support.constraint.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <Switch
-                                android:id="@+id/activity_add_task_switch"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:layout_marginRight="16dp"
-                                android:layout_marginTop="12dp"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/frm_task_txt_alarm"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginBottom="0dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginRight="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="16dp"
-                                android:paddingBottom="16dp"
-                                android:text="Alarma"
-                                android:textAllCaps="true"
-                                android:textSize="12sp"
-                                android:visibility="visible"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintHorizontal_bias="0.025"
-                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder3"
-                                app:layout_constraintRight_toLeftOf="@+id/activity_add_task_switch"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.666" />
-
-                            <ImageButton
-                                android:id="@+id/activity_add_task_reminder3"
-                                android:layout_width="17dp"
-                                android:layout_height="18dp"
-                                android:layout_marginBottom="0dp"
-                                android:layout_marginLeft="25dp"
-                                android:layout_marginStart="26dp"
-                                android:layout_marginTop="16dp"
-                                android:adjustViewBounds="true"
-                                android:background="@android:color/transparent"
-                                android:cropToPadding="true"
-                                android:elevation="0dp"
-                                android:scaleType="fitCenter"
-                                android:tint="?android:attr/colorControlNormal"
-                                android:visibility="visible"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.0"
-                                app:srcCompat="@drawable/alarm" />
-
-                        </android.support.constraint.ConstraintLayout>
-
-                        <android.support.constraint.ConstraintLayout
+                        <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <ImageView
-                                android:id="@+id/activity_add_task_ring"
-                                android:layout_width="16dp"
-                                android:layout_height="14dp"
-                                android:layout_marginBottom="16dp"
-                                android:layout_marginLeft="54dp"
-                                android:layout_marginTop="8dp"
-                                android:adjustViewBounds="true"
-                                android:cropToPadding="true"
-                                android:paddingBottom="3dp"
-                                android:paddingTop="0dp"
-                                android:scaleType="fitCenter"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="1.0"
-                                app:srcCompat="@drawable/bell"
-                                tools:layout_editor_absoluteX="49dp"
-                                tools:layout_editor_absoluteY="6dp" />
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <Switch
+                                    android:id="@+id/activity_add_task_switch"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="7dp"
+                                    android:layout_marginTop="6dp"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/frm_task_txt_alarm"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginBottom="3dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginRight="8dp"
+                                    android:layout_marginTop="5dp"
+                                    android:paddingRight="220dp"
+                                    android:text="Alarma"
+                                    android:textAllCaps="true"
+                                    android:textSize="12sp"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder3"
+                                    app:layout_constraintRight_toLeftOf="@+id/activity_add_task_switch"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.38" />
+
+                                <ImageButton
+                                    android:id="@+id/activity_add_task_reminder3"
+                                    android:layout_width="17dp"
+                                    android:layout_height="18dp"
+                                    android:layout_marginBottom="3dp"
+                                    android:layout_marginLeft="23dp"
+                                    android:layout_marginTop="8dp"
+                                    android:adjustViewBounds="true"
+                                    android:background="@android:color/transparent"
+                                    android:cropToPadding="true"
+                                    android:elevation="0dp"
+                                    android:scaleType="fitCenter"
+                                    android:tint="?android:attr/colorControlNormal"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.0"
+                                    app:srcCompat="@drawable/alarm" />
+
+                            </android.support.constraint.ConstraintLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
                             <TextView
-                                android:id="@+id/activity_add_task_reminder"
+                                android:id="@+id/textView11"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginBottom="16dp"
-                                android:layout_marginLeft="4dp"
-                                android:layout_marginTop="0dp"
-                                android:foregroundGravity="fill"
-                                android:paddingBottom="0dp"
-                                android:singleLine="false"
-                                android:text="Recordatorio"
-                                android:textAlignment="viewStart"
-                                android:textColor="@android:color/background_dark"
-                                android:textSize="14sp"
-                                android:visibility="gone"
+                                android:layout_marginLeft="25dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginTop="5dp"
+                                android:text="Alarma de recordatorio"
+                                android:textAllCaps="false"
+                                android:textSize="12sp"
+                                android:visibility="visible"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_ring"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="1.0" />
-                        </android.support.constraint.ConstraintLayout>
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintLeft_toRightOf="@+id/activity_add_task_reminder2"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </TableRow>
 
-                    </LinearLayout>
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <android.support.constraint.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/activity_add_task_ring"
+                                    android:layout_width="16dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginBottom="16dp"
+                                    android:layout_marginLeft="54dp"
+                                    android:layout_marginTop="8dp"
+                                    android:adjustViewBounds="true"
+                                    android:cropToPadding="true"
+                                    android:paddingBottom="3dp"
+                                    android:paddingTop="0dp"
+                                    android:scaleType="fitCenter"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="1.0"
+                                    app:srcCompat="@drawable/bell"
+                                    tools:layout_editor_absoluteX="49dp"
+                                    tools:layout_editor_absoluteY="6dp" />
+
+                                <TextView
+                                    android:id="@+id/activity_add_task_reminder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginBottom="16dp"
+                                    android:layout_marginLeft="4dp"
+                                    android:layout_marginTop="0dp"
+                                    android:foregroundGravity="fill"
+                                    android:paddingBottom="0dp"
+                                    android:singleLine="false"
+                                    android:text="Recordatorio"
+                                    android:textAlignment="viewStart"
+                                    android:textColor="@android:color/background_dark"
+                                    android:textSize="14sp"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toRightOf="@+id/activity_add_task_ring"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="1.0" />
+                            </android.support.constraint.ConstraintLayout>
+                        </TableRow>
+                    </TableLayout>
 
                 </android.support.v7.widget.CardView>
 
