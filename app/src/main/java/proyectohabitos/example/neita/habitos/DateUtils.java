@@ -1,6 +1,7 @@
 package proyectohabitos.example.neita.habitos;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,6 +56,18 @@ public class DateUtils {
      */
     public static Long trimTime(Long dateTime) {
         return dateTime % (24 * 60 * 60 * 1000);
+    }
+
+    /*
+    Retorna un mes y año sin dia, ni hora
+     */
+    public static Date trimMonthAndYear(Date date) {
+        GregorianCalendar c1 = getGregCalendar(date);
+        GregorianCalendar c2 = new GregorianCalendar();
+        c2.set(c1.get(GregorianCalendar.YEAR), c1.get(GregorianCalendar.MONTH), 0, 0, 0, 0);
+        c2.set(GregorianCalendar.MILLISECOND, 0);
+        return c2.getTime();
+
     }
     //========================GET DAYS,WEEKS,MONTHS,ETC =========================================================
 
@@ -131,6 +144,24 @@ public class DateUtils {
         } else {
             return (long) DateUtils.getGregCalendar(new Date(dateTime)).get(GregorianCalendar.YEAR);
         }
+    }
+
+    public static ArrayList<Long> getMonthsIntoDates(Date rawBeg, Date rawEnd) {
+        GregorianCalendar beg = getGregCalendar(trimMonthAndYear(rawBeg));
+        GregorianCalendar end = getGregCalendar(trimMonthAndYear(rawEnd));
+
+        ArrayList<Long> months = new ArrayList();
+
+        while (beg.getTime().getTime() <= end.getTime().getTime()) {
+            months.add(beg.getTime().getTime());
+            SimpleDateFormat f = new SimpleDateFormat("mm/yyyy");
+            System.out.println(f.format((beg.getTime().getTime())));
+            beg.add(Calendar.MONTH, 1);
+        }
+        if (months.size() == 0) {
+            System.out.println("TAMAÑO 0");
+        }
+        return months;
     }
 
 

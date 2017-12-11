@@ -188,42 +188,6 @@ public class Task {
         return doneAndNotDone;
     }
 
-    /*Da el porcentaje de realización de una tarea en un intervalo de tiempo dado
-    si interv es 0 semanal,interv es 1 mensual,interv es 2 anual
-    a dateTime se le debe dar la zona horaria correspondiente
-    Si total es true significa que coje el porcentaje con respecto a toda la semana(hasta el domingo) o el mes completo(hasta el ultimo día del mes)
-    Si total es false significa que coje el porcentaje hasta el día actual(el día de hoy)
-
-     */
-    public static double getStatistics(int taskId, int interv, boolean total, SQLiteDatabase db) {
-        Task task = new Task().select(db, taskId);
-        ArrayList<Boolean> doneAndNotDone;
-        Date begD;
-        int doneTasks = 0;
-        Date nowDate = total == false ? new Date() : DateUtils.getLastDate(interv, new Date());
-
-        Long nowDay = DateUtils.datePlusTZ(nowDate.getTime());//se le quita la hora y solo queda la fecha y se le suma la diferencia horaria. Día de hoy.
-        Long sinceDay = DateUtils.datePlusTZ(task.sinceDate);//se le quita la hora y solo queda la fecha y se le suma la diferencia horaria. Día de en que se creó la tarea.
-
-        Long since = DateUtils.getWeekMonthOrYear(sinceDay, interv);  //la semana(interv == 0),mes(interv == 1) o el año(interv == 2) en el que se creó la actividad
-        Long now = DateUtils.getWeekMonthOrYear(nowDay, interv);  //la semana(interv == 0),mes(interv == 1) o el año(interv == 2) actual
-
-        if (interv != 0 ? since.equals(now) : DateUtils.getIfDateIntoWeek(new Date(nowDay), new Date(sinceDay))) { //si la sem,mes o año en el que se creó la tarea == a la sem,mes o año actual
-            begD = new Date();
-            begD.setTime(sinceDay);
-        } else {
-            begD = DateUtils.getFirstDate(interv, nowDate); //begD es igual al primer día de la sem(interv == 0) o primer día del mes(interv == 1) o primer día del año interv == 2
-        }
-        doneAndNotDone = getDoneAndNotDone(begD, nowDate, task.id, db);
-
-        for (int i = 0; i < doneAndNotDone.size(); i++) {//Se saca el total de trues
-            if (doneAndNotDone.get(i)) {
-                doneTasks++;
-            }
-        }
-        return doneAndNotDone.size() != 0 ? doneTasks * 100 / doneAndNotDone.size() : 0;
-    }
-
 
 }
 

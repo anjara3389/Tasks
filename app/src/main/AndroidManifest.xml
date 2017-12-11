@@ -11,7 +11,6 @@
         <activity
             android:name=".Task.FrmTasks"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,6 +26,7 @@
             android:name=".FrmChronometer"
             android:parentActivityName=".Task.FrmTasks"
             android:screenOrientation="portrait">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -34,9 +34,8 @@
         </activity>
         <activity
             android:name=".Statistics.FrmStatistics"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".Task.FrmTasks" />
-
+            android:parentActivityName=".Task.FrmTasks"
+            android:screenOrientation="portrait" />
         <activity android:name=".DialogFragments.NumPickersDialogFragment" />
 
         <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
@@ -88,6 +87,9 @@
                 <action android:name="com.hmkcode.android.USER_ACTION" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".Statistics.frg_month_statistics" />
+        <activity android:name=".Statistics.FrgMonthStatistics"></activity>
     </application>
 
 </manifest>
