@@ -1,7 +1,6 @@
 package proyectohabitos.example.neita.habitos;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +63,7 @@ public class DateUtils {
     public static Date trimMonthAndYear(Date date) {
         GregorianCalendar c1 = getGregCalendar(date);
         GregorianCalendar c2 = new GregorianCalendar();
-        c2.set(c1.get(GregorianCalendar.YEAR), c1.get(GregorianCalendar.MONTH), 0, 0, 0, 0);
+        c2.set(c1.get(GregorianCalendar.YEAR), c1.get(GregorianCalendar.MONTH), 1, 0, 0, 0);
         c2.set(GregorianCalendar.MILLISECOND, 0);
         return c2.getTime();
 
@@ -147,6 +146,9 @@ public class DateUtils {
     }
 
     public static ArrayList<Long> getMonthsIntoDates(Date rawBeg, Date rawEnd) {
+        System.out.println("rawbeg" + rawBeg);
+        System.out.println("rawend" + rawEnd);
+
         GregorianCalendar beg = getGregCalendar(trimMonthAndYear(rawBeg));
         GregorianCalendar end = getGregCalendar(trimMonthAndYear(rawEnd));
 
@@ -154,8 +156,9 @@ public class DateUtils {
 
         while (beg.getTime().getTime() <= end.getTime().getTime()) {
             months.add(beg.getTime().getTime());
-            SimpleDateFormat f = new SimpleDateFormat("mm/yyyy");
-            System.out.println(f.format((beg.getTime().getTime())));
+            System.out.println("FECHA" + beg.getTime());
+            System.out.println("FECHAEND" + end.getTime());
+            System.out.println("MESSSS" + beg.MONTH);
             beg.add(Calendar.MONTH, 1);
         }
         if (months.size() == 0) {
@@ -187,5 +190,21 @@ public class DateUtils {
         return (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 0 : cal2.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ? 1 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY ? 2 : //para saber qué día es la fecha en i
                 (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY ? 3 : (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY ? 4 :
                         (cal2.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY ? 5 : 6)))));
+    }
+
+    /*
+    Retorna el nombre del mes de la fecha dada
+     */
+    public static String getMonth(Long date) {
+        Date d = new Date();
+        d.setTime(date);
+        GregorianCalendar c1 = getGregCalendar(d);
+        int month = c1.get(Calendar.MONTH);
+        return month == GregorianCalendar.JANUARY ? "Enero" : month == GregorianCalendar.FEBRUARY ? "Febrero" :
+                month == GregorianCalendar.MARCH ? "Marzo" : month == GregorianCalendar.APRIL ? "Abril" :
+                        month == GregorianCalendar.MAY ? "Mayo" : month == GregorianCalendar.JUNE ? "Junio" :
+                                month == GregorianCalendar.AUGUST ? "Agosto" : month == GregorianCalendar.SEPTEMBER ? "Septiembre" :
+                                        month == GregorianCalendar.OCTOBER ? "Octubre" : month == GregorianCalendar.NOVEMBER ? "Noviembre" : "Diciembre";
+
     }
 }

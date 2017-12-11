@@ -12,13 +12,14 @@ import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.R;
 
 public class FrgMonthStatistics extends Fragment {
 
     private int taskId;
     private CircularProgressBar monthBar, wholeMonthBar;
-    private TextView txtPorMonth, txtWholeMonth;
+    private TextView txtPorMonth, txtWholeMonth, monthTitle;
     private Long month;
 
     @Override
@@ -34,11 +35,13 @@ public class FrgMonthStatistics extends Fragment {
         month = (Long) args.get("month");
         taskId = (int) args.get("id");
 
+        monthTitle = (TextView) rootView.findViewById(R.id.frg_mstat_month);
         monthBar = (CircularProgressBar) rootView.findViewById(R.id.month_pbar);
         wholeMonthBar = (CircularProgressBar) rootView.findViewById(R.id.whole_month_pbar);
 
         txtPorMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_per_mont);
         txtWholeMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_whole_month);
+        monthTitle.setText(DateUtils.getMonth(month));
 
         SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
 
