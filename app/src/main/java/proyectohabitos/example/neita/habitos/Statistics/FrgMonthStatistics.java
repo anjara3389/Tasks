@@ -1,5 +1,6 @@
 package proyectohabitos.example.neita.habitos.Statistics;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -49,18 +50,17 @@ public class FrgMonthStatistics extends Fragment {
         d.setTime(month);
         monthTitle.setText(DateUtils.getMonth(month) + " " + DateUtils.getGregCalendar(d).get(Calendar.YEAR));
 
-        SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
-
+        Val v = Val.getStats(taskId, month, this.getContext());
         if (DateUtils.getMonth(month).equals(DateUtils.getMonth(new Date().getTime()))) { //si es el mes actual
-        monthBar.setProgress((int) Statistics.getMontlyStatistics(taskId, false, month, db));
-        txtPorMonth.setText((int) Statistics.getMontlyStatistics(taskId, false, month, db) + "%");
+            monthBar.setProgress(v.month);
+            txtPorMonth.setText(v.month + "%");
         } else {
             monthBar.setProgress(0);
             txtPorMonth.setText("n/a");
         }
 
-        wholeMonthBar.setProgress((int) Statistics.getMontlyStatistics(taskId, true, month, db));
-        txtWholeMonth.setText((int) Statistics.getMontlyStatistics(taskId, true, month, db) + "%");
+        wholeMonthBar.setProgress(v.whole);
+        txtWholeMonth.setText(v.whole + "%");
 
         return rootView;
     }
@@ -70,5 +70,17 @@ public class FrgMonthStatistics extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    static class Val {
+        int month;
+        int whole;
 
+        public static synchronized Val getStats(int taskId, long month, Context ctx) {
+            Val rta = new Val();
+            SQLiteDatabase db = BaseHelper.getReadable(ctx);
+            rta.month = (int) Statistics.getMontlyStatistics(taskId, false, month, db);
+            rta.whole = (int) Statistics.getMontlyStatistics(taskId, true, month, db);
+            db.close();
+            return rta;
+        }
+    }
 }

@@ -43,29 +43,20 @@ public class FrmStatistics extends AppCompatActivity {
         taskId = bundle.getInt("id");
 
         weekBar = (CircularProgressBar) findViewById(R.id.week_pbar);
-        //monthBar = (CircularProgressBar) findViewById(R.id.month_pbar);
         wholeWeekBar = (CircularProgressBar) findViewById(R.id.whole_week_pbar);
-        //wholeMonthBar = (CircularProgressBar) findViewById(R.id.whole_month_pbar);
 
         txtPorWeek = (TextView) findViewById(R.id.frm_sta_txt_per_sem);
-        //txtPorMonth = (TextView) findViewById(R.id.frm_sta_txt_per_mont);
         txtWholeWeek = (TextView) findViewById(R.id.frm_sta_txt_whole_sem);
-        // txtWholeMonth = (TextView) findViewById(R.id.frm_sta_txt_whole_month);
 
         SQLiteDatabase db = BaseHelper.getReadable(FrmStatistics.this);
 
-        weekBar.setProgress((int) Statistics.getWeeklyStatistics(taskId, false, db));
-        txtPorWeek.setText((int) Statistics.getWeeklyStatistics(taskId, false, db) + "%");
+        int weeklyStatistics = (int) Statistics.getWeeklyStatistics(taskId, false, db);
+        int wholeWeekStatistics = (int) Statistics.getWeeklyStatistics(taskId, true, db);
+        weekBar.setProgress(weeklyStatistics);
+        txtPorWeek.setText(weeklyStatistics + "%");
 
-        wholeWeekBar.setProgress((int) Statistics.getWeeklyStatistics(taskId, true, db));
-        txtWholeWeek.setText((int) Statistics.getWeeklyStatistics(taskId, true, db) + "%");
-
-      /*  monthBar.setProgress((int) Statistics.getStatistics(taskId, 1, false, db));
-        txtPorMonth.setText((int) Statistics.getStatistics(taskId, 1, false, db) + "%");
-
-        wholeMonthBar.setProgress((int) Statistics.getStatistics(taskId, 1, true, db));
-        txtWholeMonth.setText((int) Statistics.getStatistics(taskId, 1, true, db) + "%");
-*/
+        wholeWeekBar.setProgress(wholeWeekStatistics);
+        txtWholeWeek.setText(wholeWeekStatistics + "%");
 
         // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
         Task task = new Task().select(db, taskId);
@@ -94,6 +85,7 @@ public class FrmStatistics extends AppCompatActivity {
 
             }
         });
+
     }
 
     //Menu de la action bar
@@ -153,4 +145,6 @@ public class FrmStatistics extends AppCompatActivity {
             return "OBJECT " + (position + 1);
         }
     }
+
 }
+
