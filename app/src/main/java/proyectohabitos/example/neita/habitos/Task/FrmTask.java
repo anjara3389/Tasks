@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,7 +49,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
 
     private ImageView lun, mar, mier, juev, vier, sab, dom;
     private ImageButton reminderButton;
-    private static TextView reminder, chrono, lblRemind, lblChrono;
+    private static TextView reminder, chrono, lblRemind, lblChrono, borrarPruebaFecha;
     private boolean isNew;
     private int id;
     private static long remind;
@@ -91,6 +92,8 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         imgRing = (ImageView) findViewById(R.id.activity_add_task_ring);
         imgTemp = (ImageView) findViewById(R.id.activity_add_task_image_chrono);
         scroll = (ScrollView) findViewById(R.id.frm_task_scroll);
+        borrarPruebaFecha = (TextView) findViewById(R.id.prueba_fecha_inicio);
+
 
         Bundle bundle = getIntent().getExtras();
         isNew = bundle.getBoolean("isNew");
@@ -118,6 +121,9 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                 imgTemp.setVisibility(View.VISIBLE);
                 chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
             }
+            borrarPruebaFecha.setVisibility(View.VISIBLE);//PRUEBA
+        } else {
+            borrarPruebaFecha.setVisibility(View.GONE);//PRUEBA
         }
 
         dom.setOnClickListener(checkUncheckDay(dom));
@@ -310,6 +316,15 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                 id = obj.insert(db);
                 BaseHelper.tryClose(db);
             } else {
+                if (!borrarPruebaFecha.getText().toString().trim().isEmpty()) {//PRUEBA
+                    SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date = f.parse(borrarPruebaFecha.getText().toString());
+                        obj.sinceDate = date.getTime();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
                 obj.update(db, id);
                 //Se cancela la programación de los servicios
                 GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmTask.this);
