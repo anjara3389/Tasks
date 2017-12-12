@@ -177,9 +177,6 @@ public class Task {
         Calendar begCal = DateUtils.getGregCalendar(DateUtils.trimDate(begDate));
         Calendar endCal = DateUtils.getGregCalendar(DateUtils.trimDate(endDate));
 
-        System.out.println("BEGCAL" + begCal.getTime());
-        System.out.println("ENDCAL" + endCal.getTime());
-
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.d, task.l, task.m, task.x, task.j, task.v, task.s));
         while (!begCal.getTime().after(endCal.getTime())) {

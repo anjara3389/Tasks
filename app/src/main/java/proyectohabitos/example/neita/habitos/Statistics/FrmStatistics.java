@@ -115,8 +115,6 @@ public class FrmStatistics extends AppCompatActivity {
         @Override
         public Fragment getItem(int i) {
             Fragment fragment = new FrgMonthStatistics();
-            System.out.println("i" + i);
-            System.out.println("size" + months.size());
             Bundle b = new Bundle();
             b.putLong("month", months.get(i));
             b.putInt("id", taskId);

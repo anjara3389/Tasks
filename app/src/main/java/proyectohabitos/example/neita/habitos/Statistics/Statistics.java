@@ -30,10 +30,6 @@ public class Statistics {
         Date d = new Date();
         d.setTime(monthYear);
         Date endDate = wholeMonth == false ? new Date() : DateUtils.getLastDate(1, d);
-        System.out.println("MES////////////////");
-        System.out.println("date" + d);
-        System.out.println("WHOLE WEEK" + wholeMonth);
-        System.out.println("RETURN" + getStatistics(task, 1, task.sinceDate, endDate, db));
         return getStatistics(task, 1, task.sinceDate, endDate, db);
     }
 
@@ -55,7 +51,6 @@ public class Statistics {
                 doneTasks++;
             }
         }
-        System.out.println("size done and not done" + doneAndNotDone.size());
         return doneAndNotDone.size() != 0 ? doneTasks * 100 / doneAndNotDone.size() : 0;
     }
 
