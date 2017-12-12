@@ -18,6 +18,9 @@ public class Statistics {
     public static double getWeeklyStatistics(int taskId, boolean wholeWeek, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
         Date endDate = wholeWeek == false ? new Date() : DateUtils.getLastDate(0, new Date());
+        System.out.println("new date" + new Date());
+        System.out.println("WHOLE WEEK" + wholeWeek);
+        System.out.println("RETURN" + getStatistics(task, 0, task.sinceDate, endDate, db));
         return getStatistics(task, 0, task.sinceDate, endDate, db);
     }
 
@@ -29,7 +32,7 @@ public class Statistics {
         Task task = new Task().select(db, taskId);
         Date d = new Date();
         d.setTime(monthYear);
-        Date endDate = wholeMonth == false ? new Date() : DateUtils.getLastDate(0, d);
+        Date endDate = wholeMonth == false ? new Date() : DateUtils.getLastDate(1, d);
         return getStatistics(task, 1, task.sinceDate, endDate, db);
     }
 
@@ -51,13 +54,14 @@ public class Statistics {
                 doneTasks++;
             }
         }
+        System.out.println("size done and not done" + doneAndNotDone.size());
         return doneAndNotDone.size() != 0 ? doneTasks * 100 / doneAndNotDone.size() : 0;
     }
 
     //Retorna el día en que se creó la tarea si la semana o el mes en que se creó la tarea es igual a la semana o el mes seleccionado como límite(end)
     //de lo contrario retorna el primer día de la semana o el primer día del mes.
     private static Date getbegDay(int interv, Long rawCreationDate, Date rawEnd) {
-        Long creationDay = DateUtils.datePlusTZ(rawCreationDate);//DÍA EN QUE SE CREÓ LA TAREA. se le quita la hora y solo queda la fecha y se le suma la diferencia horaria.
+        Long creationDay = DateUtils.datePlusTZ(rawCreationDate);//DÍA EN QUE SE CREÓ LA TAREA. se le quita la hora y solo queda la fecha  y se le suma la diferencia horaria.
         Long endDay = DateUtils.datePlusTZ(rawEnd.getTime());//DÍA HASTA. se le quita la hora y solo queda la fecha y se le suma la diferencia horaria.
 
         Long creationWeekOrMonth = DateUtils.getWeekMonthOrYear(creationDay, interv);  //SEMANA(interv 0) o MES(interv 1) de CREACIÓN DE LA TAREA

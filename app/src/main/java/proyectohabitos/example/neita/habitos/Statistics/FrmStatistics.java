@@ -25,8 +25,8 @@ import proyectohabitos.example.neita.habitos.Task.Task;
 public class FrmStatistics extends AppCompatActivity {
 
     private int taskId;
-    private CircularProgressBar weekBar, monthBar, wholeWeekBar, wholeMonthBar;
-    private TextView txtPorWeek, txtPorMonth, txtWholeWeek, txtWholeMonth;
+    private CircularProgressBar weekBar, wholeWeekBar;
+    private TextView txtPorWeek, txtWholeWeek;
 
     ViewPager viewPager;
     MonthsPagerAdapter pagerAdapter;

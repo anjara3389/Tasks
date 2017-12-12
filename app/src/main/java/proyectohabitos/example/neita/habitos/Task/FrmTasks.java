@@ -112,8 +112,8 @@ public class FrmTasks extends AppCompatActivity {
             // action with ID action_refresh was selected
             case R.id.action_delete_spans: //BORRAR DESPUÉS *************** vacia los spams***+*SOLO PRUEBA PATITO
                 SQLiteDatabase db = BaseHelper.getReadable(this);
-
-                String sql = "UPDATE activity SET since_date= strftime('%s',datetime(datetime(since_date, 'unixepoch'),'start of month','-1 month'))";
+//UPDATE activity SET since_date= strftime('%s',datetime(datetime(since_date, 'unixepoch'),'start of month','-1 month'))
+                String sql = "UPDATE activity SET since_date=since_date-2629800000";
                 db.execSQL(sql);
                 Toast.makeText(this, "1 MES MENOS CUAK!", Toast.LENGTH_SHORT).show();
                 /*

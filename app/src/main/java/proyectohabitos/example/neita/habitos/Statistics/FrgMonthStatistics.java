@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.R;
@@ -41,7 +44,10 @@ public class FrgMonthStatistics extends Fragment {
 
         txtPorMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_per_mont);
         txtWholeMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_whole_month);
-        monthTitle.setText(DateUtils.getMonth(month));
+
+        Date d = new Date();
+        d.setTime(month);
+        monthTitle.setText(DateUtils.getMonth(month) + " " + DateUtils.getGregCalendar(d).get(Calendar.YEAR));
 
         SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
 

@@ -20,8 +20,9 @@ public class DateUtils {
     }
 
     public static Long datePlusTZ(Long dateTime) {
-        return DateUtils.trimDateLong(dateTime) - TimeZone.getDefault().getOffset(DateUtils.trimDateLong(dateTime));
+        return DateUtils.trimDateLong(dateTime - TimeZone.getDefault().getOffset(dateTime));
     }
+
 
     //============================GREGORIAN CALENDAR===============================================
 
@@ -200,11 +201,11 @@ public class DateUtils {
         d.setTime(date);
         GregorianCalendar c1 = getGregCalendar(d);
         int month = c1.get(Calendar.MONTH);
-        return month == GregorianCalendar.JANUARY ? "Enero" : month == GregorianCalendar.FEBRUARY ? "Febrero" :
-                month == GregorianCalendar.MARCH ? "Marzo" : month == GregorianCalendar.APRIL ? "Abril" :
-                        month == GregorianCalendar.MAY ? "Mayo" : month == GregorianCalendar.JUNE ? "Junio" :
-                                month == GregorianCalendar.AUGUST ? "Agosto" : month == GregorianCalendar.SEPTEMBER ? "Septiembre" :
-                                        month == GregorianCalendar.OCTOBER ? "Octubre" : month == GregorianCalendar.NOVEMBER ? "Noviembre" : "Diciembre";
+        return month == GregorianCalendar.JANUARY ? "Ene" : month == GregorianCalendar.FEBRUARY ? "Feb" :
+                month == GregorianCalendar.MARCH ? "Mar" : month == GregorianCalendar.APRIL ? "Abr" :
+                        month == GregorianCalendar.MAY ? "May" : month == GregorianCalendar.JUNE ? "Jun" :
+                                month == GregorianCalendar.JULY ? "Jul" : month == GregorianCalendar.AUGUST ? "Ago" : month == GregorianCalendar.SEPTEMBER ? "Sept" :
+                                        month == GregorianCalendar.OCTOBER ? "Oct" : month == GregorianCalendar.NOVEMBER ? "Nov" : "Dic";
 
     }
 }
