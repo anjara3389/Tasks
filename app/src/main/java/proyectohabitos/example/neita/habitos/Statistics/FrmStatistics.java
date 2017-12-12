@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -92,6 +94,17 @@ public class FrmStatistics extends AppCompatActivity {
 
             }
         });
+    }
+
+    //Menu de la action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_action_bar, menu);
+        menu.findItem(R.id.action_delete_spans).setVisible(false);
+        menu.findItem(R.id.okTask).setVisible(false);
+        setTitle("   Estadísticas");
+        return true;
     }
 
 
