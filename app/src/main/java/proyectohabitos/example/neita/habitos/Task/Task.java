@@ -117,6 +117,7 @@ public class Task {
             if (c.moveToFirst()) {//si hay datos
                 return c.getInt(0) == 1;
             }
+            c.close();
         } else {  //si tiene crono
             return new Span().selectTotalTime(db, activityId, dateTime) >= chrono * 60 * 1000;
         }
@@ -167,6 +168,7 @@ public class Task {
                 day = DateUtils.getDayInt(cal.getTime());
             }
         }
+        c.close();
         return null;
     }
 
