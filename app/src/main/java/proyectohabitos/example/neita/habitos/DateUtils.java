@@ -147,9 +147,6 @@ public class DateUtils {
     }
 
     public static ArrayList<Long> getMonthsIntoDates(Date rawBeg, Date rawEnd) {
-        System.out.println("rawbeg" + rawBeg);
-        System.out.println("rawend" + rawEnd);
-
         GregorianCalendar beg = getGregCalendar(trimMonthAndYear(rawBeg));
         GregorianCalendar end = getGregCalendar(trimMonthAndYear(rawEnd));
 
@@ -157,13 +154,7 @@ public class DateUtils {
 
         while (beg.getTime().getTime() <= end.getTime().getTime()) {
             months.add(beg.getTime().getTime());
-            System.out.println("FECHA" + beg.getTime());
-            System.out.println("FECHAEND" + end.getTime());
-            System.out.println("MESSSS" + beg.MONTH);
             beg.add(Calendar.MONTH, 1);
-        }
-        if (months.size() == 0) {
-            System.out.println("TAMAÑO 0");
         }
         return months;
     }

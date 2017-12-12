@@ -51,8 +51,13 @@ public class FrgMonthStatistics extends Fragment {
 
         SQLiteDatabase db = BaseHelper.getReadable(this.getContext());
 
+        if (DateUtils.getMonth(month).equals(DateUtils.getMonth(new Date().getTime()))) { //si es el mes actual
         monthBar.setProgress((int) Statistics.getMontlyStatistics(taskId, false, month, db));
         txtPorMonth.setText((int) Statistics.getMontlyStatistics(taskId, false, month, db) + "%");
+        } else {
+            monthBar.setProgress(0);
+            txtPorMonth.setText("n/a");
+        }
 
         wholeMonthBar.setProgress((int) Statistics.getMontlyStatistics(taskId, true, month, db));
         txtWholeMonth.setText((int) Statistics.getMontlyStatistics(taskId, true, month, db) + "%");

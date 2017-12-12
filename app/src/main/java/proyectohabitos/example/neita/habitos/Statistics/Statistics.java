@@ -18,9 +18,6 @@ public class Statistics {
     public static double getWeeklyStatistics(int taskId, boolean wholeWeek, SQLiteDatabase db) {
         Task task = new Task().select(db, taskId);
         Date endDate = wholeWeek == false ? new Date() : DateUtils.getLastDate(0, new Date());
-        System.out.println("new date" + new Date());
-        System.out.println("WHOLE WEEK" + wholeWeek);
-        System.out.println("RETURN" + getStatistics(task, 0, task.sinceDate, endDate, db));
         return getStatistics(task, 0, task.sinceDate, endDate, db);
     }
 
@@ -33,6 +30,10 @@ public class Statistics {
         Date d = new Date();
         d.setTime(monthYear);
         Date endDate = wholeMonth == false ? new Date() : DateUtils.getLastDate(1, d);
+        System.out.println("MES////////////////");
+        System.out.println("date" + d);
+        System.out.println("WHOLE WEEK" + wholeMonth);
+        System.out.println("RETURN" + getStatistics(task, 1, task.sinceDate, endDate, db));
         return getStatistics(task, 1, task.sinceDate, endDate, db);
     }
 
