@@ -3,6 +3,10 @@ package proyectohabitos.example.neita.habitos;//simplifica las consultas a la ba
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Pattern;
+
 
 public class SQLiteQuery {
 
@@ -19,7 +23,24 @@ public class SQLiteQuery {
             Object data[][] = new Object[c.getCount()][c.getColumnCount()];
             do {
                 for (int i = 0; i < c.getColumnCount(); i++) {
-                    data[c.getPosition()][i] = c.getType(i) == Cursor.FIELD_TYPE_FLOAT ? c.getFloat(i) : c.getType(i) == Cursor.FIELD_TYPE_INTEGER ? c.getLong(i) : c.getType(i) == Cursor.FIELD_TYPE_STRING ? c.getString(i) : c.getType(i) == Cursor.FIELD_TYPE_BLOB ? c.getBlob(i) : c.getType(i) == Cursor.FIELD_TYPE_NULL ? null : null;
+                    if (c.getType(i) == Cursor.FIELD_TYPE_FLOAT) {
+                        data[c.getPosition()][i] = c.getFloat(i);
+                    } else if (c.getType(i) == Cursor.FIELD_TYPE_INTEGER) {
+                        data[c.getPosition()][i] = c.getLong(i);
+                    } else if (c.getType(i) == Cursor.FIELD_TYPE_STRING) {
+                        Pattern pat = Pattern.compile("[\\\\d]{4}-[\\\\d]{2}-[\\\\d]{2} [\\\\d]{2}:[\\\\d]{2}:[\\\\d]{2}");
+                        if (pat.matcher(c.getString(i)).matches()) { //si es fecha
+                            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = dateTimeFormat.parse(c.getString(i));
+                            data[c.getPosition()][i] = date;
+                        } else {
+                            data[c.getPosition()][i] = c.getString(i);
+                        }
+                    } else if (c.getType(i) == Cursor.FIELD_TYPE_BLOB) {
+                        data[c.getPosition()][i] = c.getBlob(i);
+                    } else if (c.getType(i) == Cursor.FIELD_TYPE_NULL) {
+                        data[c.getPosition()][i] = null;
+                    }
                 }
             }
             while (c.moveToNext());
@@ -94,7 +115,12 @@ public class SQLiteQuery {
 
     }
 
-    /*public String getAsString(Object obj){
-
-    }*/
+    public String getAsString(Object o) {
+        if (o == null) {
+            return null;
+        } else if (o instanceof byte[]) {
+            return new String((byte[]) o);
+        }
+        return o.toString();
+    }
 }
