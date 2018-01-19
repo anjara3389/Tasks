@@ -1,7 +1,6 @@
 package proyectohabitos.example.neita.habitos.Task.FragmentsTasks;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +25,7 @@ import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.SQLiteQuery;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.FrmTask;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
@@ -70,20 +70,26 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         lvTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                posit = lstTasks.get(position).getIdTask();
-                lstTask = lstTasks.get(position);
-                if (lstTask.getChrono() == null) {
-                    SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                    if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
-                        if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
-                            checkTask(false);
-                        } else {
-                            checkTask(true);
+                try {
+                    posit = lstTasks.get(position).getIdTask();
+                    lstTask = lstTasks.get(position);
+                    if (lstTask.getChrono() == null) {
+                        SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                        if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
+                            if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                                checkTask(false);
+                            } else {
+                                checkTask(true);
+                            }
                         }
+                    } else {
+                        startChrono();
                     }
-                } else {
-                    startChrono();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -104,12 +110,17 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     }
 
     public void update() {
-        lstTasks = getActivities();
-        CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(lstTasks, getContext());
-        lvTasks.setAdapter(adapter);
+        try {
+            lstTasks = getActivities();
+            CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(lstTasks, getContext());
+            lvTasks.setAdapter(adapter);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
-    private ArrayList<LstTask> getActivities() {
+    private ArrayList<LstTask> getActivities() throws Exception {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 
@@ -117,19 +128,18 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         cal.setTimeZone(TimeZone.getDefault());
         cal.setTime(new Date());
 
-        Cursor c = db.rawQuery("SELECT a.id, " + //0
+        SQLiteQuery sq = new SQLiteQuery("SELECT a.id, " + //0
                 "a.name," +//1
                 "a.reminder, " +//2
                 "a.chrono " +//3
                 "FROM Activity a " +
-                "WHERE a." + DateUtils.getDay(cal.getTime()), null);
-        if (c.moveToFirst()) //si nos podemos mover al primer elemento entonces significa que hay datos
-        {
-            do {
-                LstTask task = new LstTask(c.getInt(0), c.getString(1), c.getLong(2), null, c.isNull(3) ? null : c.getInt(3), Task.getIfTaskIsDoneDay(db, c.getInt(0), c.isNull(3) ? null : c.getLong(3), DateUtils.getTimeOnCurrTimeZone(new Date())));
+                "WHERE a." + DateUtils.getDay(cal.getTime()));
+        Object[][] data2 = sq.getRecords(db);
+        if (data2 != null) {
+            for (int i = 0; i < data2.length; i++) {
+                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], data2[i][2] == null ? 0 : sq.getAsLong(data2[i][2]), null, data2[i][3] == null ? null : sq.getAsInteger(data2[i][3]), Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][3] == null ? null : sq.getAsLong(data2[i][3]), DateUtils.getTimeOnCurrTimeZone(new Date())));
                 data.add(task);
             }
-            while (c.moveToNext()); //mientras nos podamos mover hacia la sguiente
         }
         BaseHelper.tryClose(db);
         return data;
@@ -139,20 +149,26 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Selecciona una Acción");
-        if (lstTask.getChrono() == null) {
-            SQLiteDatabase db = BaseHelper.getReadable(getContext());
-            if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
-                if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
-                    menu.add(0, 0, 0, "Desmarcar");
-                } else {
-                    menu.add(0, 1, 0, "Marcar");
+        try {
+            if (lstTask.getChrono() == null) {
+                SQLiteDatabase db = BaseHelper.getReadable(getContext());
+                if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date())) != null) {
+                    if (Task.getIfTaskIsDoneDay(db, posit, null, DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                        menu.add(0, 0, 0, "Desmarcar");
+                    } else {
+                        menu.add(0, 1, 0, "Marcar");
+                    }
                 }
+            } else {
+                menu.add(0, 2, 0, "Iniciar");
             }
-        } else {
-            menu.add(0, 2, 0, "Iniciar");
+            menu.add(0, 3, 0, "Editar");
+            menu.add(0, 4, 0, "Eliminar");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        menu.add(0, 3, 0, "Editar");
-        menu.add(0, 4, 0, "Eliminar");
+
     }
 
     //menú de cada una de las filas
@@ -165,7 +181,12 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 checkTask(true);
                 return true;
             } else if (item.getItemId() == 2) {
-                startChrono();
+                try {
+                    startChrono();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
                 return true;
             } else if (item.getItemId() == 3) {
                 Intent i = new Intent(getActivity(), FrmTask.class);
@@ -181,7 +202,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                 return true;
             }
         }
-            return false;
+        return false;
     }
 
     private void checkTask(boolean check) {
@@ -195,7 +216,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         update();
     }
 
-    private void startChrono() {
+    private void startChrono() throws Exception {
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
         if (!Task.getIfTaskIsDoneDay(db, posit, (long) lstTask.getChrono(), DateUtils.getTimeOnCurrTimeZone(new Date()))) {
             if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {

@@ -30,20 +30,24 @@ public class SQLiteQuery {
 
     public Object[] getRecord(SQLiteDatabase db) throws Exception {
         Object[][] records = getRecords(db);
-        if (records.length > 1) {
-            throw new Exception("Operación inválida");
-        } else if (records != null && records[0] != null && records.length == 1) {
-            return records[0];
+        if (records != null) {
+            if (records.length > 1) {
+                throw new Exception("Operación inválida");
+            } else if (records[0] != null && records.length == 1) {
+                return records[0];
+            }
         }
         return null;
     }
 
     public Object getObject(SQLiteDatabase db) throws Exception {
         Object[] record = getRecord(db);
-        if (record.length > 1) {
-            throw new Exception("Operación inválida");
-        } else if (record != null && record[0] != null && record.length == 1) {
-            return record[0];
+        if (record != null) {
+            if (record.length > 1) {
+                throw new Exception("Operación inválida");
+            } else if (record[0] != null && record.length == 1) {
+                return record[0];
+            }
         }
         return null;
     }
@@ -52,6 +56,14 @@ public class SQLiteQuery {
         Object obj = getObject(db);
         if (obj != null) {
             return getAsInteger(obj);
+        }
+        return null;
+    }
+
+    public Long getLong(SQLiteDatabase db) throws Exception {
+        Object obj = getObject(db);
+        if (obj != null) {
+            return getAsLong(obj);
         }
         return null;
     }
@@ -81,4 +93,8 @@ public class SQLiteQuery {
         }
 
     }
+
+    /*public String getAsString(Object obj){
+
+    }*/
 }

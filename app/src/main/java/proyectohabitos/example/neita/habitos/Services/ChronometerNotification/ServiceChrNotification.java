@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -45,23 +46,27 @@ public class ServiceChrNotification extends GcmTaskService {
 
     @Override
     public int onRunTask(TaskParams taskParams) {
-        fireNotification();
-        Intent in = new Intent(this, ServiceChrSound.class);
-        startService(in);
+        try {
+            fireNotification();
+            Intent in = new Intent(this, ServiceChrSound.class);
+            startService(in);
 
-        Bundle bundle = taskParams.getExtras();
-        //se cierra el span correspondiente
-        SQLiteDatabase db = BaseHelper.getReadable(this);
-        Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
-        if (span != null) {
-            span.endDate = DateUtils.getTimeOnCurrTimeZone(new Date());
-            span.update(db, span.id);
+            Bundle bundle = taskParams.getExtras();
+            //se cierra el span correspondiente
+            SQLiteDatabase db = BaseHelper.getReadable(this);
+            Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
+            if (span != null) {
+                span.endDate = DateUtils.getTimeOnCurrTimeZone(new Date());
+                span.update(db, span.id);
+            }
+            BaseHelper.tryClose(db);
+            fireChronoActivity(bundle.getInt("activityId"));
+            return GcmNetworkManager.RESULT_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ServiceChrNotification.this, e.getMessage(), Toast.LENGTH_SHORT);
         }
-
-        BaseHelper.tryClose(db);
-
-        fireChronoActivity(bundle.getInt("activityId"));
-        return GcmNetworkManager.RESULT_SUCCESS;
+        return GcmNetworkManager.RESULT_FAILURE;
     }
 
     @Override

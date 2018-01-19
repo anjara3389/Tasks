@@ -15,7 +15,7 @@ public class Statistics {
   Si wholeWeek es true significa que coje el porcentaje con respecto a toda la semana de inicio a fin
   Si wholeWeek es false significa que coje el porcentaje desde inicio de la semana hasta el día actual(el día de hoy)
    */
-    public static double getWeeklyStatistics(int taskId, boolean wholeWeek, SQLiteDatabase db) {
+    public static double getWeeklyStatistics(int taskId, boolean wholeWeek, SQLiteDatabase db) throws Exception {
         Task task = new Task().select(db, taskId);
         Date endDate = wholeWeek == false ? new Date() : DateUtils.getLastDate(0, new Date());
         return getStatistics(task, 0, task.sinceDate, endDate, db);
@@ -25,7 +25,7 @@ public class Statistics {
   Si wholeMonth es true significa que coje el porcentaje con respecto a  el mes completo de inicio a fin
   Si wholeMonth es false significa que coje el porcentaje desde inicio del mes hasta el día actual(el día de hoy)
    */
-    public static double getMontlyStatistics(int taskId, boolean wholeMonth, Long monthYear, SQLiteDatabase db) {
+    public static double getMontlyStatistics(int taskId, boolean wholeMonth, Long monthYear, SQLiteDatabase db) throws Exception {
         Task task = new Task().select(db, taskId);
         Date d = new Date();
         d.setTime(monthYear);
@@ -40,7 +40,7 @@ public class Statistics {
    Si total es true significa que coje el porcentaje con respecto a toda la semana(hasta el domingo) o el mes completo(hasta el ultimo día del mes)
    Si total es false significa que coje el porcentaje hasta el día actual(el día de hoy)
     */
-    public static double getStatistics(Task task, int interv, Long rawCreationDate, Date rawEndDate, SQLiteDatabase db) {
+    public static double getStatistics(Task task, int interv, Long rawCreationDate, Date rawEndDate, SQLiteDatabase db) throws Exception {
         ArrayList<Boolean> doneAndNotDone;
         Date rawBegDay;
         int doneTasks = 0;

@@ -23,7 +23,7 @@ import proyectohabitos.example.neita.habitos.Task.Task;
 
 import static com.google.android.gms.gcm.Task.NETWORK_STATE_ANY;
 
-//PARA LANZAR UNA NOTIFICACIÓN CUANDO EL TIEMPO DE LA TAREA SE ACABE.
+//PARA LANZAR UNA NOTIFICACIÓN EN LA FECHA Y HORA DE LA ALARMA DE  RECORDATORIO
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
 // se necesita incluir librería en el gradle (gcm)
 //se necesita agregar el servicio en el manifest
@@ -43,25 +43,27 @@ public class ServiceAlarmNotification extends GcmTaskService {
     @Override
     public int onRunTask(TaskParams taskParams) {
         Bundle bundle = taskParams.getExtras();
-        SQLiteDatabase db = BaseHelper.getReadable(this);
-        Task task = new Task().select(db, bundle.getInt("activityId"));
-
-
-        if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, DateUtils.getTimeOnCurrTimeZone(new Date()))) { //si la tarea no está realizada hoy
-            //se lanza la notificación
-            fireNotification(task.name);
-            //se inicia el sonido
-            Intent in = new Intent(this, ServiceAlarmSound.class);
-            startService(in);
+        try {
+            SQLiteDatabase db = BaseHelper.getReadable(this);
+            Task task = new Task().select(db, bundle.getInt("activityId"));
+            if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, DateUtils.getTimeOnCurrTimeZone(new Date()))) { //si la tarea no está realizada hoy
+                //se lanza la notificación
+                fireNotification(task.name);
+                //se inicia el sonido
+                Intent in = new Intent(this, ServiceAlarmSound.class);
+                startService(in);
+            }
+            //se programa la siguiente alarma
+            Long time = Task.getNextAlarm(db, bundle.getInt("activityId"));
+            if (time != null) {
+                scheduleNotificationFire(time, this, bundle.getInt("activityId"));
+            }
+            BaseHelper.tryClose(db);
+            return GcmNetworkManager.RESULT_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        //se programa la siguiente alarma
-        Long time = Task.getNextAlarm(db, bundle.getInt("activityId"));
-        if (time != null) {
-            scheduleNotificationFire(time, this, bundle.getInt("activityId"));
-        }
-        BaseHelper.tryClose(db);
-        return GcmNetworkManager.RESULT_SUCCESS;
+        return GcmNetworkManager.RESULT_FAILURE;
     }
 
     @Override

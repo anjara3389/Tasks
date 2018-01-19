@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -35,34 +36,43 @@ public class FrgMonthStatistics extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.frg_montly_statistics, container, false);
-        Bundle args = getArguments(); //traigo los parámetros
-        month = (Long) args.get("month");
-        taskId = (int) args.get("id");
 
-        monthTitle = (TextView) rootView.findViewById(R.id.frg_mstat_month);
-        monthBar = (CircularProgressBar) rootView.findViewById(R.id.month_pbar);
-        wholeMonthBar = (CircularProgressBar) rootView.findViewById(R.id.whole_month_pbar);
+        try {
+            Bundle args = getArguments(); //traigo los parámetros
+            month = (Long) args.get("month");
+            taskId = (int) args.get("id");
 
-        txtPorMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_per_mont);
-        txtWholeMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_whole_month);
+            monthTitle = (TextView) rootView.findViewById(R.id.frg_mstat_month);
+            monthBar = (CircularProgressBar) rootView.findViewById(R.id.month_pbar);
+            wholeMonthBar = (CircularProgressBar) rootView.findViewById(R.id.whole_month_pbar);
 
-        Date d = new Date();
-        d.setTime(month);
-        monthTitle.setText(DateUtils.getMonth(month) + " " + DateUtils.getGregCalendar(d).get(Calendar.YEAR));
+            txtPorMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_per_mont);
+            txtWholeMonth = (TextView) rootView.findViewById(R.id.frm_sta_txt_whole_month);
 
-        Val v = Val.getStats(taskId, month, this.getContext());
-        if (DateUtils.getMonth(month).equals(DateUtils.getMonth(new Date().getTime()))) { //si es el mes actual
-            monthBar.setProgress(v.month);
-            txtPorMonth.setText(v.month + "%");
-        } else {
-            monthBar.setProgress(0);
-            txtPorMonth.setText("n/a");
+            Date d = new Date();
+            d.setTime(month);
+            monthTitle.setText(DateUtils.getMonth(month) + " " + DateUtils.getGregCalendar(d).get(Calendar.YEAR));
+
+            Val v = null;
+            v = Val.getStats(taskId, month, this.getContext());
+            if (DateUtils.getMonth(month).equals(DateUtils.getMonth(new Date().getTime()))) { //si es el mes actual
+                monthBar.setProgress(v.month);
+                txtPorMonth.setText(v.month + "%");
+            } else {
+                monthBar.setProgress(0);
+                txtPorMonth.setText("n/a");
+            }
+
+            wholeMonthBar.setProgress(v.whole);
+            txtWholeMonth.setText(v.whole + "%");
+
+            return rootView;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-        wholeMonthBar.setProgress(v.whole);
-        txtWholeMonth.setText(v.whole + "%");
-
         return rootView;
+
     }
 
     @Override
@@ -74,7 +84,7 @@ public class FrgMonthStatistics extends Fragment {
         int month;
         int whole;
 
-        public static synchronized Val getStats(int taskId, long month, Context ctx) {
+        public static synchronized Val getStats(int taskId, long month, Context ctx) throws Exception {
             Val rta = new Val();
             SQLiteDatabase db = BaseHelper.getReadable(ctx);
             rta.month = (int) Statistics.getMontlyStatistics(taskId, false, month, db);

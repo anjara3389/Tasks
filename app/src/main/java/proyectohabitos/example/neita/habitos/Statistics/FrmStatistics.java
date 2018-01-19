@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -38,35 +39,41 @@ public class FrmStatistics extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_statistics);
+        try {
+            Bundle bundle = getIntent().getExtras();
+            taskId = bundle.getInt("id");
 
-        Bundle bundle = getIntent().getExtras();
-        taskId = bundle.getInt("id");
+            weekBar = (CircularProgressBar) findViewById(R.id.week_pbar);
+            wholeWeekBar = (CircularProgressBar) findViewById(R.id.whole_week_pbar);
 
-        weekBar = (CircularProgressBar) findViewById(R.id.week_pbar);
-        wholeWeekBar = (CircularProgressBar) findViewById(R.id.whole_week_pbar);
+            txtPorWeek = (TextView) findViewById(R.id.frm_sta_txt_per_sem);
+            txtWholeWeek = (TextView) findViewById(R.id.frm_sta_txt_whole_sem);
 
-        txtPorWeek = (TextView) findViewById(R.id.frm_sta_txt_per_sem);
-        txtWholeWeek = (TextView) findViewById(R.id.frm_sta_txt_whole_sem);
+            SQLiteDatabase db = BaseHelper.getReadable(FrmStatistics.this);
 
-        SQLiteDatabase db = BaseHelper.getReadable(FrmStatistics.this);
+            int weeklyStatistics = (int) Statistics.getWeeklyStatistics(taskId, false, db);
+            int wholeWeekStatistics = (int) Statistics.getWeeklyStatistics(taskId, true, db);
+            weekBar.setProgress(weeklyStatistics);
+            txtPorWeek.setText(weeklyStatistics + "%");
 
-        int weeklyStatistics = (int) Statistics.getWeeklyStatistics(taskId, false, db);
-        int wholeWeekStatistics = (int) Statistics.getWeeklyStatistics(taskId, true, db);
-        weekBar.setProgress(weeklyStatistics);
-        txtPorWeek.setText(weeklyStatistics + "%");
+            wholeWeekBar.setProgress(wholeWeekStatistics);
+            txtWholeWeek.setText(wholeWeekStatistics + "%");
 
-        wholeWeekBar.setProgress(wholeWeekStatistics);
-        txtWholeWeek.setText(wholeWeekStatistics + "%");
+            // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
+            Task task = null;
+            task = new Task().select(db, taskId);
+            BaseHelper.tryClose(db);
+            Date d = new Date();
+            d.setTime(task.sinceDate);
+            months = DateUtils.getMonthsIntoDates(d, new Date());
+            pagerAdapter = new MonthsPagerAdapter(getSupportFragmentManager(), months);
+            viewPager = (ViewPager) findViewById(R.id.frm_stat_pager);
+            viewPager.setAdapter(pagerAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(FrmStatistics.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
-        // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
-        Task task = new Task().select(db, taskId);
-        BaseHelper.tryClose(db);
-        Date d = new Date();
-        d.setTime(task.sinceDate);
-        months = DateUtils.getMonthsIntoDates(d, new Date());
-        pagerAdapter = new MonthsPagerAdapter(getSupportFragmentManager(), months);
-        viewPager = (ViewPager) findViewById(R.id.frm_stat_pager);
-        viewPager.setAdapter(pagerAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

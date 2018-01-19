@@ -107,21 +107,27 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (!isNew) {
-            id = bundle.getInt("id");
-            recoverData();
-            if (remind != 0) {
-                switchRemind.setChecked(true);
-                imgRing.setVisibility(View.VISIBLE);
-                reminder.setVisibility(View.VISIBLE);
-                clean = false;
+            try {
+                id = bundle.getInt("id");
+                recoverData();
+                if (remind != 0) {
+                    switchRemind.setChecked(true);
+                    imgRing.setVisibility(View.VISIBLE);
+                    reminder.setVisibility(View.VISIBLE);
+                    clean = false;
+                }
+                if (chron != null) {
+                    switchChrono.setChecked(true);
+                    chrono.setVisibility(View.VISIBLE);
+                    imgTemp.setVisibility(View.VISIBLE);
+                    chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
+                }
+                borrarPruebaFecha.setVisibility(View.VISIBLE);//PRUEBA
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(FrmTask.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-            if (chron != null) {
-                switchChrono.setChecked(true);
-                chrono.setVisibility(View.VISIBLE);
-                imgTemp.setVisibility(View.VISIBLE);
-                chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
-            }
-            borrarPruebaFecha.setVisibility(View.VISIBLE);//PRUEBA
+
         } else {
             borrarPruebaFecha.setVisibility(View.GONE);//PRUEBA
         }
@@ -331,6 +337,9 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                 mGcmNetworkManager.cancelTask(ServiceAlarmNotification.REMIND + id, ServiceAlarmNotification.class);
             }
             db = BaseHelper.getWritable(this);
+
+            Date d = new Date(Task.getNextAlarm(db, id));
+            Toast.makeText(this, d + "timeeeee", Toast.LENGTH_LONG).show();
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
                 ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
@@ -344,7 +353,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
     }
 
     //cuando se edita para recobrar la información de la tarea y llenarla en los campos
-    private void recoverData() {
+    private void recoverData() throws Exception {
         SQLiteDatabase db = BaseHelper.getReadable(this);
         obj = new Task().select(db, id);
 

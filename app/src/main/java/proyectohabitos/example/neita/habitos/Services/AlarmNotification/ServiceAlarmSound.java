@@ -9,7 +9,7 @@ import android.os.IBinder;
 
 import proyectohabitos.example.neita.habitos.R;
 
-//PARA EJECUTAR LA ALARMA(SONIDO) DEL CRONÓMETRO
+//PARA EJECUTAR LA ALARMA(SONIDO) DE RECORDATORIO
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
 //se necesita agregar el servicio en el manifest
 public class ServiceAlarmSound extends Service {
