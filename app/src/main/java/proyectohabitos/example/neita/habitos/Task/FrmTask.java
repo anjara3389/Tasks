@@ -39,6 +39,7 @@ import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.SQLiteQuery;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
 
 //el formulario para crear o editar una actividad
@@ -258,8 +259,8 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
             return obj.l != isCheckedDay(lun) || obj.m != isCheckedDay(mar) || obj.x != isCheckedDay(mier) || obj.j != isCheckedDay(juev)
                     || obj.v != isCheckedDay(vier) || obj.s != isCheckedDay(sab) || obj.d != isCheckedDay(dom)
-                    || (obj.reminder == null && !reminder.getText().toString().trim().isEmpty()) || (obj.reminder != null && !reminder.getText().toString().equals(f.format(new Date(obj.reminder))) ||
-                    (obj.chrono == null && !chrono.getText().toString().trim().isEmpty()) || (obj.chrono != null && !chrono.getText().toString().equals(obj.chrono / 60 + " Hrs " + obj.chrono % 60 + " Min")));
+                    || (obj.reminder == null && !reminder.getText().toString().trim().isEmpty()) || (obj.reminder != null && !reminder.getText().toString().equals(f.format(obj.reminder))) ||
+                    (obj.chrono == null && !chrono.getText().toString().trim().isEmpty()) || (obj.chrono != null && !chrono.getText().toString().equals(obj.chrono / 60 + " Hrs " + obj.chrono % 60 + " Min"));
         }
     }
 
@@ -314,8 +315,9 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             obj.s = isCheckedDay(sab);
             obj.d = isCheckedDay(dom);
             //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
-            obj.sinceDate = new Date().getTime();
-            obj.reminder = remind != 0 ? DateUtils.trimTime(remind) : null; //se le quita la fecha y solo se deja la hora
+            obj.sinceDate = new Date();
+
+            obj.reminder = remind != 0 ? new Date(remind) : null; //se le quita la fecha y solo se deja la hora OJO
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
@@ -326,9 +328,10 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                     SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
                     try {
                         Date date = f.parse(borrarPruebaFecha.getText().toString());
-                        obj.sinceDate = date.getTime();
+                        obj.sinceDate = date;
                     } catch (ParseException e) {
                         e.printStackTrace();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 obj.update(db, id);
@@ -338,8 +341,6 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             }
             db = BaseHelper.getWritable(this);
 
-            Date d = new Date(Task.getNextAlarm(db, id));
-            Toast.makeText(this, d + "timeeeee", Toast.LENGTH_LONG).show();
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
                 ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
@@ -349,6 +350,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             finish();
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 
@@ -368,8 +370,8 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         setChecked(vier, obj.v);
         setChecked(sab, obj.s);
         if (obj.reminder != null) {
-            reminder.setText(f.format(new Date(obj.reminder)));
-            remind = obj.reminder;
+            reminder.setText(f.format(new Date(obj.reminder.getTime())));
+            remind = obj.reminder.getTime();
         }
         chron = obj.chrono;
         if (chron != null) {

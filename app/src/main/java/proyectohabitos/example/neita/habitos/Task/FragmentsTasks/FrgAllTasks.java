@@ -166,7 +166,8 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                         }
                     }
                 }
-                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], sq.getAsLong(data2[i][2]), doneDays, data2[i][10] == null ? null : sq.getAsInteger(data2[i][10]), false);
+   
+                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), sq.getAsString(data2[i][1]),sq.getAsString(data2[i][2])!=null?SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data2[i][2])):null , doneDays, data2[i][10] == null ? null : sq.getAsInteger(data2[i][10]), false);
                 data.add(task);
             }
         }

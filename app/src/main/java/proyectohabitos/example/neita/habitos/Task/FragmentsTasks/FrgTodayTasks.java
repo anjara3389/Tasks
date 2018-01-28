@@ -137,7 +137,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         Object[][] data2 = sq.getRecords(db);
         if (data2 != null) {
             for (int i = 0; i < data2.length; i++) {
-                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], data2[i][2] == null ? 0 : sq.getAsLong(data2[i][2]), null, data2[i][3] == null ? null : sq.getAsInteger(data2[i][3]), Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][3] == null ? null : sq.getAsLong(data2[i][3]), DateUtils.getTimeOnCurrTimeZone(new Date())));
+                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], data2[i][2] == null ? null : SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data2[i][2])) , null, data2[i][3] == null ? null : sq.getAsInteger(data2[i][3]), Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][3] == null ? null : sq.getAsLong(data2[i][3]), DateUtils.getTimeOnCurrTimeZone(new Date())));
                 data.add(task);
             }
         }

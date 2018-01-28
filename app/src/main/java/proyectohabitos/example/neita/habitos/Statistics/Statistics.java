@@ -18,7 +18,7 @@ public class Statistics {
     public static double getWeeklyStatistics(int taskId, boolean wholeWeek, SQLiteDatabase db) throws Exception {
         Task task = new Task().select(db, taskId);
         Date endDate = wholeWeek == false ? new Date() : DateUtils.getLastDate(0, new Date());
-        return getStatistics(task, 0, task.sinceDate, endDate, db);
+        return getStatistics(task, 0, task.sinceDate.getTime(), endDate, db);
     }
 
     /*Da el porcentaje de realización de una tarea en un mes
@@ -30,7 +30,7 @@ public class Statistics {
         Date d = new Date();
         d.setTime(monthYear);
         Date endDate = wholeMonth == false ? new Date() : DateUtils.getLastDate(1, d);
-        return getStatistics(task, 1, task.sinceDate, endDate, db);
+        return getStatistics(task, 1, task.sinceDate.getTime(), endDate, db);
     }
 
 

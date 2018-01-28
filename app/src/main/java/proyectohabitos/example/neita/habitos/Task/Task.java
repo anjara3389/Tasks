@@ -30,15 +30,15 @@ public class Task {
     public boolean v;
     public boolean s;
     public boolean d;
-    public Long sinceDate;
-    public Long reminder;
+    public Date sinceDate;
+    public Date reminder;
     public Long chrono;
 
     public Task() {
 
     }
 
-    public Task(Integer id, String name, boolean d, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, Long sinceDate, Long reminder, Long chrono) {
+    public Task(Integer id, String name, boolean d, boolean l, boolean m, boolean x, boolean j, boolean v, boolean s, Date sinceDate, Date reminder, Long chrono) {
         this.id = id;
         this.name = name;
         this.d = d;
@@ -63,8 +63,8 @@ public class Task {
         c.put("v", v);
         c.put("s", s);
         c.put("d", d);
-        c.put("since_date", sinceDate);
-        c.put("reminder", reminder);
+        c.put("since_date", SQLiteQuery.dateTimeFormat.format(sinceDate));
+        c.put("reminder", reminder != null ? SQLiteQuery.dateTimeFormat.format(reminder) : null);
         c.put("chrono", chrono);
         return c;
     }
@@ -79,14 +79,14 @@ public class Task {
     }
 
     public Task select(SQLiteDatabase db, Integer id) throws Exception {
-        SQLiteQuery sq = new SQLiteQuery("SELECT id,name,d,l,m,x,j,v,s,since_date,reminder, chrono " +
+        SQLiteQuery sq = new SQLiteQuery("SELECT id,name,d,l,m,x,j,v,s,since_date,reminder,chrono " +
                 "FROM activity " +
                 "WHERE id=" + id);
         Object[][] data = sq.getRecords(db);
         Task task = new Task();
-        if (data != null && data.length > 0) {
+        if (data != null) {
             for (int i = 0; i < data.length; i++) {
-                task = new Task(id, (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, sq.getAsLong(data[i][9]), sq.getAsLong(data[i][10]), data[i][11] == null ? null : sq.getAsLong(data[i][11]));
+                task = new Task(id, (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])),sq.getAsString(data[i][10])!=null? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])):null, data[i][11] == null ? null : sq.getAsLong(data[i][11]));
             }
             return task;
         }
@@ -143,6 +143,7 @@ public class Task {
         SQLiteQuery sq = new SQLiteQuery("SELECT COUNT(*)>0 FROM activity ac WHERE ac.id=" + id + " AND ac." + DateUtils.getDay(new Date()));
         return sq.getInteger(db) == 1;
     }
+
     //da la fecha y hora de la próxima alarma de una tarea
     public static Long getNextAlarm(SQLiteDatabase db, int taskId) throws Exception {
         Calendar cal = new GregorianCalendar();
@@ -157,8 +158,12 @@ public class Task {
                 if (sq.getAsInteger(obj[day]) == 1) {
                     //se le quita la fecha y solo se deja la hora
                     long rawDate = DateUtils.getTimeOnCurrTimeZoneDT(cal.getTimeInMillis());
-                    long remindDate = DateUtils.trimDateLong(rawDate);//La fecha del reminder sin la hora
-                    long remindDateTime = remindDate + DateUtils.getTimeOnCurrTimeZoneDT(sq.getAsLong(obj[7])); //fecha(remindDate) y hora(c.getLong(7))
+                    long remindDate = DateUtils.trimDateLong(rawDate);//La fecha del reminder sin la hor
+
+                    Date remind =  SQLiteQuery.dateTimeFormat.parse(sq.getAsString(obj[7]));
+                    Calendar cal3 = new GregorianCalendar();
+                    cal3.setTime(remind);
+                    long remindDateTime = remindDate + (cal3.get(Calendar.HOUR) * 3600000) + (cal3.get(Calendar.MINUTE) * 60000) + (cal3.get(Calendar.SECOND) * 1000); //fecha(remindDate) y hora(c.getLong(7))
                     if ((!cal.getTime().equals(cal2.getTime())) || ((cal.getTime().equals(cal2.getTime())) && (remindDateTime >= DateUtils.getTimeOnCurrTimeZone(new Date())))) {
                         return remindDateTime;
                     }
@@ -184,7 +189,7 @@ public class Task {
                 doneAndNotDone.add(doneAndNotDone.size(), getIfTaskIsDoneDay(db, taskId, task.chrono, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
             }
             begCal.add(Calendar.DAY_OF_YEAR, +1);//se incrementa la fecha del calendario en 1 día
-            }
+        }
         return doneAndNotDone;
     }
 

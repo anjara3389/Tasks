@@ -63,8 +63,7 @@ public class FrmStatistics extends AppCompatActivity {
             Task task = null;
             task = new Task().select(db, taskId);
             BaseHelper.tryClose(db);
-            Date d = new Date();
-            d.setTime(task.sinceDate);
+            Date d =task.sinceDate;
             months = DateUtils.getMonthsIntoDates(d, new Date());
             pagerAdapter = new MonthsPagerAdapter(getSupportFragmentManager(), months);
             viewPager = (ViewPager) findViewById(R.id.frm_stat_pager);

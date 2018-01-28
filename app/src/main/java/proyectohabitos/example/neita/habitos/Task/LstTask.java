@@ -9,12 +9,12 @@ import java.util.Date;
 public class LstTask {
     private Integer idTask;
     private String name;
-    private Long reminder;
+    private Date reminder;
     private ArrayList<Boolean> days;
     private Integer chrono;
     private boolean isDone;
 
-    public LstTask(Integer idTask, String name, Long reminder, ArrayList<Boolean> days, Integer chrono, boolean isDone) {
+    public LstTask(Integer idTask, String name, Date reminder, ArrayList<Boolean> days, Integer chrono, boolean isDone) {
         this.idTask = idTask;
         this.name = name;
         this.reminder = reminder;
@@ -31,7 +31,7 @@ public class LstTask {
         return idTask;
     }
 
-    public Long getReminder() {
+    public Date getReminder() {
         return reminder;
     }
 
@@ -49,7 +49,7 @@ public class LstTask {
 
     public String getTextReminder() {
         SimpleDateFormat f = new SimpleDateFormat("hh:mm a");
-        return (this.reminder == 0 ? "" : f.format(new Date(this.reminder)) + "");
+        return (this.reminder == null ? "" : f.format(this.reminder) + "");
     }
 
     public String getTextChrono() {
