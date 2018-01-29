@@ -4,6 +4,8 @@ package proyectohabitos.example.neita.habitos.Span;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Date;
+
 import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.SQLiteQuery;
 
@@ -11,15 +13,15 @@ import proyectohabitos.example.neita.habitos.SQLiteQuery;
 //cuando la tarea no tiene cronómetro, al marcarla se creará un nuevo spam con misma fecha de inicio y fin
 public class Span {
     public Integer id;
-    public Long begDate;
-    public Long endDate;
+    public Date begDate;
+    public Date endDate;
     public Integer activityId;
 
     public Span() {
 
     }
 
-    public Span(Integer id, Long begDate, Long endDate, Integer activityId) {
+    public Span(Integer id, Date begDate, Date endDate, Integer activityId) {
         this.id = id;
         this.begDate = begDate;
         this.endDate = endDate;
@@ -28,8 +30,8 @@ public class Span {
 
     public ContentValues getValues() {
         ContentValues c = new ContentValues();//content values es un contenedor de valores
-        c.put("beg_date", begDate);
-        c.put("end_date", endDate);
+        c.put("beg_date", SQLiteQuery.dateTimeFormat.format(begDate));
+        c.put("end_date", endDate != null ? SQLiteQuery.dateTimeFormat.format(endDate) : null);
         c.put("activity_id", activityId);
         return c;
     }
@@ -50,7 +52,7 @@ public class Span {
         Object[] o = sq.getRecord(db);
         if (o != null) {
             for (int i = 0; i < o.length; i++) {
-                return new Span(sq.getAsInteger(o[0]), sq.getAsLong(o[1]), sq.getAsLong(o[2]), sq.getAsInteger(o[3]));
+                return new Span(sq.getAsInteger(o[0]), SQLiteQuery.dateTimeFormat.parse(sq.getAsString(o[1])), SQLiteQuery.dateTimeFormat.parse(sq.getAsString(o[2])), sq.getAsInteger(o[3]));
             }
         }
         return null;
@@ -67,7 +69,7 @@ public class Span {
         Object[] o = sq.getRecord(db);
         if (o != null && o.length > 0) {
             for (int i = 0; i < o.length; i++) {
-                return new Span(sq.getAsInteger(o[0]), sq.getAsLong(o[1]), sq.getAsLong(o[2]), sq.getAsInteger(o[3]));
+                return new Span(sq.getAsInteger(o[0]), SQLiteQuery.dateTimeFormat.parse(sq.getAsString(o[1])), sq.getAsString(o[2]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(o[2])) : null, sq.getAsInteger(o[3]));
             }
         }
         return null;
@@ -75,14 +77,10 @@ public class Span {
 
     //Devuelve la suma de los tiempos de una actividad en el día dado
     public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Long dateTime) throws Exception {
-        SQLiteQuery sq = new SQLiteQuery("SELECT SUM(s.end_date-s.beg_date) " +
+        SQLiteQuery sq = new SQLiteQuery("SELECT SUM(strftime('%s',s.end_date)-strftime('%s',s.beg_date)) " +
                 "FROM span s " +
                 "WHERE s.activity_id=" + activityId + " " +
-                "AND CAST((s.beg_date/86400000) as int)=" + (int) (dateTime / 86400000));
-        Long value = sq.getLong(db);
-        if (value != null) {
-            return value;
-        }
-        return 0L;
+                "AND CAST((strftime('%s',s.beg_date)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
+        return sq.getLong(db) != null ? sq.getLong(db) * 1000 : 0L;
     }
 }

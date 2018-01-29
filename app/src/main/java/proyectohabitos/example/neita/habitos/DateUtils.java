@@ -23,6 +23,12 @@ public class DateUtils {
         return DateUtils.trimDateLong(dateTime - TimeZone.getDefault().getOffset(dateTime));
     }
 
+    public static Date getDateOnCurrTimeZone(Date date) {
+        Date date2 = new Date();
+        date2.setTime(date.getTime() + TimeZone.getDefault().getOffset(date.getTime()));
+        return date2;
+    }
+
 
     //============================GREGORIAN CALENDAR===============================================
 

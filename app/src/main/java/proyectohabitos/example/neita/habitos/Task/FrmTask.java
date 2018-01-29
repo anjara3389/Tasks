@@ -39,7 +39,6 @@ import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.SQLiteQuery;
 import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
 
 //el formulario para crear o editar una actividad
@@ -317,7 +316,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
             obj.sinceDate = new Date();
 
-            obj.reminder = remind != 0 ? new Date(remind) : null; //se le quita la fecha y solo se deja la hora OJO
+            obj.reminder = remind != 0 ? new Date(remind) : null; //se guarda la hora del reminder con la fecha que sea
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
@@ -342,6 +341,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             db = BaseHelper.getWritable(this);
 
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
+                System.out.println((Task.getNextAlarm(db, id) + "/////"));
                 ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
             BaseHelper.tryClose(db);

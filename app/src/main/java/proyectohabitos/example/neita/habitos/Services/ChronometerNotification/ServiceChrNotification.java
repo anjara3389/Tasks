@@ -56,7 +56,7 @@ public class ServiceChrNotification extends GcmTaskService {
             SQLiteDatabase db = BaseHelper.getReadable(this);
             Span span = new Span().selectOpenedSpan(db, bundle.getInt("activityId"));
             if (span != null) {
-                span.endDate = DateUtils.getTimeOnCurrTimeZone(new Date());
+                span.endDate = DateUtils.getDateOnCurrTimeZone(new Date());//ojo
                 span.update(db, span.id);
             }
             BaseHelper.tryClose(db);
