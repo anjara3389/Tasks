@@ -341,7 +341,6 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             db = BaseHelper.getWritable(this);
 
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
-                System.out.println((Task.getNextAlarm(db, id) + "/////"));
                 ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
             }
             BaseHelper.tryClose(db);

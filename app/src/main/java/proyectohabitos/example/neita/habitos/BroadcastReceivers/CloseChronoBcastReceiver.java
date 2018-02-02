@@ -1,12 +1,16 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.BroadcastReceivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class MyBroadcastReceiver extends BroadcastReceiver {
+import proyectohabitos.example.neita.habitos.FrmChronometer;
 
-    public MyBroadcastReceiver() {
+
+//Broadcast que sirve para cerrar la clase frmChronometer
+public class CloseChronoBcastReceiver extends BroadcastReceiver {
+
+    public CloseChronoBcastReceiver() {
         super();
     }
 

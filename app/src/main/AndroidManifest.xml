@@ -8,6 +8,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
+        <uses-permission android:name="android.permission.INTERNET" /> <!-- acceso a internet -->
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="android.permission.VIBRATE" />
+        <!-- permisos para cuando se reinicia el dispositivo -->
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
         <activity
             android:name=".Task.FrmTasks"
             android:screenOrientation="portrait">
@@ -37,13 +46,6 @@
             android:parentActivityName=".Task.FrmTasks"
             android:screenOrientation="portrait" />
         <activity android:name=".DialogFragments.NumPickersDialogFragment" />
-
-        <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
-        <uses-permission android:name="android.permission.INTERNET" /> <!-- acceso a internet -->
-        <uses-permission android:name="android.permission.WAKE_LOCK" />
-        <uses-permission android:name="android.permission.VIBRATE" />
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro -->
         <service
             android:name=".Services.ChronometerNotification.ServiceChrNotification"
@@ -82,13 +84,28 @@
             android:exported="true"
             android:launchMode="singleTask" />
 
-        <receiver android:name=".MyBroadcastReceiver">
+        <!-- Para cerrar la actividad chrono-->
+        <receiver android:name=".BroadcastReceivers.CloseChronoBcastReceiver">
             <intent-filter>
-                <action android:name="com.hmkcode.android.USER_ACTION" />
+                <action android:name="com.hmkcode.android.CLOSE_CRONO_ACTIVITY" />
+            </intent-filter>
+        </receiver>
+        <!-- Para cuando el dispositivo fué reicinicado, reiniciar las notificaciones y alarmas  -->
+        <receiver
+            android:name=".BroadcastReceivers.BootNotificationReceiver"
+            android:exported="false"
+            android:label="Boot Notification Receiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <!--For HTC devices-->
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+
+                <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Statistics.frg_month_statistics" />
         <activity android:name=".Statistics.FrgMonthStatistics"></activity>
     </application>
 

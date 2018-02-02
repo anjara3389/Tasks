@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import proyectohabitos.example.neita.habitos.BroadcastReceivers.CloseChronoBcastReceiver;
 import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrButtonNotific;
 import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrSound;
@@ -42,7 +43,7 @@ public class FrmChronometer extends AppCompatActivity {
     private int min;
     private int sec;
     private boolean playButton;
-    MyBroadcastReceiver myReceiver;
+    CloseChronoBcastReceiver myReceiver;
     IntentFilter intentFilter;
 
 
@@ -80,8 +81,7 @@ public class FrmChronometer extends AppCompatActivity {
                             obj.insert(db);
                             BaseHelper.tryClose(db);
                             timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-
-                            ServiceChrNotification.scheduleNotificationFire(((targetTime * 60) - (((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate.getTime()) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);//ojo
+                            ServiceChrNotification.scheduleNotificationFire(((targetTime * 60) - (((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate.getTime()) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(FrmChronometer.this, e.getMessage(), Toast.LENGTH_SHORT);
@@ -128,7 +128,7 @@ public class FrmChronometer extends AppCompatActivity {
         });
 
         //PARA EL BROADCAST
-        myReceiver = new MyBroadcastReceiver();
+        myReceiver = new CloseChronoBcastReceiver();
         intentFilter = new IntentFilter("com.hmkcode.android.CLOSE_CRONO_ACTIVITY");
 
     }

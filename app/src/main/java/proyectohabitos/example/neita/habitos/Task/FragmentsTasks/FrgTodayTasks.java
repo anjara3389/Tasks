@@ -111,7 +111,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
 
     public void update() {
         try {
-            lstTasks = getActivities();
+            lstTasks = getTodayLstTasks();
             CustomAdapterTodayTasks adapter = new CustomAdapterTodayTasks(lstTasks, getContext());
             lvTasks.setAdapter(adapter);
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         }
     }
 
-    private ArrayList<LstTask> getActivities() throws Exception {
+    private ArrayList<LstTask> getTodayLstTasks() throws Exception {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
 

@@ -79,16 +79,27 @@ public class Task {
     }
 
     public Task select(SQLiteDatabase db, Integer id) throws Exception {
-        SQLiteQuery sq = new SQLiteQuery("SELECT id,name,d,l,m,x,j,v,s,since_date,reminder,chrono " +
+        SQLiteQuery sq = new SQLiteQuery("SELECT name,d,l,m,x,j,v,s,since_date,reminder,chrono " +
                 "FROM activity " +
                 "WHERE id=" + id);
+        Object[] data = sq.getRecord(db);
+        if (data != null) {
+            return new Task(id, sq.getAsString(data[0]), sq.getAsInteger(data[1]) == 1, sq.getAsInteger(data[2]) == 1, sq.getAsInteger(data[3]) == 1, sq.getAsInteger(data[4]) == 1, sq.getAsInteger(data[5]) == 1, sq.getAsInteger(data[6]) == 1, sq.getAsInteger(data[7]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[8])), sq.getAsString(data[9]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[9])) : null, data[10] == null ? null : sq.getAsLong(data[10]));
+        }
+        return null;
+    }
+
+    public static ArrayList<Task> getTasks(SQLiteDatabase db) throws Exception {
+        ArrayList<Task> tasks = new ArrayList();
+
+        SQLiteQuery sq = new SQLiteQuery("SELECT id,name,d,l,m,x,j,v,s,since_date,reminder,chrono " +
+                "FROM activity ");
         Object[][] data = sq.getRecords(db);
-        Task task = new Task();
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
-                task = new Task(id, (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])),sq.getAsString(data[i][10])!=null? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])):null, data[i][11] == null ? null : sq.getAsLong(data[i][11]));
+                tasks.add(new Task((int) data[i][0], (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])), sq.getAsString(data[i][10]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])) : null, data[i][11] == null ? null : sq.getAsLong(data[i][11])));
             }
-            return task;
+            return tasks;
         }
         return null;
     }

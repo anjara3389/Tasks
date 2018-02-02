@@ -119,7 +119,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
 
     public void update() {
         try {
-            list = getTasks();
+            list = getAllLstTasks();
             adapter = new CustomAdapterAllTasks(list, getContext());
             lvTasks.setAdapter(adapter);
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     Si el val de la posición es true, significa que la tarea debía hacerse y se realizó el día indicado.
     Si el val de la pos es false, significa que debía hacerse y no se realizó el día indicado.
      */
-    private ArrayList<LstTask> getTasks() throws Exception {
+    private ArrayList<LstTask> getAllLstTasks() throws Exception {
         ArrayList<LstTask> data = new ArrayList();
         SQLiteDatabase db = BaseHelper.getReadable(getContext());
         SQLiteQuery sq = new SQLiteQuery("SELECT a.id, " + //0
