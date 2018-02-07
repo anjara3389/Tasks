@@ -9,9 +9,11 @@ public class BaseHelper extends SQLiteOpenHelper {
     private static BaseHelper sInstance;
 
     private static final String DATABASE_NAME = "Demo";
-    public static final int VERSION = 5;
-    String table = "CREATE TABLE activity(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,l BOOLEAN,m BOOLEAN,x BOOLEAN,j BOOLEAN,v BOOLEAN,s BOOLEAN,d BOOLEAN,since_date TEXT,reminder TEXT,chrono INTEGER)";
-    String tableSpan = "CREATE TABLE span(id INTEGER PRIMARY KEY AUTOINCREMENT,beg_date TEXT,end_date TEXT,activity_id INTEGER, FOREIGN KEY(activity_id) REFERENCES activity(id))";
+    public static final int VERSION = 6;
+    String task = "CREATE TABLE activity(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,l BOOLEAN,m BOOLEAN,x BOOLEAN,j BOOLEAN,v BOOLEAN,s BOOLEAN,d BOOLEAN,since_date TEXT,reminder TEXT,chrono INTEGER)";
+    String span = "CREATE TABLE span(id INTEGER PRIMARY KEY AUTOINCREMENT,beg_date TEXT,end_date TEXT,activity_id INTEGER, FOREIGN KEY(activity_id) REFERENCES activity(id))";
+    String result = "CREATE TABLE result(id INTEGER PRIMARY KEY AUTOINCREMENT,day TEXT,done BOOLEAN,activity_id INTEGER,FOREIGN KEY(activity_id) REFERENCES activity(id))";
+
 
 
     private BaseHelper(Context context) {
@@ -26,8 +28,9 @@ public class BaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(table);
-        db.execSQL(tableSpan);
+        db.execSQL(task);
+        db.execSQL(span);
+        db.execSQL(result);
     }
 
     @Override
@@ -35,6 +38,7 @@ public class BaseHelper extends SQLiteOpenHelper {
         //en el caso de actualizar la tabla se la borra y se la vuelve a crear
         db.execSQL("DROP TABLE IF EXISTS ACTIVITY");
         db.execSQL("DROP TABLE IF EXISTS SPAN");
+        db.execSQL("DROP TABLE IF EXISTS RESULT");
         onCreate(db);
     }
 
