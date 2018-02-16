@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services.ChronometerNotification;
+package proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,8 +19,8 @@ import com.google.android.gms.gcm.TaskParams;
 import java.util.Date;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.Chronometer.FrmChronometer;
 import proyectohabitos.example.neita.habitos.DateUtils;
-import proyectohabitos.example.neita.habitos.FrmChronometer;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.FrmTasks;

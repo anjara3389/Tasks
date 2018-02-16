@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services.ChronometerNotification;
+package proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services;
 
 
 import android.app.Service;
@@ -6,13 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.os.Vibrator;
 
 import proyectohabitos.example.neita.habitos.R;
 
-//PARA EJECUTAR LA ALARMA(SONIDO) DEL CRONÓMETRO
+//PARA EJECUTAR LA ALARMA(SONIDO) DE RECORDATORIO
 //PERMITE PROGRAMAR UNA TAREA AUNQUE LA PANTALLA DEL CELULAR ESTÉ APAGADA
 //se necesita agregar el servicio en el manifest
-public class ServiceChrSound extends Service {
+public class ServiceAlarmSound extends Service {
     private MediaPlayer player;
 
     public IBinder onBind(Intent arg0) {
@@ -22,9 +23,11 @@ public class ServiceChrSound extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        player = MediaPlayer.create(this, R.raw.bells);
-        player.setLooping(true); // Set looping
+        player = MediaPlayer.create(this, R.raw.alarm);
+        player.setLooping(false); // Set looping
         player.setVolume(100, 100);
+        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        v.vibrate(1000);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -42,6 +45,6 @@ public class ServiceChrSound extends Service {
     }
 
     public static void stopSound(Context ctx) {
-        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), ServiceChrSound.class));
+        ctx.getApplicationContext().stopService(new Intent(ctx.getApplicationContext(), ServiceAlarmSound.class));
     }
 }

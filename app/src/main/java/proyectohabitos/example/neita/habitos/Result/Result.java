@@ -30,7 +30,7 @@ public class Result {
 
     public ContentValues getValues() {
         ContentValues c = new ContentValues();
-        c.put("day", idResult);
+        c.put("day", SQLiteQuery.dateTimeFormat.format(day));
         c.put("activity_id", activityId);
         c.put("done", done);
         return c;
@@ -40,19 +40,34 @@ public class Result {
         return (int) db.insert("result", null, getValues());
     }
 
-    public void update(SQLiteDatabase db, int id) {
-        db.update("result", getValues(), " id=" + id + " ", null);
+    public static void selectResults(SQLiteDatabase db) throws Exception {
+        SQLiteQuery sq = new SQLiteQuery("SELECT id,day,done,activity_id " +
+                "FROM result r ");
+
+        Object[][] obj = sq.getRecords(db);
+        System.out.println("/////////RESULTS//////////");
+        for (int i = 0; i < obj.length; i++) {
+            System.out.println("id: " + obj[i][0]);
+            System.out.println("day: " + obj[i][1]);
+            System.out.println("done: " + obj[i][2]);
+            System.out.println("activity_id: " + obj[i][3]);
+        }
+
+
     }
 
-    public void insertResultToday(SQLiteDatabase db) throws Exception {
+    public static void insertResultToday(SQLiteDatabase db) throws Exception {
         ArrayList<Task> task = Task.getTasks(db);
         for (int i = 0; i < task.size(); i++) {
             Result result = new Result();
             result.day = new Date();
             result.activityId = task.get(i).id;
+            System.out.println(task.get(i).chrono + "CHRONOOOOOOO");
             result.done = Task.getIfTaskIsDoneDay(db, task.get(i).id, task.get(i).chrono, new Date().getTime());
             result.insert(db);
         }
+        selectResults(db);
+
     }
 
     /*Consulta si una tarea se realizó el dia dado
@@ -62,10 +77,10 @@ public class Result {
     public static Boolean getIfTaskIsDoneDayResult(SQLiteDatabase db, int activityId, Long dateTime) throws Exception {
         SQLiteQuery sq = new SQLiteQuery("SELECT done " +
                 "FROM result r " +
-                "WHERE r.activity_id=" + activityId + " AND CAST((strftime('%s',r.date)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
-        Boolean answer = (boolean) sq.getObject(db);
-        if (answer != null) {
-            return sq.getAsInteger(answer) == 1;
+                "WHERE r.activity_id=" + activityId + " AND CAST((strftime('%s',r.day)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
+        Long ans = sq.getLong(db);
+        if (ans != null) {
+            return ans == 1;
         }
         return null;
     }

@@ -39,7 +39,7 @@ import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services.ServiceAlarmNotification;
 
 //el formulario para crear o editar una actividad
 public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.MyDialogDialogListener {

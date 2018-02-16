@@ -2,20 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="proyectohabitos.example.neita.habitos">
 
+    <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- permisos para cuando se reinicia el dispositivo -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!-- permisos para utilizar la clase media player para reproducir la alarma del cronometro -->
-        <uses-permission android:name="android.permission.INTERNET" /> <!-- acceso a internet -->
-        <uses-permission android:name="android.permission.WAKE_LOCK" />
-        <uses-permission android:name="android.permission.VIBRATE" />
-        <!-- permisos para cuando se reinicia el dispositivo -->
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
 
         <activity
             android:name=".Task.FrmTasks"
@@ -32,7 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".FrmChronometer"
+            android:name=".Chronometer.FrmChronometer"
             android:parentActivityName=".Task.FrmTasks"
             android:screenOrientation="portrait">
 
@@ -48,7 +46,7 @@
         <activity android:name=".DialogFragments.NumPickersDialogFragment" />
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro -->
         <service
-            android:name=".Services.ChronometerNotification.ServiceChrNotification"
+            android:name=".Chronometer.Services.ChronometerNotification.ServiceChrNotification"
             android:exported="true"
             android:launchMode="singleTask"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
@@ -57,17 +55,36 @@
             </intent-filter>
         </service>
         <service
-            android:name=".Services.ChronometerNotification.ServiceChrSound"
+            android:name=".Chronometer.Services.ChronometerNotification.ServiceChrSound"
             android:exported="true"
             android:launchMode="singleTask" />
         <service
-            android:name=".Services.ChronometerNotification.ServiceChrButtonNotific"
+            android:name=".Chronometer.Services.ChronometerNotification.ServiceChrButtonNotific"
             android:exported="true"
             android:launchMode="singleTask" />
 
         <!-- servicios conectado a la clase para programar alamra -->
         <service
-            android:name=".Services.AlarmNotification.ServiceAlarmNotification"
+            android:name=".Reminder.AlarmNotification.Services.ServiceAlarmNotification"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".Reminder.AlarmNotification.Services.ServiceAlarmSound"
+            android:exported="true"
+            android:launchMode="singleTask" />
+        <service
+            android:name=".Reminder.AlarmNotification.Services.ServiceAlarmButtonNotific"
+            android:exported="true"
+            android:launchMode="singleTask" />
+
+        <service
+            android:name=".Result.Services.ServiceCreateDailyResult"
             android:exported="true"
             android:launchMode="singleTask"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
@@ -75,38 +92,18 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
-        <service
-            android:name=".Services.AlarmNotification.ServiceAlarmSound"
-            android:exported="true"
-            android:launchMode="singleTask" />
-        <service
-            android:name=".Services.AlarmNotification.ServiceAlarmButtonNotific"
-            android:exported="true"
-            android:launchMode="singleTask" />
 
         <!-- Para cerrar la actividad chrono-->
-        <receiver android:name=".BroadcastReceivers.CloseChronoBcastReceiver">
+        <receiver android:name=".Chronometer.BroadcastReceivers.CloseChronoBcastReceiver">
             <intent-filter>
                 <action android:name="com.hmkcode.android.CLOSE_CRONO_ACTIVITY" />
             </intent-filter>
         </receiver>
-        <!-- Para cuando el dispositivo fué reicinicado, reiniciar las notificaciones y alarmas  -->
-        <receiver
-            android:name=".BroadcastReceivers.BootNotificationReceiver"
-            android:exported="false"
-            android:label="Boot Notification Receiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <!--For HTC devices-->
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
-
         <activity android:name=".Statistics.FrgMonthStatistics"></activity>
+
+        <!-- Here we specify that we want to send BOOT_COMPLETED to our
+     AutoStart class -->
+
     </application>
 
 </manifest>

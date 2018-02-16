@@ -14,10 +14,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.DateUtils;
+import proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Result.Result;
 import proyectohabitos.example.neita.habitos.SQLiteQuery;
-import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Span.Span;
 
 public class Task {
@@ -97,7 +98,7 @@ public class Task {
         Object[][] data = sq.getRecords(db);
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
-                tasks.add(new Task((int) data[i][0], (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])), sq.getAsString(data[i][10]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])) : null, data[i][11] == null ? null : sq.getAsLong(data[i][11])));
+                tasks.add(new Task(sq.getAsInteger(data[i][0]), (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])), sq.getAsString(data[i][10]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])) : null, data[i][11] == null ? null : sq.getAsLong(data[i][11])));
             }
             return tasks;
         }
@@ -109,6 +110,8 @@ public class Task {
         GcmNetworkManager gcmManag = GcmNetworkManager.getInstance(c);
         gcmManag.cancelTask(ServiceAlarmNotification.REMIND + id, ServiceAlarmNotification.class);
         gcmManag.cancelTask(ServiceChrNotification.CHRON + id, ServiceAlarmNotification.class);
+        //Se eliminan los results
+        db.execSQL("DELETE FROM result WHERE activity_id=" + id);
         //Se eliminan los spans
         db.execSQL("DELETE FROM span WHERE activity_id=" + id);
         //se elimina la actividad
@@ -177,9 +180,6 @@ public class Task {
                     Calendar cal3 = new GregorianCalendar();
                     cal3.setTime(remind);
                     long remindDateTime = remindDate + (cal3.get(Calendar.HOUR_OF_DAY) * 3600000) + (cal3.get(Calendar.MINUTE) * 60000) + (cal3.get(Calendar.SECOND) * 1000); //fecha(remindDate) y hora(c.getLong(7))
-                    System.out.println(remindDateTime + "/////remindDateTime");
-                    System.out.println(new Date().getTime() + "/////<<<<");
-
                     if ((remindDateTime >= DateUtils.getTimeOnCurrTimeZone(new Date()))) {
                         return remindDateTime;
                     }
@@ -193,20 +193,19 @@ public class Task {
 
     /*Da una lista con trues y falses dependiendo si la tarea se realizó o no y debía realizarse en cada una de las fechas dentro del intervalo de tiempo entre begDate y endDate
      */
-    public static ArrayList<Boolean> getDoneAndNotDone(Date begDate, Date endDate, int taskId, SQLiteDatabase db) throws Exception {
-        ArrayList<Boolean> doneAndNotDone = new ArrayList();
+    public static ArrayList<Boolean> getDoneAndNotDoneDays(Date begDate, Date endDate, int taskId, SQLiteDatabase db) throws Exception {
+        ArrayList<Boolean> doneAndNotDoneDays = new ArrayList();
         Calendar begCal = DateUtils.getGregCalendar(DateUtils.trimDate(begDate));
         Calendar endCal = DateUtils.getGregCalendar(DateUtils.trimDate(endDate));
-        Task task = null;
-        task = new Task().select(db, taskId);
+        Task task = new Task().select(db, taskId);
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.d, task.l, task.m, task.x, task.j, task.v, task.s));
         while (!begCal.getTime().after(endCal.getTime())) {
             if (daysOfWeek.get(DateUtils.getDayInt(begCal.getTime()))) { //si la tarea tiene que hacerse el día
-                doneAndNotDone.add(doneAndNotDone.size(), getIfTaskIsDoneDay(db, taskId, task.chrono, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
+                doneAndNotDoneDays.add(doneAndNotDoneDays.size(), Result.getIfTaskIsDoneDayResult(db, taskId, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
             }
             begCal.add(Calendar.DAY_OF_YEAR, +1);//se incrementa la fecha del calendario en 1 día
         }
-        return doneAndNotDone;
+        return doneAndNotDoneDays;
     }
 
 

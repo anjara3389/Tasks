@@ -18,13 +18,19 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrNotification;
+import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.R;
-import proyectohabitos.example.neita.habitos.Services.AlarmNotification.ServiceAlarmNotification;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
+import proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services.ServiceAlarmNotification;
+import proyectohabitos.example.neita.habitos.Result.Result;
+import proyectohabitos.example.neita.habitos.Result.Services.ServiceCreateDailyResult;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
 import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
 
@@ -40,6 +46,12 @@ public class FrmTasks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_tasks);
 
+        GregorianCalendar gc = DateUtils.getGregCalendar(new Date());
+        gc.set(Calendar.HOUR_OF_DAY, 24);
+        gc.set(Calendar.MINUTE, 0);
+        gc.set(Calendar.SECOND, 0);
+        gc.set(Calendar.MILLISECOND, 0);
+        ServiceCreateDailyResult.scheduleInsertResultToday(FrmTasks.this, (gc.getTimeInMillis() - System.currentTimeMillis()) / 1000);
         // ViewPager and its adapters use support library fragments, so use getSupportFragmentManager.
         mTaskPagerAdapter = new TasksPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.frmTasksPager);
@@ -115,21 +127,33 @@ public class FrmTasks extends AppCompatActivity {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_delete_spans: //BORRAR DESPUÉS *************** vacia los spams***+*SOLO PRUEBA PATITO
-                SQLiteDatabase db = BaseHelper.getReadable(this);
+
                 /*String sql = "UPDATE activity SET since_date=since_date-2629800000";
                 db.execSQL(sql);
                 Toast.makeText(this, "1 MES MENOS CUAK!", Toast.LENGTH_SHORT).show();*/
 
-                String sql = "DELETE FROM activity";
-                String sql2 = "DELETE FROM span";
-                GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
-                mGcmNetworkManager.cancelAllTasks(ServiceAlarmNotification.class);
-                mGcmNetworkManager.cancelAllTasks(ServiceChrNotification.class);
-                db.execSQL(sql);
-                db.execSQL(sql2);
+                // String sql = "DELETE FROM activity";
+                // String sql2 = "DELETE FROM span";
+                // String sql3 = "DELETE FROM result";
+                try {
+                    SQLiteDatabase db = BaseHelper.getReadable(this);
+                    Result.insertResultToday(db);
+                    GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(this);
+                    mGcmNetworkManager.cancelAllTasks(ServiceAlarmNotification.class);
+                    mGcmNetworkManager.cancelAllTasks(ServiceChrNotification.class);
+                    BaseHelper.tryClose(db);
+                    Toast.makeText(this, "RESULTADOS INSERTADOS CUAKKK!!", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "ERROR CUAK" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
-                Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
-                BaseHelper.tryClose(db);
+                //db.execSQL(sql);
+                //db.execSQL(sql2);
+                //db.execSQL(sql3);
+
+                //  Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
+
 
                 MediaPlayer player = MediaPlayer.create(this, R.raw.quack);
                 player.setLooping(false); // Set looping

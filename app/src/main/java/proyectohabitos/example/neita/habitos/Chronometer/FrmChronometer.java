@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos;
+package proyectohabitos.example.neita.habitos.Chronometer;
 
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -19,10 +19,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import proyectohabitos.example.neita.habitos.BroadcastReceivers.CloseChronoBcastReceiver;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrButtonNotific;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrNotification;
-import proyectohabitos.example.neita.habitos.Services.ChronometerNotification.ServiceChrSound;
+import proyectohabitos.example.neita.habitos.BaseHelper;
+import proyectohabitos.example.neita.habitos.Chronometer.BroadcastReceivers.CloseChronoBcastReceiver;
+import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrButtonNotific;
+import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrNotification;
+import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrSound;
+import proyectohabitos.example.neita.habitos.DateUtils;
+import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
 

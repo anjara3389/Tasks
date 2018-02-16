@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.Services.AlarmNotification;
+package proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services;
 
 import android.app.Notification;
 import android.app.NotificationManager;

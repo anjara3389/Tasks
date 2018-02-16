@@ -19,6 +19,7 @@ public class DateUtils {
         return dateTime + TimeZone.getDefault().getOffset(dateTime);
     }
 
+    //se le quita la hora y solo queda la fecha  y se le suma la diferencia horaria.
     public static Long datePlusTZ(Long dateTime) {
         return DateUtils.trimDateLong(dateTime - TimeZone.getDefault().getOffset(dateTime));
     }
