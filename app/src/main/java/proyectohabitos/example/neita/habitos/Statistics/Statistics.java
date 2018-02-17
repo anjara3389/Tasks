@@ -18,7 +18,7 @@ public class Statistics {
 
     //Constantes para period
     public static final int WEEKLY = 0;
-    public static final int MONLTLY = 1;
+    public static final int MONTLY = 1;
 
     //El periodo entero o hasta el día actual
     public int until;
@@ -37,7 +37,7 @@ public class Statistics {
 
     public Statistics(int taskId, int until, Long monthYear, SQLiteDatabase db) throws Exception {
         this.task = new Task().select(db, taskId);
-        this.period = monthYear == null ? WEEKLY : MONLTLY;
+        this.period = monthYear == null ? WEEKLY : MONTLY;
         this.until = until;
         this.untilDay = getUntilDay(period, monthYear);
         this.daysResults = Task.getDoneAndNotDoneDays(getSinceDay(), untilDay, task.id, db);
@@ -68,10 +68,10 @@ public class Statistics {
     public Date getUntilDay(int period, Long monthYear) {
         if (period == WEEKLY) {
             return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_dAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(WEEKLY, new Date())) : null;
-        } else if (period == MONLTLY) {
+        } else if (period == MONTLY) {
             Date date = new Date();
             date.setTime(monthYear);
-            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_dAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(MONLTLY, date)) : null;
+            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_dAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(MONTLY, date)) : null;
         }
         return null;
     }
@@ -95,7 +95,7 @@ public class Statistics {
         Long untilPeriod = DateUtils.getWeekOrMonth(untilDayLong, period);
 
         //si el periodo(sem o mes) en el que se creó la tarea es igual al periodo acual
-        if ((period == WEEKLY && DateUtils.isDateIntoWeek(new Date(untilDayLong), new Date(creationDay))) || (period == MONLTLY && creationPeriod.equals(untilPeriod))) {
+        if ((period == WEEKLY && DateUtils.isDateIntoWeek(new Date(untilDayLong), new Date(creationDay))) || (period == MONTLY && creationPeriod.equals(untilPeriod))) {
 
             //el día en que se creó la tarea
 
