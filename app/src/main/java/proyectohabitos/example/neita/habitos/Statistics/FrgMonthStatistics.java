@@ -87,8 +87,8 @@ public class FrgMonthStatistics extends Fragment {
         public static synchronized Val getStats(int taskId, long month, Context ctx) throws Exception {
             Val rta = new Val();
             SQLiteDatabase db = BaseHelper.getReadable(ctx);
-            rta.month = (int) new Statistics(taskId, false, month, db).getStatistics();
-            rta.whole = (int) new Statistics(taskId, true, month, db).getStatistics();
+            rta.month = (int) new Statistics(taskId, Statistics.UNTIL_TODAY, month, db).getStatistics();
+            rta.whole = (int) new Statistics(taskId, Statistics.UNTIL_LAST_dAY_OF_PERIOD, month, db).getStatistics();
             db.close();
             return rta;
         }

@@ -8,6 +8,10 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class DateUtils {
+
+    public static final int WEEK = 0;
+    public static final int MONTH = 1;
+    public static final int YEAR = 2;
     //==============================TIME ZONE====================================================
 
     //coje la hora de la fecha dada de Grenwitch y la convierte a la de la zona horaria correspondiente
@@ -56,13 +60,8 @@ public class DateUtils {
     /*Retorna una fecha con hora 00:00:00 (sin hora) en Long
      */
     public static Long trimDateLong(Long dateTime) {
-        return dateTime - trimTime(dateTime);
-    }
-
-    /*Retorna una hora sin fecha en Long
-     */
-    public static Long trimTime(Long dateTime) {
-        return dateTime % (24 * 60 * 60 * 1000);
+        Date date = new Date(dateTime);
+        return trimDate(date).getTime();
     }
 
     /*
@@ -84,15 +83,15 @@ public class DateUtils {
     *primer día del mes: v=1
     *primer día del año: v=2
      */
-    public static Date getFirstDate(Integer v, Date date) {
+    public static Date getFirstDay(Integer period, Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
 
-        if (v == 0) { //PRIMER DIA DE LA SEMANA
+        if (period == WEEK) { //PRIMER DIA DE LA SEMANA
             cal.set(GregorianCalendar.DAY_OF_WEEK, 1);
-        } else if (v == 1) {//PRIMER DIA DEL MES
+        } else if (period == MONTH) {//PRIMER DIA DEL MES
             cal.set(GregorianCalendar.DAY_OF_MONTH, 1);
-        } else if (v == 2) {//PRIMER DIA DEL AÑO
+        } else if (period == YEAR) {//PRIMER DIA DEL AÑO
             cal.set(GregorianCalendar.DAY_OF_YEAR, 1);
         }
         return cal.getTime();
@@ -102,12 +101,12 @@ public class DateUtils {
    *primer día de la semana: v=0
    *primer día del mes: v=1
     */
-    public static Date getLastDate(Integer v, Date date) {
+    public static Date getLastDate(Integer period, Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
-        if (v == 0) { //UTLIMO DIA DE LA SEMANA
+        if (period == WEEK) { //UTLIMO DIA DE LA SEMANA
             cal.set(GregorianCalendar.DAY_OF_WEEK, cal.getActualMaximum(Calendar.DAY_OF_WEEK));
-        } else if (v == 1) {//ULTIMO DIA DEL MES
+        } else if (period == MONTH) {//ULTIMO DIA DEL MES
             cal.set(GregorianCalendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         }
         return cal.getTime();
@@ -117,7 +116,7 @@ public class DateUtils {
      */
     public static ArrayList<Date> getDatesOfWeek(Date date) {
         Calendar cal = new GregorianCalendar();
-        cal.setTime(DateUtils.getFirstDate(0, date));
+        cal.setTime(DateUtils.getFirstDay(0, date));
         ArrayList<Date> datesCurrWeek = new ArrayList<>();
         for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
             datesCurrWeek.add(cal.getTime());
@@ -128,7 +127,7 @@ public class DateUtils {
 
     /*Retorna la respuesta de si date se encuentra dentro de la semana dateWeek
      */
-    public static boolean getIfDateIntoWeek(Date dateWeek, Date date) {
+    public static boolean isDateIntoWeek(Date dateWeek, Date date) {
         ArrayList<Date> datesWeek = getDatesOfWeek(dateWeek);
         for (int i = 0; i < datesWeek.size(); i++) {
             if (datesWeek.get(i).equals(date)) {
@@ -138,19 +137,16 @@ public class DateUtils {
         return false;
     }
 
-    /*retorna la semana o el mes o el año
-    * semana: var=0
-    *mes: var=1
-    *año: var=2
+    /*retorna la semana o el mes
+
      */
-    public static Long getWeekMonthOrYear(Long dateTime, int var) {
-        if (var == 0) {
+    public static Long getWeekOrMonth(Long dateTime, int period) {
+        if (period == WEEK) {
             return dateTime;
-        } else if (var == 1) {
+        } else if (period == MONTH) {
             return (long) DateUtils.getGregCalendar(new Date(dateTime)).get(GregorianCalendar.MONTH);
-        } else {
-            return (long) DateUtils.getGregCalendar(new Date(dateTime)).get(GregorianCalendar.YEAR);
         }
+        return null;
     }
 
     public static ArrayList<Long> getMonthsIntoDates(Date rawBeg, Date rawEnd) {

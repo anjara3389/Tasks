@@ -313,7 +313,6 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             obj.v = isCheckedDay(vier);
             obj.s = isCheckedDay(sab);
             obj.d = isCheckedDay(dom);
-            //se le quita la hora y solo queda la fecha y dentro de la zona horaria correspondiente
             obj.sinceDate = new Date();
 
             obj.reminder = remind != 0 ? new Date(remind) : null; //se guarda la hora del reminder con la fecha que sea

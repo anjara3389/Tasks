@@ -192,11 +192,13 @@ public class Task {
     }
 
     /*Da una lista con trues y falses dependiendo si la tarea se realizó o no y debía realizarse en cada una de las fechas dentro del intervalo de tiempo entre begDate y endDate
+    @begDay es el día desde el que se cuentan los días realizados. Debe llegar con la hora en 00:00:00
+    @endDay es el día hasta el que se cuentan los días realizados. Debe llegar con la hora en 00:00:00
      */
-    public static ArrayList<Boolean> getDoneAndNotDoneDays(Date begDate, Date endDate, int taskId, SQLiteDatabase db) throws Exception {
+    public static ArrayList<Boolean> getDoneAndNotDoneDays(Date begDay, Date endDay, int taskId, SQLiteDatabase db) throws Exception {
         ArrayList<Boolean> doneAndNotDoneDays = new ArrayList();
-        Calendar begCal = DateUtils.getGregCalendar(DateUtils.trimDate(begDate));
-        Calendar endCal = DateUtils.getGregCalendar(DateUtils.trimDate(endDate));
+        Calendar begCal = DateUtils.getGregCalendar(begDay);
+        Calendar endCal = DateUtils.getGregCalendar(endDay);
         Task task = new Task().select(db, taskId);
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.d, task.l, task.m, task.x, task.j, task.v, task.s));
         while (!begCal.getTime().after(endCal.getTime())) {
