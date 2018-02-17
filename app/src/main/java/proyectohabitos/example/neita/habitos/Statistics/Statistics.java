@@ -15,22 +15,18 @@ public class Statistics {
 
     //El periodo de tiempo de las estadísticas(semanal(0)/mensual(1))
     public static int period;
-
     //Constantes para period
     public static final int WEEKLY = 0;
     public static final int MONTLY = 1;
 
     //El periodo entero o hasta el día actual
     public int until;
-
     //Constantes para until
-
     public static final int UNTIL_LAST_dAY_OF_PERIOD = 0;  //hasta el último día de la semana o mes
     public static final int UNTIL_TODAY = 1; //Hasta el día de hoy
 
     //Día hasta el que se cuenta las estadísticas
     public static Date untilDay;
-
     //lista de resultados de los días según si se realizó(true) y no se realizó(false) la tarea
     public static ArrayList<Boolean> daysResults;
 
