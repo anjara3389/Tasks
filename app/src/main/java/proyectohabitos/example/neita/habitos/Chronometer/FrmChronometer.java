@@ -24,7 +24,6 @@ import proyectohabitos.example.neita.habitos.Chronometer.BroadcastReceivers.Clos
 import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrButtonNotific;
 import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrSound;
-import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
@@ -32,22 +31,37 @@ import proyectohabitos.example.neita.habitos.Task.Task;
 
 public class FrmChronometer extends AppCompatActivity {
 
-    private Timer timer;
-    private FloatingActionButton play;
-    private TextView txtTimer, percent;
-    private Span obj;
+    private FloatingActionButton btnPlayPause;
+    private TextView txtTimer, txtPercent;
     private com.mikhaellopez.circularprogressbar.CircularProgressBar pgBar;
-    private Integer activityId;
-    private long targetTime;
-    private Long lastWholeTime = null; //el tiempo de todos los spans anteriores del día
-    private long totalSec;
-    private long totalSecBackwards;
-    private int hours;
-    private int min;
-    private int sec;
-    private boolean playButton;
-    CloseChronoBcastReceiver myReceiver;
-    IntentFilter intentFilter;
+
+    /*span abierto actual(que tiene begDate pero no endDate)*/
+    private Span span;
+
+    /*tarea a la que corresponde el cronómetro*/
+    private Task task;
+
+    /*tiempo total de todos los spans anteriores del día sumados*/
+    private Long totalTime = null;
+
+    /*tiempo faltante para completar el cronómetro*/
+    private long missingSeconds;
+
+    /*temporizador*/
+    private Timer timer;
+
+    /*dice si el botón de play/pause está en play o pause*/
+    private int btnPlayStatus;
+
+    /*constantes para el btnPlayStatus*/
+    private static final int PAUSE = 0;
+    private static final int PLAY = 1;
+
+    /*broadcast para cerrar la actividad del cronómetro*/
+    private CloseChronoBcastReceiver closeChronoBCastReceiver;
+
+    /*intent filter para el broadcast*/
+    private IntentFilter intentFilter;
 
 
     @Override
@@ -55,36 +69,43 @@ public class FrmChronometer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frm_chronometer);
 
-        play = (FloatingActionButton) findViewById(R.id.frm_chrono_play);
+        btnPlayPause = (FloatingActionButton) findViewById(R.id.frm_chrono_play);
         txtTimer = (TextView) findViewById(R.id.chrono_txt_chrono);
         pgBar = (com.mikhaellopez.circularprogressbar.CircularProgressBar) findViewById(R.id.chrono_progress_bar);
         pgBar.setProgress(0);
-        percent = (TextView) findViewById(R.id.chrono_percent);
+        txtPercent = (TextView) findViewById(R.id.chrono_percent);
+        try {
+            SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
+            Bundle bundle = getIntent().getExtras();
+            task = new Task().select(db, bundle.getInt("id"));
+            BaseHelper.tryClose(db);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(FrmChronometer.this, e.getMessage(), Toast.LENGTH_SHORT);
+        }
 
-        Bundle bundle = getIntent().getExtras();
-        activityId = bundle.getInt("id");
 
-        play.setOnClickListener(new View.OnClickListener() {
+        btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (playButton == true) {//PLAY
-                    if (obj != null) {
+                if (btnPlayStatus == PLAY) {//PLAY
+                    if (span != null) {
 
                         try {
-                            play.setImageResource(R.drawable.pause);
-                            playButton = false;
+                            btnPlayPause.setImageResource(R.drawable.pause);
+                            btnPlayStatus = PAUSE;
 
                             SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                             timer = new Timer();
-                            lastWholeTime = new Span().selectTotalTime(db, activityId, DateUtils.getTimeOnCurrTimeZone(new Date())) == 0 ? 0 : (Long) new Span().selectTotalTime(db, activityId, DateUtils.getTimeOnCurrTimeZone(new Date()));
-                            obj.begDate = Span.selectOpenedSpan(db, activityId) != null ? obj.begDate : DateUtils.getDateOnCurrTimeZone(new Date());//ojo
-                            obj.activityId = activityId;
-                            obj.endDate = null;
-                            obj.insert(db);
+                            totalTime = new Span().selectTotalTime(db, task.id, new Date().getTime()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date().getTime());
+                            span.begDate = Span.selectOpenedSpan(db, task.id) != null ? span.begDate : new Date();//ojo
+                            span.activityId = task.id;
+                            span.endDate = null;
+                            span.insert(db);
                             BaseHelper.tryClose(db);
                             timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
-                            ServiceChrNotification.scheduleNotificationFire(((targetTime * 60) - (((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate.getTime()) + lastWholeTime) / 1000l)), FrmChronometer.this, activityId);
+                            ServiceChrNotification.scheduleNotificationFire(((task.chrono * 60) - (((new Date().getTime() - span.begDate.getTime()) + totalTime) / 1000l)), FrmChronometer.this, task.id);
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(FrmChronometer.this, e.getMessage(), Toast.LENGTH_SHORT);
@@ -92,17 +113,17 @@ public class FrmChronometer extends AppCompatActivity {
 
                     }
                 } else {//PAUSE
-                    if (obj != null) {
-                        play.setImageResource(R.drawable.play);
-                        playButton = true;
-                        obj.endDate = DateUtils.getDateOnCurrTimeZone(new Date());//ojo
+                    if (span != null) {
+                        btnPlayPause.setImageResource(R.drawable.play);
+                        btnPlayStatus = PLAY;
+                        span.endDate = new Date();
                         SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
-                        if (activityId != null) {
+                        if (task.id != null) {
                             try {
                                 Span currentSpan;
-                                currentSpan = Span.selectOpenedSpan(db, activityId);
+                                currentSpan = Span.selectOpenedSpan(db, task.id);
                                 if (currentSpan != null) {
-                                    obj.update(db, currentSpan.id);
+                                    span.update(db, currentSpan.id);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -117,9 +138,9 @@ public class FrmChronometer extends AppCompatActivity {
                         ServiceChrSound.stopSound(FrmChronometer.this);
                         ServiceChrButtonNotific.stopService(FrmChronometer.this);
                         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmChronometer.this);
-                        mGcmNetworkManager.cancelTask(ServiceChrNotification.CHRON + activityId, ServiceChrNotification.class);
+                        mGcmNetworkManager.cancelTask(ServiceChrNotification.CHRON + task.id, ServiceChrNotification.class);
 
-                        if (totalSecBackwards == 0 || totalSecBackwards < 0) {
+                        if (missingSeconds == 0 || missingSeconds < 0) {
                             //se envía broadcast para cerrar la activity y se cierra la notificación.
                             sendBroadcast(new Intent("com.hmkcode.android.CLOSE_CRONO_ACTIVITY"));
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(FrmChronometer.this.NOTIFICATION_SERVICE);
@@ -131,7 +152,7 @@ public class FrmChronometer extends AppCompatActivity {
         });
 
         //PARA EL BROADCAST
-        myReceiver = new CloseChronoBcastReceiver();
+        closeChronoBCastReceiver = new CloseChronoBcastReceiver();
         intentFilter = new IntentFilter("com.hmkcode.android.CLOSE_CRONO_ACTIVITY");
 
     }
@@ -148,26 +169,27 @@ public class FrmChronometer extends AppCompatActivity {
     }
 
     private void setTimer() {
-        totalSec = ((DateUtils.getTimeOnCurrTimeZone(new Date()) - obj.begDate.getTime()) + lastWholeTime) / 1000l;//ojo
-        totalSecBackwards = (targetTime * 60) - totalSec;
-        hours = (int) totalSecBackwards / 3600;
-        min = (int) (totalSecBackwards % 3600) / 60;
-        sec = (int) ((totalSecBackwards % 3600) % 60);
+        long totalSec = ((new Date().getTime() - span.begDate.getTime()) + totalTime) / 1000l;
+        missingSeconds = (task.chrono * 60) - totalSec;
 
-        if (totalSecBackwards >= 0) {
+        int hours = (int) missingSeconds / 3600;
+        int min = (int) (missingSeconds % 3600) / 60;
+        int sec = (int) ((missingSeconds % 3600) % 60);
+
+        if (missingSeconds >= 0) {
             txtTimer.setText((hours < 10 ? "0" : "") + hours + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec); //cambia la etiqueta del cronómetro
-            if (((totalSec / 60f) * 100f / targetTime) <= 100f) { //si el tiempo no está completo
-                pgBar.setProgress((int) ((totalSec / 60f) * 100f) / targetTime);
-                percent.setText(((int) ((totalSec / 60f) * 100f / targetTime)) + "%");
+            if (((totalSec / 60f) * 100f / task.chrono) <= 100f) { //si el tiempo no está completo
+                pgBar.setProgress((int) ((totalSec / 60f) * 100f) / task.chrono);
+                txtPercent.setText(((int) ((totalSec / 60f) * 100f / task.chrono)) + "%");
             } else {
                 pgBar.setProgress(100);
-                percent.setText((100) + "%");
+                txtPercent.setText((100) + "%");
             }
         }
-        if (totalSecBackwards <= 0) {
-            play.setImageResource(R.drawable.pause); //botón y booleano del botón
-            playButton = false;
-            totalSecBackwards = 0;
+        if (missingSeconds <= 0) {
+            btnPlayPause.setImageResource(R.drawable.pause); //botón y booleano del botón
+            btnPlayStatus = PAUSE;
+            missingSeconds = 0;
             if (timer != null) {
                 timer.cancel();
             }
@@ -200,22 +222,21 @@ public class FrmChronometer extends AppCompatActivity {
         try {
             //valores iniciales
             SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
-            targetTime = new Task().select(db, activityId).chrono; //tiempo en minutos
-            obj = new Span().selectOpenedSpan(db, activityId) != null ? new Span().selectOpenedSpan(db, activityId) : new Span();
-            lastWholeTime = new Span().selectTotalTime(db, activityId, DateUtils.getTimeOnCurrTimeZone(new Date())) == 0 ? 0 : (Long) new Span().selectTotalTime(db, activityId, DateUtils.getTimeOnCurrTimeZone(new Date()));
-            obj.begDate = new Span().selectOpenedSpan(db, activityId) != null ? obj.begDate : DateUtils.getDateOnCurrTimeZone(new Date());
-            play.setImageResource(new Span().selectOpenedSpan(db, activityId) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
-            playButton = new Span().selectOpenedSpan(db, activityId) == null;
+            span = new Span().selectOpenedSpan(db, task.id) != null ? new Span().selectOpenedSpan(db, task.id) : new Span();
+            totalTime = new Span().selectTotalTime(db, task.id, new Date().getTime()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date().getTime());
+            span.begDate = new Span().selectOpenedSpan(db, task.id) != null ? span.begDate : new Date();
+            btnPlayPause.setImageResource(new Span().selectOpenedSpan(db, task.id) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
+            btnPlayStatus = new Span().selectOpenedSpan(db, task.id) == null ? 1 : 0;
 
 
-            if (new Span().selectOpenedSpan(db, activityId) != null) {
+            if (new Span().selectOpenedSpan(db, task.id) != null) {
                 timer = new Timer();
                 timer.scheduleAtFixedRate(getTimerTask(), 0, (long) 1000);
             }
             BaseHelper.tryClose(db);
             setTimer();
 
-            registerReceiver(myReceiver, intentFilter);
+            registerReceiver(closeChronoBCastReceiver, intentFilter);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(FrmChronometer.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -229,7 +250,7 @@ public class FrmChronometer extends AppCompatActivity {
         if (timer != null) {
             timer.cancel();
         }
-        unregisterReceiver(myReceiver);
+        unregisterReceiver(closeChronoBCastReceiver);
     }
 }
 
