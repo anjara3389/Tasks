@@ -22,7 +22,7 @@ public class Statistics {
     //El periodo entero o hasta el día actual
     public int until;
     //Constantes para until
-    public static final int UNTIL_LAST_dAY_OF_PERIOD = 0;  //hasta el último día de la semana o mes
+    public static final int UNTIL_LAST_DAY_OF_PERIOD = 0;  //hasta el último día de la semana o mes
     public static final int UNTIL_TODAY = 1; //Hasta el día de hoy
 
     //Día hasta el que se cuenta las estadísticas
@@ -63,11 +63,11 @@ public class Statistics {
     */
     public Date getUntilDay(int period, Long monthYear) {
         if (period == WEEKLY) {
-            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_dAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(WEEKLY, new Date())) : null;
+            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_DAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(WEEKLY, new Date())) : null;
         } else if (period == MONTLY) {
             Date date = new Date();
             date.setTime(monthYear);
-            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_dAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(MONTLY, date)) : null;
+            return until == UNTIL_TODAY ? DateUtils.trimDate(new Date()) : until == UNTIL_LAST_DAY_OF_PERIOD ? DateUtils.trimDate(DateUtils.getLastDate(MONTLY, date)) : null;
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class Statistics {
     private Date getSinceDay() {
 
         //Fecha de creación de la tarea con hora en 00:00:00
-        Long creationDay = DateUtils.trimDateLong(task.sinceDate.getTime());
+        Long creationDay = DateUtils.trimDate(task.sinceDate).getTime();
 
         //Fecha hasta la que se cuenta la estadística con hora en 00:00:00
         Long untilDayLong = untilDay.getTime();
