@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.adapters;
+package proyectohabitos.example.neita.habitos.Task.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 
-public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
+public class AdapterAllTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
     private ArrayList<LstTask> dataSet;
     Context mContext;
@@ -31,7 +31,7 @@ public class CustomAdapterAllTasks extends ArrayAdapter<LstTask> implements View
 
     }
 
-    public CustomAdapterAllTasks(ArrayList<LstTask> data, Context context) {
+    public AdapterAllTasks(ArrayList<LstTask> data, Context context) {
         super(context, R.layout.row_all_tasks, data);
         this.dataSet = data;
         this.mContext = context;

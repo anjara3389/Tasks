@@ -31,8 +31,11 @@ public class Task {
     public boolean v;
     public boolean s;
     public boolean d;
+    /*Fecha de creación de la tarea*/
     public Date sinceDate;
+    /*Hora de recordatorio para realizar la tarea*/
     public Date reminder;
+    /*Tiempo en minutos que se utilizará para realizar la tarea con el cronómetro*/
     public Long chrono;
 
     public Task() {
@@ -121,13 +124,12 @@ public class Task {
 
     /*Consulta si una tarea se realizó el dia dado
     chrono es null si no tiene crono
-    dateTime debe ser dado dandole la zona horaria correspondiente
      */
     public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Long dateTime) throws Exception {
         if (chrono == null) { //si no tiene crono
             SQLiteQuery sq = new SQLiteQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
-                    "WHERE s.activity_id=" + activityId + " AND CAST((strftime('%s',s.beg_date)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
+                    "WHERE s.activity_id=" + activityId + " AND date(s.beg_date) = date(?1)").setParam(1, new Date(dateTime));
             Object[][] data = sq.getRecords(db);
             for (int i = 0; i < data.length; i++) {
                 return sq.getAsInteger(data[i][0]) == 1;
@@ -142,15 +144,15 @@ public class Task {
     public static void checkTaskAsDone(int id, SQLiteDatabase db) {
         Span span = new Span();
         span.activityId = id;
-        span.begDate = DateUtils.getDateOnCurrTimeZone(new Date());
-        span.endDate = DateUtils.getDateOnCurrTimeZone(new Date());
+        span.begDate = new Date();
+        span.endDate = new Date();
         span.insert(db);
         BaseHelper.tryClose(db);
     }
 
     //se descheckea una tarea sin crono (como no realizada en el día)
     public static void uncheckTask(int Id, SQLiteDatabase db) {
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((strftime('%s',beg_date)/86400) as int)=" + (int) (DateUtils.getTimeOnCurrTimeZone(new Date()) / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((strftime('%s',beg_date)/86400) as int)=" + (int) (new Date().getTime() / 86400000);
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -174,13 +176,13 @@ public class Task {
             for (int i = 0; i < 8; i++) {
                 if (sq.getAsInteger(obj[day]) == 1) {
                     //se le quita la fecha y solo se deja la hora
-                    long rawDate = DateUtils.getTimeOnCurrTimeZoneDT(cal.getTimeInMillis());
+                    long rawDate = cal.getTimeInMillis();
                     long remindDate = DateUtils.trimDateLong(rawDate);//La fecha del reminder sin la hor
                     Date remind =  SQLiteQuery.dateTimeFormat.parse(sq.getAsString(obj[7]));
                     Calendar cal3 = new GregorianCalendar();
                     cal3.setTime(remind);
                     long remindDateTime = remindDate + (cal3.get(Calendar.HOUR_OF_DAY) * 3600000) + (cal3.get(Calendar.MINUTE) * 60000) + (cal3.get(Calendar.SECOND) * 1000); //fecha(remindDate) y hora(c.getLong(7))
-                    if ((remindDateTime >= DateUtils.getTimeOnCurrTimeZone(new Date()))) {
+                    if ((remindDateTime >= new Date().getTime())) {
                         return remindDateTime;
                     }
                 }

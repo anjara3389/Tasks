@@ -88,7 +88,7 @@ public class FrgMonthStatistics extends Fragment {
             Val rta = new Val();
             SQLiteDatabase db = BaseHelper.getReadable(ctx);
             rta.month = (int) new Statistics(taskId, Statistics.UNTIL_TODAY, month, db).getStatistics();
-            rta.whole = (int) new Statistics(taskId, Statistics.UNTIL_LAST_dAY_OF_PERIOD, month, db).getStatistics();
+            rta.whole = (int) new Statistics(taskId, Statistics.UNTIL_LAST_DAY_OF_PERIOD, month, db).getStatistics();
             db.close();
             return rta;
         }

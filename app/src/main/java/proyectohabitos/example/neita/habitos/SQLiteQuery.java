@@ -131,6 +131,11 @@ public class SQLiteQuery {
         return o.toString();
     }
 
+    public SQLiteQuery setParam(int par, Object val) {
+        this.query = setParam(query, par, val);
+        return this;
+    }
+
     public static String setParam(String query, int par, Object val) {
         String v = null;
         if (val != null) {

@@ -43,7 +43,6 @@
             android:name=".Statistics.FrmStatistics"
             android:parentActivityName=".Task.FrmTasks"
             android:screenOrientation="portrait" />
-        <activity android:name=".DialogFragments.NumPickersDialogFragment" />
         <!-- servicio conectado a la clase alarmTaskService para programar una alarma del cronometro -->
         <service
             android:name=".Chronometer.Services.ChronometerNotification.ServiceChrNotification"
@@ -99,8 +98,6 @@
                 <action android:name="com.hmkcode.android.CLOSE_CRONO_ACTIVITY" />
             </intent-filter>
         </receiver>
-        <activity android:name=".Statistics.FrgMonthStatistics"></activity>
-
         <!-- Here we specify that we want to send BOOT_COMPLETED to our
      AutoStart class -->
 

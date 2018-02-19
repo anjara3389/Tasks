@@ -31,8 +31,8 @@ import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Reminder.AlarmNotification.Services.ServiceAlarmNotification;
 import proyectohabitos.example.neita.habitos.Result.Result;
 import proyectohabitos.example.neita.habitos.Result.Services.ServiceCreateDailyResult;
-import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgAllTasks;
-import proyectohabitos.example.neita.habitos.Task.FragmentsTasks.FrgTodayTasks;
+import proyectohabitos.example.neita.habitos.Task.fragments.FrgAllTasks;
+import proyectohabitos.example.neita.habitos.Task.fragments.FrgTodayTasks;
 
 public class FrmTasks extends AppCompatActivity {
 //Ésta actividad contiene dos fragmentos: FrgAllTasks,FrgTodayTasks que corresponden a dos pestañas(Hoy,Todas)

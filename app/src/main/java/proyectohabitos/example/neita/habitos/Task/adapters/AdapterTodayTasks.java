@@ -1,4 +1,4 @@
-package proyectohabitos.example.neita.habitos.adapters;
+package proyectohabitos.example.neita.habitos.Task.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import proyectohabitos.example.neita.habitos.R;
 import proyectohabitos.example.neita.habitos.Task.LstTask;
 
-public class CustomAdapterTodayTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
+public class AdapterTodayTasks extends ArrayAdapter<LstTask> implements View.OnClickListener {
 
     private ArrayList<LstTask> dataSet;
     Context mContext;
@@ -25,7 +25,7 @@ public class CustomAdapterTodayTasks extends ArrayAdapter<LstTask> implements Vi
         ImageView img;
     }
 
-    public CustomAdapterTodayTasks(ArrayList<LstTask> data, Context context) {
+    public AdapterTodayTasks(ArrayList<LstTask> data, Context context) {
         super(context, R.layout.row_today_tasks, data);
         this.dataSet = data;
         this.mContext = context;

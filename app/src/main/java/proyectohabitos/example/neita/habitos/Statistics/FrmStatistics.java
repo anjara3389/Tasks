@@ -52,7 +52,7 @@ public class FrmStatistics extends AppCompatActivity {
             SQLiteDatabase db = BaseHelper.getReadable(FrmStatistics.this);
 
             int weeklyStatistics = (int) new Statistics(taskId, Statistics.UNTIL_TODAY, null, db).getStatistics();
-            int wholeWeekStatistics = (int) new Statistics(taskId, Statistics.UNTIL_LAST_dAY_OF_PERIOD, null, db).getStatistics();
+            int wholeWeekStatistics = (int) new Statistics(taskId, Statistics.UNTIL_LAST_DAY_OF_PERIOD, null, db).getStatistics();
             weekBar.setProgress(weeklyStatistics);
             txtPorWeek.setText(weeklyStatistics + "%");
 

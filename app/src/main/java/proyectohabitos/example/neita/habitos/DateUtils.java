@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 public class DateUtils {
 
@@ -15,7 +14,7 @@ public class DateUtils {
     //==============================TIME ZONE====================================================
 
     //coje la hora de la fecha dada de Grenwitch y la convierte a la de la zona horaria correspondiente
-    public static long getTimeOnCurrTimeZone(Date date) {
+   /* public static long getTimeOnCurrTimeZone(Date date) {
         return date.getTime() + TimeZone.getDefault().getOffset(date.getTime());
     }
 
@@ -33,6 +32,7 @@ public class DateUtils {
         date2.setTime(date.getTime() + TimeZone.getDefault().getOffset(date.getTime()));
         return date2;
     }
+    */
 
 
     //============================GREGORIAN CALENDAR===============================================
@@ -83,7 +83,7 @@ public class DateUtils {
     *primer día del mes: v=1
     *primer día del año: v=2
      */
-    public static Date getFirstDay(Integer period, Date date) {
+    public static Date getFirstDay(int period, Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
 
@@ -101,7 +101,7 @@ public class DateUtils {
    *primer día de la semana: v=0
    *primer día del mes: v=1
     */
-    public static Date getLastDate(Integer period, Date date) {
+    public static Date getLastDate(int period, Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
         if (period == WEEK) { //UTLIMO DIA DE LA SEMANA
@@ -114,12 +114,12 @@ public class DateUtils {
 
     /*Retorna un arraylist con las fechas de todos los días de la semana correspondiente a la fecha dada.
      */
-    public static ArrayList<Date> getDatesOfWeek(Date date) {
+    public static Date[] getDatesOfWeek(Date date) {
         Calendar cal = new GregorianCalendar();
-        cal.setTime(DateUtils.getFirstDay(0, date));
-        ArrayList<Date> datesCurrWeek = new ArrayList<>();
+        cal.setTime(DateUtils.getFirstDay(WEEK, date));
+        Date[] datesCurrWeek = new Date[7];
         for (int i = 0; i < 7; i++) { //llena todas las fechas de los días de la semana actual en datesCurrWeek
-            datesCurrWeek.add(cal.getTime());
+            datesCurrWeek[i] = cal.getTime();
             cal.add(Calendar.DAY_OF_YEAR, 1);
         }
         return datesCurrWeek;
@@ -128,9 +128,9 @@ public class DateUtils {
     /*Retorna la respuesta de si date se encuentra dentro de la semana dateWeek
      */
     public static boolean isDateIntoWeek(Date dateWeek, Date date) {
-        ArrayList<Date> datesWeek = getDatesOfWeek(dateWeek);
-        for (int i = 0; i < datesWeek.size(); i++) {
-            if (datesWeek.get(i).equals(date)) {
+        Date[] datesWeek = getDatesOfWeek(dateWeek);
+        for (int i = 0; i < datesWeek.length; i++) {
+            if (datesWeek[i].equals(date)) {
                 return true;
             }
         }
@@ -138,7 +138,6 @@ public class DateUtils {
     }
 
     /*retorna la semana o el mes
-
      */
     public static Long getWeekOrMonth(Long dateTime, int period) {
         if (period == WEEK) {

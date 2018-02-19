@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import proyectohabitos.example.neita.habitos.BaseHelper;
-import proyectohabitos.example.neita.habitos.DateUtils;
 import proyectohabitos.example.neita.habitos.DialogFragments.NumPickersDialogFragment;
 import proyectohabitos.example.neita.habitos.DialogFragments.YesNoDialogFragment;
 import proyectohabitos.example.neita.habitos.R;
@@ -340,7 +339,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             db = BaseHelper.getWritable(this);
 
             if (obj.reminder != null && Task.getNextAlarm(db, id) != null) {
-                ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - DateUtils.getTimeOnCurrTimeZone(new Date())) / 1000), this, id);
+                ServiceAlarmNotification.scheduleNotificationFire((int) ((Task.getNextAlarm(db, id) - new Date().getTime()) / 1000), this, id);
             }
             BaseHelper.tryClose(db);
             Toast.makeText(this, isNew ? "Registro insertado" : "Registro actualizado", Toast.LENGTH_SHORT).show();

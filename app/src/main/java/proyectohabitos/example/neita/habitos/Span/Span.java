@@ -80,7 +80,7 @@ public class Span {
         SQLiteQuery sq = new SQLiteQuery("SELECT SUM(strftime('%s',s.end_date)-strftime('%s',s.beg_date)) " +
                 "FROM span s " +
                 "WHERE s.activity_id=" + activityId + " " +
-                "AND CAST((strftime('%s',s.beg_date)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
+                "AND CAST((strftime('%s',s.beg_date)/86400) as int)=" + (int) (dateTime / 86400000));
         return sq.getLong(db) != null ? sq.getLong(db) * 1000 : 0L;
     }
 }

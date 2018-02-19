@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-//SERVICIO QUE FUNCIONA ENTRE EL SERVICIO DE LA NOTIFICACIÓN DEL CRONOMETRO Y EL DE LA ALARMA... CUANDO SE PRESIONA EL BOTÓN DE LA NOTIFICACIÓN
+//SERVICIO QUE FUNCIONA ENTRE EL SERVICIO DE LA NOTIFICACIÓN DEL CRONOMETRO Y EL DE LA ALARMA CUANDO SE PRESIONA EL BOTÓN DE LA NOTIFICACIÓN
 //se necesita agregar el servicio en el manifest
 public class ServiceChrButtonNotific extends Service {
     public ServiceChrButtonNotific() {

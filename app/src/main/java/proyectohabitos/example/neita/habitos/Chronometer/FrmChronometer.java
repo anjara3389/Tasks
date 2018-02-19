@@ -74,6 +74,7 @@ public class FrmChronometer extends AppCompatActivity {
         pgBar = (com.mikhaellopez.circularprogressbar.CircularProgressBar) findViewById(R.id.chrono_progress_bar);
         pgBar.setProgress(0);
         txtPercent = (TextView) findViewById(R.id.chrono_percent);
+
         try {
             SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
             Bundle bundle = getIntent().getExtras();
