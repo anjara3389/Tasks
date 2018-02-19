@@ -44,7 +44,7 @@ public class FrmChronometer extends AppCompatActivity {
     /*tiempo total de todos los spans anteriores del día sumados*/
     private Long totalTime = null;
 
-    /*tiempo faltante para completar el cronómetro*/
+    /*tiempo faltante para completar el tiempo del cronómetro*/
     private long missingSeconds;
 
     /*temporizador*/
