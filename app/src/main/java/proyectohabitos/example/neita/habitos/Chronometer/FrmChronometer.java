@@ -99,7 +99,7 @@ public class FrmChronometer extends AppCompatActivity {
 
                             SQLiteDatabase db = BaseHelper.getWritable(FrmChronometer.this);
                             timer = new Timer();
-                            totalTime = new Span().selectTotalTime(db, task.id, new Date().getTime()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date().getTime());
+                            totalTime = new Span().selectTotalTime(db, task.id, new Date()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date());
                             span.begDate = Span.selectOpenedSpan(db, task.id) != null ? span.begDate : new Date();//ojo
                             span.activityId = task.id;
                             span.endDate = null;
@@ -224,7 +224,7 @@ public class FrmChronometer extends AppCompatActivity {
             //valores iniciales
             SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
             span = new Span().selectOpenedSpan(db, task.id) != null ? new Span().selectOpenedSpan(db, task.id) : new Span();
-            totalTime = new Span().selectTotalTime(db, task.id, new Date().getTime()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date().getTime());
+            totalTime = new Span().selectTotalTime(db, task.id, new Date()) == 0 ? 0 : (Long) new Span().selectTotalTime(db, task.id, new Date());
             span.begDate = new Span().selectOpenedSpan(db, task.id) != null ? span.begDate : new Date();
             btnPlayPause.setImageResource(new Span().selectOpenedSpan(db, task.id) != null ? R.drawable.pause : R.drawable.play); //botón y booleano del botón
             btnPlayStatus = new Span().selectOpenedSpan(db, task.id) == null ? 1 : 0;

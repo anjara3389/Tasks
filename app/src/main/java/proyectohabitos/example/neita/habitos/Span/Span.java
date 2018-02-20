@@ -76,11 +76,11 @@ public class Span {
     }
 
     //Devuelve la suma de los tiempos de una actividad en el día dado
-    public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Long dateTime) throws Exception {
+    public Long selectTotalTime(SQLiteDatabase db, Integer activityId, Date date) throws Exception {
         SQLiteQuery sq = new SQLiteQuery("SELECT SUM(strftime('%s',s.end_date)-strftime('%s',s.beg_date)) " +
                 "FROM span s " +
                 "WHERE s.activity_id=" + activityId + " " +
-                "AND CAST((strftime('%s',s.beg_date)/86400) as int)=" + (int) (dateTime / 86400000));
+                "AND date(s.beg_date) = date(?1)").setParam(1, date);
         return sq.getLong(db) != null ? sq.getLong(db) * 1000 : 0L;
     }
 }

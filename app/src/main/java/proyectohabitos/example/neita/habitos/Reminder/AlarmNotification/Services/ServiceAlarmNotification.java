@@ -45,7 +45,7 @@ public class ServiceAlarmNotification extends GcmTaskService {
         try {
             SQLiteDatabase db = BaseHelper.getReadable(this);
             Task task = new Task().select(db, bundle.getInt("activityId"));
-            if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, new Date().getTime())) { //si la tarea no está realizada hoy
+            if (!Task.getIfTaskIsDoneDay(db, task.id, task.chrono, new Date())) { //si la tarea no está realizada hoy
                 //se lanza la notificación
                 fireNotification(task.name);
                 //se inicia el sonido

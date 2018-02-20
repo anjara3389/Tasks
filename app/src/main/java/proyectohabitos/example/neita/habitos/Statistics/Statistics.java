@@ -42,6 +42,10 @@ public class Statistics {
     /*Da el porcentaje de realización de una tarea
     */
     public static double getStatistics() throws Exception {
+        System.out.println("daysResult" + daysResults.size());
+        System.out.println("DoneDays" + countDoneDays());
+
+
         return daysResults.size() != 0 ? countDoneDays() * 100 / daysResults.size() : 0;
     }
 

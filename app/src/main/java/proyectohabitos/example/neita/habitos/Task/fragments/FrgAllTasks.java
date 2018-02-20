@@ -80,7 +80,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                     SQLiteDatabase db = BaseHelper.getWritable(getContext());
                     if (Task.isTodayTask(db, posit)) {
                         if (lstTask.getChrono() == null) {
-                            Boolean isDoneTaskOnDay = Task.getIfTaskIsDoneDay(db, posit, null, new Date().getTime());
+                            Boolean isDoneTaskOnDay = Task.getIfTaskIsDoneDay(db, posit, null, new Date());
                             if (isDoneTaskOnDay != null) {
                                 if (isDoneTaskOnDay) {
                                     checkTask(false, db);
@@ -160,7 +160,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
                 //si se realizó la tarea en una fecha por cada una de las fechas de la semana
                 for (int j = 0; j < datesCurrWeek.length; j++) {
                     if (sq.getAsInteger(data2[i][j + 3]) == 1) { //si hoy tenía que hacerse la actividad
-                        if (Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][10] == null ? null : sq.getAsLong(data2[i][10]), datesCurrWeek[j].getTime()) != null && Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][10] == null ? null : sq.getAsLong(data2[i][10]), datesCurrWeek[j].getTime())) {
+                        if (Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][10] == null ? null : sq.getAsLong(data2[i][10]), datesCurrWeek[j]) != null && Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][10] == null ? null : sq.getAsLong(data2[i][10]), datesCurrWeek[j])) {
                             doneDays.set(DateUtils.getDayInt(datesCurrWeek[j]), true); //Si se realizó la tarea el día indicado se cambia el valor de ese día a true
                         } else {
                             doneDays.set(j, false);//si no re realizó la tarea el día indicado se cambia a false
@@ -185,7 +185,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
             SQLiteDatabase db = BaseHelper.getReadable(getContext());
             if (Task.isTodayTask(db, posit)) {
                 if (lstTask.getChrono() == null) {
-                    if (Task.getIfTaskIsDoneDay(db, posit, null, new Date().getTime())) {
+                    if (Task.getIfTaskIsDoneDay(db, posit, null, new Date())) {
                         menu.add(1, 0, 0, "Desmarcar");
                     } else {
                         menu.add(1, 1, 0, "Marcar");
@@ -260,7 +260,7 @@ public class FrgAllTasks extends Fragment implements YesNoDialogFragment.MyDialo
     }
 
     private void startChrono(SQLiteDatabase db) throws Exception {
-        if (!Task.getIfTaskIsDoneDay(db, posit, (long) lstTask.getChrono(), new Date().getTime())) {
+        if (!Task.getIfTaskIsDoneDay(db, posit, (long) lstTask.getChrono(), new Date())) {
             if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
                 Intent i = new Intent(getActivity(), FrmChronometer.class);
                 i.putExtra("id", posit);

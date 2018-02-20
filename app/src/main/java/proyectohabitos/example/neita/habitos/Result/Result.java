@@ -58,12 +58,13 @@ public class Result {
 
     public static void insertResultToday(SQLiteDatabase db) throws Exception {
         ArrayList<Task> task = Task.getTasks(db);
+        System.out.println("RENACUAJO" + task.size());
         for (int i = 0; i < task.size(); i++) {
             Result result = new Result();
             result.day = new Date();
             result.activityId = task.get(i).id;
             System.out.println(task.get(i).chrono + "CHRONOOOOOOO");
-            result.done = Task.getIfTaskIsDoneDay(db, task.get(i).id, task.get(i).chrono, new Date().getTime());
+            result.done = Task.getIfTaskIsDoneDay(db, task.get(i).id, task.get(i).chrono, new Date());
             result.insert(db);
         }
         selectResults(db);
@@ -74,10 +75,10 @@ public class Result {
    chrono es null si no tiene crono
    dateTime debe ser dado dandole la zona horaria correspondiente
     */
-    public static Boolean getIfTaskIsDoneDayResult(SQLiteDatabase db, int activityId, Long dateTime) throws Exception {
+    public static Boolean getIfTaskIsDoneDayResult(SQLiteDatabase db, int activityId, Date dateTime) throws Exception {
         SQLiteQuery sq = new SQLiteQuery("SELECT done " +
                 "FROM result r " +
-                "WHERE r.activity_id=" + activityId + " AND CAST((strftime('%s',r.day)/86400) as int)=" + (int) (dateTime / 86400000));//ojo
+                "WHERE r.activity_id=" + activityId + " AND date(r.day) = date(?1)").setParam(1, dateTime);
         Long ans = sq.getLong(db);
         if (ans != null) {
             return ans == 1;

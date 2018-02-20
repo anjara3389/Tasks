@@ -38,8 +38,9 @@ public class ServiceCreateDailyResult extends GcmTaskService {
             Result.insertResultToday(db);
             BaseHelper.tryClose(db);
             GregorianCalendar gc = DateUtils.getGregCalendar(new Date());
-            gc.set(Calendar.HOUR_OF_DAY, 24);
-            gc.set(Calendar.MINUTE, 0);
+            gc.add(Calendar.DAY_OF_YEAR, 1);
+            gc.set(Calendar.HOUR_OF_DAY, 23);
+            gc.set(Calendar.MINUTE, 58);
             gc.set(Calendar.SECOND, 0);
             gc.set(Calendar.MILLISECOND, 0);
             scheduleInsertResultToday(this.getBaseContext(), (gc.getTimeInMillis() - System.currentTimeMillis()) / 1000);
@@ -62,7 +63,7 @@ public class ServiceCreateDailyResult extends GcmTaskService {
         GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(cnxt);
         OneoffTask task = new OneoffTask.Builder()
                 .setService(ServiceCreateDailyResult.class)
-                .setExecutionWindow(seconds - 1, seconds)
+                .setExecutionWindow(seconds - 10, seconds)
                 .setRequiredNetwork(NETWORK_STATE_ANY)
                 .setPersisted(true)
                 .setRequiresCharging(false)

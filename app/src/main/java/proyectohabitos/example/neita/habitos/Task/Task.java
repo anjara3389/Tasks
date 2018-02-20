@@ -125,11 +125,11 @@ public class Task {
     /*Consulta si una tarea se realizó el dia dado
     chrono es null si no tiene crono
      */
-    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Long dateTime) throws Exception {
+    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Date dateTime) throws Exception {
         if (chrono == null) { //si no tiene crono
             SQLiteQuery sq = new SQLiteQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
-                    "WHERE s.activity_id=" + activityId + " AND date(s.beg_date) = date(?1)").setParam(1, new Date(dateTime));
+                    "WHERE s.activity_id=" + activityId + " AND date(s.beg_date) = date(?1)").setParam(1, dateTime);
             Object[][] data = sq.getRecords(db);
             for (int i = 0; i < data.length; i++) {
                 return sq.getAsInteger(data[i][0]) == 1;
@@ -152,7 +152,7 @@ public class Task {
 
     //se descheckea una tarea sin crono (como no realizada en el día)
     public static void uncheckTask(int Id, SQLiteDatabase db) {
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND CAST((strftime('%s',beg_date)/86400) as int)=" + (int) (new Date().getTime() / 86400000);
+        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND date(beg_date)=date('now','localtime')";
         db.execSQL(sql);
         BaseHelper.tryClose(db);
     }
@@ -205,7 +205,7 @@ public class Task {
         ArrayList<Boolean> daysOfWeek = new ArrayList(Arrays.asList(task.d, task.l, task.m, task.x, task.j, task.v, task.s));
         while (!begCal.getTime().after(endCal.getTime())) {
             if (daysOfWeek.get(DateUtils.getDayInt(begCal.getTime()))) { //si la tarea tiene que hacerse el día
-                doneAndNotDoneDays.add(doneAndNotDoneDays.size(), Result.getIfTaskIsDoneDayResult(db, taskId, begCal.getTime().getTime())); //añade un true a la lista si la tarea se realizó, sino un false
+                doneAndNotDoneDays.add(doneAndNotDoneDays.size(), Result.getIfTaskIsDoneDayResult(db, taskId, begCal.getTime())); //añade un true a la lista si la tarea se realizó, sino un false
             }
             begCal.add(Calendar.DAY_OF_YEAR, +1);//se incrementa la fecha del calendario en 1 día
         }
