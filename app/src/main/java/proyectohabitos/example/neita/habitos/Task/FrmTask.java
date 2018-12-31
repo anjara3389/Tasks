@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -91,7 +90,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
         imgRing = (ImageView) findViewById(R.id.activity_add_task_ring);
         imgTemp = (ImageView) findViewById(R.id.activity_add_task_image_chrono);
         scroll = (ScrollView) findViewById(R.id.frm_task_scroll);
-        borrarPruebaFecha = (TextView) findViewById(R.id.prueba_fecha_inicio);
+        //borrarPruebaFecha = (TextView) findViewById(R.id.prueba_fecha_inicio);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -121,14 +120,14 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                     imgTemp.setVisibility(View.VISIBLE);
                     chrono.setText(chron / 60 + " Hrs " + chron % 60 + " Min");
                 }
-                borrarPruebaFecha.setVisibility(View.VISIBLE);//PRUEBA
+                // borrarPruebaFecha.setVisibility(View.VISIBLE);//PRUEBA
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(FrmTask.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
         } else {
-            borrarPruebaFecha.setVisibility(View.GONE);//PRUEBA
+            //borrarPruebaFecha.setVisibility(View.GONE);//PRUEBA
         }
 
         dom.setOnClickListener(checkUncheckDay(dom));
@@ -314,14 +313,14 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
             obj.d = isCheckedDay(dom);
             obj.sinceDate = new Date();
 
-            obj.reminder = remind != 0 ? new Date(remind) : null; //se guarda la hora del reminder con la fecha que sea
+            obj.reminder = remind != 0 && switchRemind.isChecked() ? new Date(remind) : null; //se guarda la hora del reminder con la fecha que sea
             obj.chrono = !switchChrono.isChecked() || chron == null ? null : chron;
 
             if (isNew) {
                 id = obj.insert(db);
                 BaseHelper.tryClose(db);
             } else {
-                if (!borrarPruebaFecha.getText().toString().trim().isEmpty()) {//PRUEBA
+                /*if (!borrarPruebaFecha.getText().toString().trim().isEmpty()) {//PRUEBA
                     SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
                     try {
                         Date date = f.parse(borrarPruebaFecha.getText().toString());
@@ -330,7 +329,7 @@ public class FrmTask extends AppCompatActivity implements YesNoDialogFragment.My
                         e.printStackTrace();
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
                 obj.update(db, id);
                 //Se cancela la programación de los servicios
                 GcmNetworkManager mGcmNetworkManager = GcmNetworkManager.getInstance(FrmTask.this);

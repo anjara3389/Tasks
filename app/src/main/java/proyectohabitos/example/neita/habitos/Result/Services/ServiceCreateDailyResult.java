@@ -35,7 +35,7 @@ public class ServiceCreateDailyResult extends GcmTaskService {
         try {
             System.out.println("GUARDAAANDO YEY///");
             SQLiteDatabase db = BaseHelper.getReadable(this.getBaseContext());
-            Result.insertResultToday(db);
+            Result.insertTodayResult(db);
             BaseHelper.tryClose(db);
             GregorianCalendar gc = DateUtils.getGregCalendar(new Date());
             gc.add(Calendar.DAY_OF_YEAR, 1);

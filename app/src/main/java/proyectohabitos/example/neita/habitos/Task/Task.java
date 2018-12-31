@@ -93,7 +93,7 @@ public class Task {
         return null;
     }
 
-    public static ArrayList<Task> getTasks(SQLiteDatabase db) throws Exception {
+    public static ArrayList<Task> getTodayTasks(SQLiteDatabase db) throws Exception {
         ArrayList<Task> tasks = new ArrayList();
 
         SQLiteQuery sq = new SQLiteQuery("SELECT id,name,d,l,m,x,j,v,s,since_date,reminder,chrono " +
@@ -101,7 +101,9 @@ public class Task {
         Object[][] data = sq.getRecords(db);
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
-                tasks.add(new Task(sq.getAsInteger(data[i][0]), (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])), sq.getAsString(data[i][10]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])) : null, data[i][11] == null ? null : sq.getAsLong(data[i][11])));
+                if (isTodayTask(db, sq.getAsInteger(data[i][0]))) {
+                    tasks.add(new Task(sq.getAsInteger(data[i][0]), (String) data[i][1], sq.getAsInteger(data[i][2]) == 1, sq.getAsInteger(data[i][3]) == 1, sq.getAsInteger(data[i][4]) == 1, sq.getAsInteger(data[i][5]) == 1, sq.getAsInteger(data[i][6]) == 1, sq.getAsInteger(data[i][7]) == 1, sq.getAsInteger(data[i][8]) == 1, SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][9])), sq.getAsString(data[i][10]) != null ? SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[i][10])) : null, data[i][11] == null ? null : sq.getAsLong(data[i][11])));
+                }
             }
             return tasks;
         }
@@ -125,7 +127,7 @@ public class Task {
     /*Consulta si una tarea se realizó el dia dado
     chrono es null si no tiene crono
      */
-    public static Boolean getIfTaskIsDoneDay(SQLiteDatabase db, int activityId, Long chrono, Date dateTime) throws Exception {
+    public static Boolean isDoneOnTheDay(SQLiteDatabase db, int activityId, Long chrono, Date dateTime) throws Exception {
         if (chrono == null) { //si no tiene crono
             SQLiteQuery sq = new SQLiteQuery("SELECT COUNT(*)>0 " +
                     "FROM span s " +
@@ -147,13 +149,21 @@ public class Task {
         span.begDate = new Date();
         span.endDate = new Date();
         span.insert(db);
+
+        Result result = new Result();
+        result.activityId = id;
+        result.day = new Date();
+        result.done = true;
+        result.insert(db);
         BaseHelper.tryClose(db);
     }
 
     //se descheckea una tarea sin crono (como no realizada en el día)
-    public static void uncheckTask(int Id, SQLiteDatabase db) {
-        String sql = "DELETE FROM span WHERE activity_id=" + Id + " AND date(beg_date)=date('now','localtime')";
-        db.execSQL(sql);
+    public static void uncheckTask(int id, SQLiteDatabase db) throws Exception {
+        db.execSQL("DELETE FROM span WHERE activity_id=" + id + " AND date(beg_date)=date('now','localtime')");
+        Result result = new Result().selectTodayResult(id, db);
+        result.done = false;
+        result.update(db, result.idResult);
         BaseHelper.tryClose(db);
     }
 
@@ -178,7 +188,7 @@ public class Task {
                     //se le quita la fecha y solo se deja la hora
                     long rawDate = cal.getTimeInMillis();
                     long remindDate = DateUtils.trimDateLong(rawDate);//La fecha del reminder sin la hor
-                    Date remind =  SQLiteQuery.dateTimeFormat.parse(sq.getAsString(obj[7]));
+                    Date remind = SQLiteQuery.dateTimeFormat.parse(sq.getAsString(obj[7]));
                     Calendar cal3 = new GregorianCalendar();
                     cal3.setTime(remind);
                     long remindDateTime = remindDate + (cal3.get(Calendar.HOUR_OF_DAY) * 3600000) + (cal3.get(Calendar.MINUTE) * 60000) + (cal3.get(Calendar.SECOND) * 1000); //fecha(remindDate) y hora(c.getLong(7))

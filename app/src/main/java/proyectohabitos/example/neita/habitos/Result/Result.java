@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Date;
 
+import proyectohabitos.example.neita.habitos.BaseHelper;
 import proyectohabitos.example.neita.habitos.SQLiteQuery;
 import proyectohabitos.example.neita.habitos.Task.Task;
 
@@ -40,6 +41,20 @@ public class Result {
         return (int) db.insert("result", null, getValues());
     }
 
+    public Result selectTodayResult(int id, SQLiteDatabase db) throws Exception {
+        SQLiteQuery sq = new SQLiteQuery("SELECT id,day,activity_id,done FROM result WHERE activity_id=" + id + " AND date(day)=date('now','localtime')");
+        Object[] data = sq.getRecord(db);
+        if (data != null && data.length > 0) {
+            return new Result(sq.getAsInteger(data[0]), SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data[1])), sq.getAsInteger(data[3]), sq.getAsInteger(data[2]) == 1);
+        }
+        return null;
+    }
+
+    public void update(SQLiteDatabase db, Integer id) {
+        db.update("result", getValues(), " id=" + id + " ", null);
+        BaseHelper.tryClose(db);
+    }
+
     public static void selectResults(SQLiteDatabase db) throws Exception {
         SQLiteQuery sq = new SQLiteQuery("SELECT id,day,done,activity_id " +
                 "FROM result r ");
@@ -56,16 +71,16 @@ public class Result {
 
     }
 
-    public static void insertResultToday(SQLiteDatabase db) throws Exception {
-        ArrayList<Task> task = Task.getTasks(db);
-        System.out.println("RENACUAJO" + task.size());
+    public static void insertTodayResult(SQLiteDatabase db) throws Exception {
+        ArrayList<Task> task = Task.getTodayTasks(db);
         for (int i = 0; i < task.size(); i++) {
-            Result result = new Result();
-            result.day = new Date();
-            result.activityId = task.get(i).id;
-            System.out.println(task.get(i).chrono + "CHRONOOOOOOO");
-            result.done = Task.getIfTaskIsDoneDay(db, task.get(i).id, task.get(i).chrono, new Date());
-            result.insert(db);
+            if (!Task.isDoneOnTheDay(db, task.get(i).id, task.get(i).chrono, new Date())) {
+                Result result = new Result();
+                result.day = new Date();
+                result.activityId = task.get(i).id;
+                result.done = false;
+                result.insert(db);
+            }
         }
         selectResults(db);
 

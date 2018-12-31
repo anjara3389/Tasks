@@ -25,6 +25,7 @@ import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNot
 import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrNotification;
 import proyectohabitos.example.neita.habitos.Chronometer.Services.ChronometerNotification.ServiceChrSound;
 import proyectohabitos.example.neita.habitos.R;
+import proyectohabitos.example.neita.habitos.Result.Result;
 import proyectohabitos.example.neita.habitos.Span.Span;
 import proyectohabitos.example.neita.habitos.Task.Task;
 
@@ -169,7 +170,7 @@ public class FrmChronometer extends AppCompatActivity {
         return true;
     }
 
-    private void setTimer() {
+    private void setTimer() throws Exception {
         long totalSec = ((new Date().getTime() - span.begDate.getTime()) + totalTime) / 1000l;
         missingSeconds = (task.chrono * 60) - totalSec;
 
@@ -191,6 +192,18 @@ public class FrmChronometer extends AppCompatActivity {
             btnPlayPause.setImageResource(R.drawable.pause); //botón y booleano del botón
             btnPlayStatus = PAUSE;
             missingSeconds = 0;
+
+            SQLiteDatabase db = BaseHelper.getReadable(FrmChronometer.this);
+
+            if (new Result().selectTodayResult(task.id, db) != null) {
+                Result result = new Result();
+                result.activityId = task.id;
+                result.day = new Date();
+                result.done = true;
+                result.insert(db);
+                BaseHelper.tryClose(db);
+            }
+
             if (timer != null) {
                 timer.cancel();
             }
@@ -202,7 +215,12 @@ public class FrmChronometer extends AppCompatActivity {
             public void run() {
                 FrmChronometer.this.runOnUiThread(new Runnable() {
                     public void run() {
-                        setTimer();
+                        try {
+                            setTimer();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(FrmChronometer.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }

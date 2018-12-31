@@ -36,6 +36,9 @@ public class Statistics {
         this.period = monthYear == null ? WEEKLY : MONTLY;
         this.until = until;
         this.untilDay = getUntilDay(period, monthYear);
+        System.out.println("statistics1" + getSinceDay());
+        System.out.println("statistics2" + untilDay);
+        System.out.println("statistics3" + task.id);
         this.daysResults = Task.getDoneAndNotDoneDays(getSinceDay(), untilDay, task.id, db);
     }
 
@@ -54,8 +57,15 @@ public class Statistics {
     public static int countDoneDays() {
         int doneDays = 0;
         if (daysResults != null && daysResults.size() > 0) {
+            System.out.println("PASÓ 1");
             for (int i = 0; i < daysResults.size(); i++) {
-                if (daysResults.get(i) != null && daysResults.get(i)) {
+                System.out.println("PASÓ 2");
+                //if (daysResults.get(i) != null && daysResults.get(i)) {
+                //   doneDays++;
+                // }
+                System.out.println("PASÓ 3" + daysResults.get(i));
+                if (daysResults.get(i) != null) {
+                    System.out.println("PASÓ 4");
                     doneDays++;
                 }
             }

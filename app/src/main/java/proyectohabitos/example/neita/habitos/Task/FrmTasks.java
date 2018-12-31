@@ -2,7 +2,6 @@ package proyectohabitos.example.neita.habitos.Task;
 
 
 import android.database.sqlite.SQLiteDatabase;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
@@ -158,13 +156,13 @@ public class FrmTasks extends AppCompatActivity {
                 // db.execSQL(sql3);
                 BaseHelper.tryClose(db);
 
-                Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(this, "SE BORRÓ TODITO! SPANS!CUAK!", Toast.LENGTH_SHORT).show();
 
 
                 MediaPlayer player = MediaPlayer.create(this, R.raw.quack);
                 player.setLooping(false); // Set looping
                 player.setVolume(100, 100);
-                player.start();
+                player.start();*/
                 Fragment frag = mTaskPagerAdapter.getFragment(mViewPager.getCurrentItem());
 
                 if (frag instanceof FrgTodayTasks) {

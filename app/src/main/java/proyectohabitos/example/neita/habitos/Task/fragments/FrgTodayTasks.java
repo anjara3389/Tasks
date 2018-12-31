@@ -75,7 +75,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
                     lstTask = lstTasks.get(position);
                     if (lstTask.getChrono() == null) {
                         SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                        Boolean isDoneTaskDay = Task.getIfTaskIsDoneDay(db, posit, null, new Date());
+                        Boolean isDoneTaskDay = Task.isDoneOnTheDay(db, posit, null, new Date());
                         if (isDoneTaskDay != null) {
                             if (isDoneTaskDay) {
                                 checkTask(false, db);
@@ -141,7 +141,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         Object[][] data2 = sq.getRecords(db);
         if (data2 != null) {
             for (int i = 0; i < data2.length; i++) {
-                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], data2[i][2] == null ? null : SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data2[i][2])), null, data2[i][3] == null ? null : sq.getAsInteger(data2[i][3]), Task.getIfTaskIsDoneDay(db, sq.getAsInteger(data2[i][0]), data2[i][3] == null ? null : sq.getAsLong(data2[i][3]), new Date()));
+                LstTask task = new LstTask(sq.getAsInteger(data2[i][0]), (String) data2[i][1], data2[i][2] == null ? null : SQLiteQuery.dateTimeFormat.parse(sq.getAsString(data2[i][2])), null, data2[i][3] == null ? null : sq.getAsInteger(data2[i][3]), Task.isDoneOnTheDay(db, sq.getAsInteger(data2[i][0]), data2[i][3] == null ? null : sq.getAsLong(data2[i][3]), new Date()));
                 data.add(task);
             }
         }
@@ -156,7 +156,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         try {
             if (lstTask.getChrono() == null) {
                 SQLiteDatabase db = BaseHelper.getReadable(getContext());
-                Boolean isDoneTaskOnDay = Task.getIfTaskIsDoneDay(db, posit, null, new Date());
+                Boolean isDoneTaskOnDay = Task.isDoneOnTheDay(db, posit, null, new Date());
                 if (isDoneTaskOnDay != null) {
                     if (isDoneTaskOnDay) {
                         menu.add(0, 0, 0, "Desmarcar");
@@ -180,15 +180,25 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getGroupId() == 0) {
             if (item.getItemId() == 0) {
-                SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                checkTask(false, db);
-                BaseHelper.tryClose(db);
-                return true;
+                try {
+                    SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                    checkTask(false, db);
+                    BaseHelper.tryClose(db);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             } else if (item.getItemId() == 1) {
-                SQLiteDatabase db = BaseHelper.getWritable(getContext());
-                checkTask(true, db);
-                BaseHelper.tryClose(db);
-                return true;
+                try {
+                    SQLiteDatabase db = BaseHelper.getWritable(getContext());
+                    checkTask(true, db);
+                    BaseHelper.tryClose(db);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             } else if (item.getItemId() == 2) {
                 try {
                     SQLiteDatabase db = BaseHelper.getReadable(getContext());
@@ -216,7 +226,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
         return false;
     }
 
-    private void checkTask(boolean check, SQLiteDatabase db) {
+    private void checkTask(boolean check, SQLiteDatabase db) throws Exception {
         if (check) {
             Task.checkTaskAsDone(posit, db);
         } else {
@@ -227,7 +237,7 @@ public class FrgTodayTasks extends Fragment implements YesNoDialogFragment.MyDia
     }
 
     private void startChrono(SQLiteDatabase db) throws Exception {
-        if (!Task.getIfTaskIsDoneDay(db, posit, (long) lstTask.getChrono(), new Date())) {
+        if (!Task.isDoneOnTheDay(db, posit, (long) lstTask.getChrono(), new Date())) {
             if ((Span.selectOpenedSpan(db, null) != null && Span.selectOpenedSpan(db, null).activityId == posit) || Span.selectOpenedSpan(db, null) == null) {
                 Intent i = new Intent(getActivity(), FrmChronometer.class);
                 i.putExtra("id", posit);
